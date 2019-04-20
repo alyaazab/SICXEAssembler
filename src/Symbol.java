@@ -1,15 +1,15 @@
 public class Symbol {
 
-    private int address;
+    private int value;
     private int length;
     private boolean relocatable;
     private String label;
 
 
-    public Symbol(String label, int address, int length, boolean relocatable) {
-        this.address = address;
+    public Symbol(String label, int value, int length, boolean relocatable) {
+        this.label = label;
+        this.value = value;
         this.length = length;
         this.relocatable = relocatable;
-        this.label = label;
     }
 }
