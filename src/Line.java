@@ -1,50 +1,57 @@
 public class Line {
 
-    private String label;
-    private String opcode;
-    private String operand;
-    private String error;
+    private int address;
+    private String labelField;
+    private String operationField;
+    private String operandField;
+    private String[] errors;
 
-    public Line(String label, String opcode, String operand) {
-        this.label = label;
-        this.opcode = opcode;
-        this.operand = operand;
-    }
-
-    public Line(String opcode, String operand) {
-
-        this.opcode = opcode;
-        this.operand = operand;
-    }
-
-    public Line(String opcode) {
-        this.opcode = opcode;
+    public Line(int address, String labelField, String operationField, String operandField, String[] errors) {
+        this.address = address;
+        this.labelField = labelField;
+        this.operationField = operationField;
+        this.operandField = operandField;
+        this.errors = errors;
     }
 
 
-
-    public String getLabel() {
-        return label;
+    public int getAddress() {
+        return address;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setAddress(int address) {
+        this.address = address;
     }
 
-    public String getOpcode() {
-        return opcode;
+    public String getLabelField() {
+        return labelField;
     }
 
-    public void setOpcode(String opcode) {
-        this.opcode = opcode;
+    public void setLabelField(String labelField) {
+        this.labelField = labelField;
     }
 
-    public String getOperand() {
-        return operand;
+    public String getOperationField() {
+        return operationField;
     }
 
-    public void setOperand(String operand) {
-        this.operand = operand;
+    public void setOperationField(String operationField) {
+        this.operationField = operationField;
     }
 
+    public String getOperandField() {
+        return operandField;
+    }
+
+    public void setOperandField(String operandField) {
+        this.operandField = operandField;
+    }
+
+    public String[] getErrors() {
+        return errors;
+    }
+
+    public void setErrors(String[] errors) {
+        this.errors = errors;
+    }
 }
