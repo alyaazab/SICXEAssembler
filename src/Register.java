@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public class Register {
 
     private static Register ourInstance = new Register();
@@ -10,7 +12,14 @@ public class Register {
     }
 
 
-    private int A, X, L, B, S, T, PC, SW;
+    private HashMap<String, Integer> registerMap = new HashMap<>();
 
+    public Integer getRegisterNumber(String reg){
+        return registerMap.get(reg);
+    }
+
+    public void initializeRegisterMap(){
+        // TODO: add registers to map manually
+    }
 
 }

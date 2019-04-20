@@ -15,4 +15,5 @@ public class OperationTable {
     public static Operation getOperation(String op){
         return opTable.get(op);
     }
+
 }

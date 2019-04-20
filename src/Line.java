@@ -3,6 +3,7 @@ public class Line {
     private String label;
     private String opcode;
     private String operand;
+    private String error;
 
     public Line(String label, String opcode, String operand) {
         this.label = label;
@@ -45,4 +46,5 @@ public class Line {
     public void setOperand(String operand) {
         this.operand = operand;
     }
+
 }
