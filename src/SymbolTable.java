@@ -1,6 +1,7 @@
 import java.util.HashMap;
 
 public class SymbolTable {
+
     private static SymbolTable ourInstance = new SymbolTable();
 
     public static SymbolTable getInstance() {
@@ -20,8 +21,8 @@ public class SymbolTable {
         symTab.put(symName, symbol);
     }
 
-    public void addToSymTab(String symName, String value, int length){
-        Symbol symbol = new Symbol(value, length);
+    public void addToSymTab(String symName, int address, int length, boolean relocatable){
+        Symbol symbol = new Symbol(symName, address, length, relocatable);
         symTab.put(symName, symbol);
     }
 }

@@ -1,8 +1,17 @@
 public class Operation {
 
+    private String operationMnemonic;
     private int lengthOfInstruction;
     private String binaryCode;
-    private String format;
+    private int format;
+
+    public String getOperationMnemonic() {
+        return operationMnemonic;
+    }
+
+    public void setOperationMnemonic(String operationMnemonic) {
+        this.operationMnemonic = operationMnemonic;
+    }
 
     public int getLengthOfInstruction() {
         return lengthOfInstruction;
@@ -20,11 +29,11 @@ public class Operation {
         this.binaryCode = binaryCode;
     }
 
-    public String getFormat() {
+    public int getFormat() {
         return format;
     }
 
-    public void setFormat(String format) {
+    public void setFormat(int format) {
         this.format = format;
     }
 }
