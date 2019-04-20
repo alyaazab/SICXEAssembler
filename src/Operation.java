@@ -5,6 +5,13 @@ public class Operation {
     private String binaryCode;
     private int format;
 
+    public Operation(String operationMnemonic, int lengthOfInstruction, String binaryCode, int format) {
+        this.operationMnemonic = operationMnemonic;
+        this.lengthOfInstruction = lengthOfInstruction;
+        this.binaryCode = binaryCode;
+        this.format = format;
+    }
+
     public String getOperationMnemonic() {
         return operationMnemonic;
     }

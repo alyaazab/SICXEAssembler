@@ -17,13 +17,17 @@ public class SymbolTable {
         return symTab.get(sym);
     }
 
-    public void addToSymTab(String symName, Symbol symbol){
+    public boolean addToSymTab(String symName, Symbol symbol){
+        if(symTab.get(symName) != null) return false;
         symTab.put(symName, symbol);
+        return true;
     }
 
-    public void addToSymTab(String symName, int value, int length, boolean relocatable){
+    public boolean addToSymTab(String symName, int value, int length, boolean relocatable){
+        if(symTab.get(symName) != null) return false;
         Symbol symbol = new Symbol(symName, value, length, relocatable);
         symTab.put(symName, symbol);
+        return true;
     }
 
     public void preloadRegistersToSymTab() {
