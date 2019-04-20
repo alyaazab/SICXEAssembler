@@ -5,12 +5,12 @@ import java.util.ArrayList;
 
 public class SourceFile {
 
-    public static ArrayList<String>readSourceProgramFromFile(){
+    public static ArrayList<String> readSourceProgramFromFile(){
         ArrayList<String> sourceProgramArray = new ArrayList<>();
 
         BufferedReader bufferedReader;
         try{
-            bufferedReader = new BufferedReader(new FileReader("dictionary"));
+            bufferedReader = new BufferedReader(new FileReader("srcfile"));
             String line = bufferedReader.readLine();
             while (line != null){
                 sourceProgramArray.add(line);
@@ -20,7 +20,6 @@ public class SourceFile {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return sourceProgramArray;
     }
 
