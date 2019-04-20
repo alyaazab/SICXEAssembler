@@ -1,17 +1,21 @@
+import java.util.ArrayList;
+
 public class Line {
 
     private int address;
     private String labelField;
     private String operationField;
     private String operandField;
-    private String[] errors;
+    private String comment;
+    private ArrayList<Integer> errorIndexList;
 
-    public Line(int address, String labelField, String operationField, String operandField, String[] errors) {
+    public Line(int address, String labelField, String operationField, String operandField, String comment, ArrayList<Integer> errorIndexList) {
         this.address = address;
         this.labelField = labelField;
         this.operationField = operationField;
         this.operandField = operandField;
-        this.errors = errors;
+        this.comment = comment;
+        this.errorIndexList = errorIndexList;
     }
 
 
@@ -47,11 +51,19 @@ public class Line {
         this.operandField = operandField;
     }
 
-    public String[] getErrors() {
-        return errors;
+    public String getComment() {
+        return comment;
     }
 
-    public void setErrors(String[] errors) {
-        this.errors = errors;
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public ArrayList<Integer> getErrorIndexList() {
+        return errorIndexList;
+    }
+
+    public void setErrorIndexList(ArrayList<Integer> errorIndexList) {
+        this.errorIndexList = errorIndexList;
     }
 }
