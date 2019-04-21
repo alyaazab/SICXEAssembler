@@ -57,6 +57,9 @@ public class Utils {
 
 
     private void validateLabel(String label) {
+        //MAKE SURE MNEMONICS AREN'T USED AS LABELS
+        //ALLOW EMPTY LABELS (IN SOME CASES)
+
         if (Character.isWhitespace(label.charAt(0)))
             errorIndexList.add(0); // misplaced label
 
