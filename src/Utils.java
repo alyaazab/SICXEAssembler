@@ -13,17 +13,17 @@ public class Utils {
 
     public Line extractFields(String line) {
 
-        line = ".0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
+        line = "         rmo     x,a                                    ";
 
         this.labelField = line.substring(0, 8);
         this.operationField = line.substring(9, 15);
         this.operandField = line.substring(17, 35);
-        this.commentField = line.substring(35, 66);
+//        this.commentField = line.substring(35, 66);
 
         System.out.println(labelField);
         System.out.println(operationField);
         System.out.println(operandField);
-        System.out.println(commentField);
+//        System.out.println(commentField);
 
         if(isComment(line)) {
             lineObj = new Line(0, null, null, null, line, null);
@@ -34,6 +34,9 @@ public class Utils {
 
 
         validateFixedFormat(labelField, operationField, operandField);
+        System.out.println("errors: " + errorIndexList.size());
+        for(int i=0; i<errorIndexList.size(); i++)
+            System.out.println(errorIndexList.get(i));
 
         return lineObj;
 
@@ -49,6 +52,7 @@ public class Utils {
     private void validateFixedFormat(String labelField, String operationField, String operandField) {
         validateLabel(labelField);
         validateOperationField(operationField);
+        validateOperandField(operandField);
     }
 
 
@@ -81,7 +85,7 @@ public class Utils {
         }
 
         Operation operation = OperationTable.getOptable().get(operationField);
-        System.out.println(operation.getOperationMnemonic());
+//        System.out.println(operation.getOperationMnemonic());
 
         if(operation==null)
             errorIndexList.add(7);
@@ -89,8 +93,12 @@ public class Utils {
     }
 
     private void validateOperandField(String operandField) {
+        System.out.println("operand field is:" + operandField);
         if(Character.isWhitespace(operandField.charAt(0)))
+        {
             errorIndexList.add(2);
+            System.out.println("spacebefore");
+        }
 
         operandField = operandField.trim();
 
@@ -118,10 +126,29 @@ public class Utils {
                 break;
 
             case 3:
+                if(operandField.charAt(0) != '#' || operandField.charAt(0) != '@' ||
+                        !Character.isAlphabetic(operandField.charAt(0)))
+                {
+                    errorIndexList.add(8);
+                }
+                for (int i = 0; i < operandField.length(); i++){
+                    if (!Character.isLetterOrDigit(operandField.charAt(i)))
+                    {
+                        if(operandField.charAt(i) == ',' && i == operandField.length()-2 && operandField.charAt(i+1) == 'x')
+                        {
+                            //ok
+                        }
+                        else
+                            errorIndexList.add(8);
+                    }
+                }
+
+
                 //first character must be alphabetic/#/@
                 //loop: if any characters after character 0 is NOT alphanumeric, error (except ,X)
-                ///////if there's a comma, it has to be followed by an x
-
+                ///////if there's a comma, it has to be followed by an x AND x has to be last element
+                //string,x
+                //string,xxxx
 
         }
 

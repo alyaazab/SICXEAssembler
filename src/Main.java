@@ -4,6 +4,9 @@ public class Main {
         OperationTable.fillOpTable();
         Utils utils = new Utils();
 
+        utils.extractFields("");
+
+
     }
 
 }
