@@ -4,10 +4,6 @@ import java.util.ArrayList;
 public class Utils {
 
     private ArrayList<Integer> errorIndexList = new ArrayList<>();
-    private Line lineObj;
-    private String operationField;
-    private String operandField;
-    private String labelField;
     private String commentField;
 
     private String label, operation, operand;
@@ -17,9 +13,9 @@ public class Utils {
 
         line = "bgn      lldx    #25                                                                                 ";
 
-        this.labelField = line.substring(0, 8);
-        this.operationField = line.substring(9, 15);
-        this.operandField = line.substring(17, 35);
+        String labelField = line.substring(0, 8);
+        String operationField = line.substring(9, 15);
+        String operandField = line.substring(17, 35);
 //        this.commentField = line.substring(35, 66);
 
         System.out.println("label: " + labelField);
@@ -27,6 +23,7 @@ public class Utils {
         System.out.println("operand: " + operandField);
 //        System.out.println(commentField);
 
+        Line lineObj;
         if(isComment(line)) {
             System.out.println("this line is a comment");
             lineObj = new Line(0, null, null, null, line, null);
@@ -155,8 +152,9 @@ public class Utils {
                 System.out.println("operand field contains spaces in between");
             }
         }
+        this.operation = operandField.trim();
 
-        Operation operation = OperationTable.getOptable().get(operationField.trim());
+        Operation operation = OperationTable.getOptable().get(this.operation);
         if (operation == null)
             return;
         int operationFormat = operation.getFormat();
