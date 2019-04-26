@@ -28,7 +28,7 @@ public class Error {
         errors[10] = "***ERROR: can't be format 4 instruction***";
         errors[20] = "***ERROR: EQU should have a previously defined operand***";//
         errors[21] = "***ERROR: this statement must have an operand***";//
-
+        errors[22] = "***ERROR: missing field(s)***";
 
         errors[14] = "***ERROR: wrong comment format***";//
         errors[16] = "***ERROR: operation mnemonic cannot have spaces in between***";//

@@ -12,17 +12,7 @@ public class Utils {
 
     public Line extractFields(String line) {
 
-        line = "         tixr    S                 ";
-
-        String labelField = line.substring(0, 8);
-        String operationField = line.substring(9, 15);
-        String operandField = line.substring(17, 35);
-//        this.commentField = line.substring(35, 66);
-
-        System.out.println("label: " + labelField);
-        System.out.println("operation: " + operationField);
-        System.out.println("operand: " + operandField);
-//        System.out.println(commentField);
+        String operandField;
 
         Line lineObj;
         if(isComment(line)) {
@@ -30,6 +20,32 @@ public class Utils {
             lineObj = new Line(0, null, null, null, line, null);
             return lineObj;
         }
+
+        if(line.length() == 0)
+        {
+            errorIndexList.add(22);
+            return lineObj = new Line(0, null, null, null, null, errorIndexList);
+        }
+        else if(line.length() < 10)
+        {
+            errorIndexList.add(22);
+            return lineObj = new Line(0, line.substring(0,8), null, null, null, errorIndexList);
+        }
+        else
+        {
+            operandField = line.substring(17, line.length());
+        }
+
+
+        String labelField = line.substring(0, 8);
+        String operationField = line.substring(9, 15);
+//        this.commentField = line.substring(35, 66);
+
+        System.out.println("label: " + labelField);
+        System.out.println("operation: " + operationField);
+        System.out.println("operand: " + operandField);
+//        System.out.println(commentField);
+
 
         lineObj = new Line(0, labelField, operationField, operandField, null, errorIndexList);
 
