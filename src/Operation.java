@@ -8,6 +8,10 @@ public class Operation {
     private int hasLabel;
 
 
+    public Operation() {
+    }
+
+
     public Operation(String operationMnemonic, int lengthOfInstruction, String binaryCode,
                      int format, int hasOperand, int hasLabel) {
         this.operationMnemonic = operationMnemonic;
