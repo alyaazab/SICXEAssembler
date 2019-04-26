@@ -77,15 +77,14 @@ public class OperationTable {
         opTable.put("tixr", new Operation("tixr", 2, "B8", 2, 1, -1));
         opTable.put("wd", new Operation("wd", 3, "DC", 3, 1, -1));
         opTable.put("+wd", new Operation("+wd", 4, "DC", 4, 1, -1));
-        opTable.put("org", new Operation("org", 3, "000", 3, 1, 0));
-        opTable.put("equ", new Operation("equ", 3, "000", 3, 1, 1));
+        opTable.put("org", new Operation("org", -1, "000", 3, 1, 0));
+        opTable.put("equ", new Operation("equ", 0, "000", 3, 1, 1));
         opTable.put("resb", new Operation("resb", 1, "000", 3, 1, -1));
         opTable.put("resw", new Operation("resw", 3, "000", 3, 1, -1));
         opTable.put("byte", new Operation("byte", 1, "000", 3, 1, -1));
         opTable.put("word", new Operation("word", 3, "000", 3, 1, -1));
-        opTable.put("base", new Operation("base", 3, "000", 3, 1, 0));
-        opTable.put("nobase", new Operation("nobase", 3, "000", 3, 1, 0));
-        opTable.put("ltorg", new Operation("ltorg", 3, "000", 3, 1, 0));
+        opTable.put("base", new Operation("base", 0, "000", 3, 1, 0));
+        opTable.put("nobase", new Operation("nobase", 0, "000", 3, 1, 0));
 
     }
 

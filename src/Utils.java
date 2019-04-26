@@ -15,7 +15,7 @@ public class Utils {
 
     public Line extractFields(String line) {
 
-        line = "bgn      lldx     #25                                                                                 ";
+        line = "bgn      lldx    #25                                                                                 ";
 
         this.labelField = line.substring(0, 8);
         this.operationField = line.substring(9, 15);
@@ -157,6 +157,8 @@ public class Utils {
         }
 
         Operation operation = OperationTable.getOptable().get(operationField.trim());
+        if (operation == null)
+            return;
         int operationFormat = operation.getFormat();
 
         switch(operationFormat)
