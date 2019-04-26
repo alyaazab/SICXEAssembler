@@ -12,7 +12,7 @@ public class Utils {
 
     public Line extractFields(String line) {
 
-        line = "bgn      lldx    #25                                                                                 ";
+        line = "bgn      resb    4,                                                                                 ";
 
         String labelField = line.substring(0, 8);
         String operationField = line.substring(9, 15);
@@ -59,9 +59,12 @@ public class Utils {
     }
 
     private void validateDirective() {
+        System.out.println("VALIDATING DIRECTIVE...");
         Operation operation = OperationTable.getOperation(this.operation);
+        System.out.println("DIRECTIVE: " + this.operation);
         if (operation == null)
             return;
+
 
         switch (this.operation){
             case "equ":
@@ -70,6 +73,8 @@ public class Utils {
 
                 if (SymbolTable.getInstance().getSymbol(this.operand) == null)
                     errorIndexList.add(20); // equ should have previously defined operands
+                else if (this.operand.charAt(0) != '#')
+                    errorIndexList.add(20);
 
                 break;
             case "base":
@@ -77,22 +82,55 @@ public class Utils {
                     errorIndexList.add(4); // this statement can't have a label
                 break;
             case "resb":
-                if (!Character.isLetter(this.operand.charAt(0)))
-                    errorIndexList.add(8); // undefined symbol in operand
-                break;
-            case "word":
-                if (!Character.isLetter(this.operand.charAt(0))) {
+                if (!Character.isDigit(this.operand.charAt(0)) || this.operand.length() > 1) {
                     errorIndexList.add(8); // undefined symbol in operand
                     return;
                 }
-                this.length = 0;
+                this.length = Integer.valueOf(this.operand);
+                System.out.println("LEN: " + length);
+                break;
+            case "word":
+                if (!Character.isDigit(this.operand.charAt(0))) {
+                    errorIndexList.add(8); // undefined symbol in operand
+                    return;
+                }
+                this.length = 3;
                 for (int i = 1; i < this.operand.length(); i++) {
-                    if (this.operand.charAt(i) == ',' && Character.isDigit(this.operand.charAt(i + 1))) {
+                    if (i != operand.length()-1 && this.operand.charAt(i) == ',' && Character.isDigit(this.operand.charAt(i + 1))) {
                         this.length += 3;
-                    } else if (this.operand.charAt(i) == ',' && !Character.isDigit(this.operand.charAt(i + 1))) {
+                    } else if (i == operand.length()-1 && this.operand.charAt(i) == ',') {
+                        errorIndexList.add(8);
+                        break;
+                    } else if (this.operand.charAt(i) == ',' && !Character.isDigit(this.operand.charAt(i+1))){
                         errorIndexList.add(8);
                         break;
                     }
+                }
+                System.out.println("LEN: " + length);
+                break;
+            case "nobase":
+                if(this.label.length() != 0)
+                {
+                    System.out.println("nobase statement cant have a label");
+                    errorIndexList.add(4);
+                }
+                if(this.operand.length() != 0)
+                {
+                    System.out.println("nobase statement cant have an operand");
+                    errorIndexList.add(5);
+                }
+                break;
+            case "org":
+                if(this.label.length() != 0)
+                {
+                    System.out.println("org statement can't have a label");
+                    errorIndexList.add(4);
+                }
+
+                if(SymbolTable.getInstance().getSymbol(this.operand) == null)
+                {
+                    System.out.println("undefined symbol in operand");
+                    errorIndexList.add(8);
                 }
                 break;
         }
@@ -152,7 +190,7 @@ public class Utils {
 
         operationField = operationField.trim();
 
-        operation = operationField;
+        this.operation = operationField;
 
         for (int i = 0; i < operationField.length(); i++){
             if (operationField.charAt(i) == ' ')
@@ -194,12 +232,14 @@ public class Utils {
                 System.out.println("operand field contains spaces in between");
             }
         }
-        this.operation = operandField.trim();
 
         Operation operation = OperationTable.getOptable().get(this.operation);
         if (operation == null)
             return;
         int operationFormat = operation.getFormat();
+
+        if (operationFormat == -1)
+            return;
 
         switch(operationFormat)
         {
