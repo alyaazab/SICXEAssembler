@@ -133,7 +133,60 @@ public class Utils {
                     errorIndexList.add(8);
                 }
                 break;
+            case "end":
+                if(this.label.length() != 0)
+                {
+                    System.out.println("end statement can't have a label");
+                    errorIndexList.add(4);
+                }
+                if(this.operand.length()!=0 && SymbolTable.getInstance().getSymbol(this.operand) == null)
+                {
+                    System.out.println("undefined symbol in operand");
+                    errorIndexList.add(8);
+                }
+                break;
+
+            case "byte":
+                //if it doesnt start with c or x, or if it doesn't contain 2 apostrophes, error
+                if((this.operand.charAt(0) != 'c' && this.operand.charAt(0) != 'x') ||
+                        this.operand.charAt(1) != '\'' || this.operand.charAt(this.operand.length()-1) != '\'')
+                {
+                    System.out.println("undefined symbol in operand");
+                    errorIndexList.add(8);
+                } else if (this.operand.charAt(0) == 'c')
+                {
+                    if(this.operand.length() > 18)
+                        System.out.println("operand too long");
+
+                    for(int i=2; i<this.operand.length()-1; i++)
+                    {
+                        if(!Character.isDigit(this.operand.charAt(i)))
+                        {
+                            System.out.println("undefined symbol in operand");
+                            errorIndexList.add(8);
+                        }
+                    }
+                } else if(this.operand.charAt(0) == 'x')
+                {
+                    if(this.operand.length() > 17)
+                    {
+                        System.out.println("operand too long");
+                    }
+                    for(int i=2; i<this.operand.length()-1; i++)
+                    {
+                        if(!isHexadecimal(this.operand.charAt(i)))
+                        {
+                            System.out.println("undef symbol in operand");
+                            errorIndexList.add(8);
+                        }
+                    }
+                }
+                break;
         }
+    }
+
+    private boolean isHexadecimal(char c) {
+        return Character.isDigit(c) || c=='a' || c=='b' || c=='c' || c=='d' || c=='e' || c=='f';
     }
 
 
