@@ -7,6 +7,7 @@ public class Utils {
     private String commentField;
 
     private String label, operation, operand;
+    private int length;
 
 
     public Line extractFields(String line) {
@@ -54,6 +55,47 @@ public class Utils {
         validateLabel(labelField);
         validateOperationField(operationField);
         validateOperandField(operandField);
+        validateDirective();
+    }
+
+    private void validateDirective() {
+        Operation operation = OperationTable.getOperation(this.operation);
+        if (operation == null)
+            return;
+
+        switch (this.operation){
+            case "equ":
+                if (this.label.length() == 0)
+                    errorIndexList.add(0); // missing or misplaced label
+
+                if (SymbolTable.getInstance().getSymbol(this.operand) == null)
+                    errorIndexList.add(20); // equ should have previously defined operands
+
+                break;
+            case "base":
+                if (this.label.length() != 0)
+                    errorIndexList.add(4); // this statement can't have a label
+                break;
+            case "resb":
+                if (!Character.isLetter(this.operand.charAt(0)))
+                    errorIndexList.add(8); // undefined symbol in operand
+                break;
+            case "word":
+                if (!Character.isLetter(this.operand.charAt(0))) {
+                    errorIndexList.add(8); // undefined symbol in operand
+                    return;
+                }
+                this.length = 0;
+                for (int i = 1; i < this.operand.length(); i++) {
+                    if (this.operand.charAt(i) == ',' && Character.isDigit(this.operand.charAt(i + 1))) {
+                        this.length += 3;
+                    } else if (this.operand.charAt(i) == ',' && !Character.isDigit(this.operand.charAt(i + 1))) {
+                        errorIndexList.add(8);
+                        break;
+                    }
+                }
+                break;
+        }
     }
 
 

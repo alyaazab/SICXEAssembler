@@ -14,10 +14,10 @@ public class Error {
         errors = new String[30];
 
         errors[3] = "***ERROR: duplicate label definition***";
-        errors[4] = "***ERROR: this statement can't have a label***";
+        errors[4] = "***ERROR: this statement can't have a label***";//
         errors[13] = "***ERROR: label cannot start with a digit***";//
         errors[15] = "***ERROR: labels cannot have spaces in between***";//
-        errors[0] = "***ERROR: misplaced label***"; //
+        errors[0] = "***ERROR: missing or misplaced label***"; //
         errors[19] = "***ERROR: operation mnemonics cannot be used as labels***"; //
 
 
@@ -26,6 +26,7 @@ public class Error {
         errors[6] = "***ERROR: wrong operation prefix***";
         errors[9] = "***ERROR: not a hexadecimal string***";
         errors[10] = "***ERROR: can't be format 4 instruction***";
+        errors[20] = "***ERROR: EQU should have a previously defined operand***";//
 
         errors[14] = "***ERROR: wrong comment format***";//
         errors[16] = "***ERROR: operation mnemonic cannot have spaces in between***";//
