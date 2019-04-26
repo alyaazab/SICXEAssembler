@@ -85,7 +85,8 @@ public class OperationTable {
         opTable.put("word", new Operation("word", 3, "000", -1, 1, -1));
         opTable.put("base", new Operation("base", 0, "000", -1, 1, 0));
         opTable.put("nobase", new Operation("nobase", 0, "000", -1, 1, 0));
-
+        opTable.put("start", new Operation("start", 0, "000", -1, 1, -1));
+        opTable.put("end", new Operation("end", 0, "000", -1, -1, 0));
     }
 
     public static HashMap<String, Operation> getOptable(){

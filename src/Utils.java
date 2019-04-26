@@ -12,7 +12,7 @@ public class Utils {
 
     public Line extractFields(String line) {
 
-        line = "bgn      byte    x'abcdef0'                                                                                 ";
+        line = "         tixr    S                 ";
 
         String labelField = line.substring(0, 8);
         String operationField = line.substring(9, 15);
@@ -145,7 +145,20 @@ public class Utils {
                     errorIndexList.add(8);
                 }
                 break;
-
+            case "start":
+                if (this.operand.length() == 0){
+                    errorIndexList.add(21);
+                    return;
+                }
+                for (int i =0; i < this.operand.length(); i++){
+                    if (!Character.isDigit(this.operand.charAt(i)) && this.operand.charAt(i) != 'a' && this.operand.charAt(i) != 'b'
+                            && this.operand.charAt(i) != 'c' && this.operand.charAt(i) != 'd' && this.operand.charAt(i) != 'e'
+                            && this.operand.charAt(i) != 'f'){
+                        errorIndexList.add(8);
+                        return;
+                    }
+                }
+                break;
             case "byte":
                 //if it doesnt start with c or x, or if it doesn't contain 2 apostrophes, error
                 if((this.operand.charAt(0) != 'c' && this.operand.charAt(0) != 'x') ||
@@ -194,6 +207,11 @@ public class Utils {
         //ALLOW EMPTY LABELS (IN SOME CASES)
 
         System.out.println("VALIDATING LABEL...");
+
+        if (labelField.trim().length() == 0){
+            this.label = labelField;
+            return;
+        }
 
         //if label starts with whitespace, misplaced label
         if (Character.isWhitespace(labelField.charAt(0)))
@@ -302,13 +320,26 @@ public class Utils {
                 //SHIFTL and SHIFTR r1,n
 
                 //TODO: LENGTH CAN BE 1 IF CLEAR OR TIXR INSTRUCTION
+
+                if (this.operation.equals("tixr") || this.operation.equals("clear")){
+                    System.out.println("HERE");
+                    if (operandField.length() > 1) {
+                        errorIndexList.add(8);
+                    }
+                    if (RegisterTable.getInstance().getRegTable().get(String.valueOf(operandField.charAt(0))) == null){
+                        errorIndexList.add(11);
+                        System.out.println("invalid register");
+                    }
+                    return;
+                }
+
                 if(operandField.length() != 3)
                     errorIndexList.add(18);
                 if(operandField.charAt(1) != ',')
                     errorIndexList.add(17);
 
-                if(RegisterTable.getInstance().getRegTable().get(operandField.charAt(0)) == null ||
-                        RegisterTable.getInstance().getRegTable().get(operandField.charAt(2)) == null )
+                if(RegisterTable.getInstance().getRegTable().get(String.valueOf(operandField.charAt(0))) == null ||
+                        RegisterTable.getInstance().getRegTable().get(String.valueOf(operandField.charAt(2))) == null )
                 {
                     errorIndexList.add(11);
                     System.out.println("invalid register");
