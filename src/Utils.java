@@ -12,7 +12,7 @@ public class Utils {
 
     public Line extractFields(String line) {
 
-        line = "bgn      resb    4,                                                                                 ";
+        line = "bgn      byte    x'abcdef0'                                                                                 ";
 
         String labelField = line.substring(0, 8);
         String operationField = line.substring(9, 15);
@@ -160,7 +160,7 @@ public class Utils {
 
                     for(int i=2; i<this.operand.length()-1; i++)
                     {
-                        if(!Character.isDigit(this.operand.charAt(i)))
+                        if(!Character.isLetterOrDigit(this.operand.charAt(i)))
                         {
                             System.out.println("undefined symbol in operand");
                             errorIndexList.add(8);
