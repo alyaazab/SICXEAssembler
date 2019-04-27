@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 
-public class Utils {
+public class Parser {
 
     private ArrayList<Integer> errorIndexList = new ArrayList<>();
     private String commentField;
@@ -13,6 +13,7 @@ public class Utils {
     public Line extractFields(String line) {
 
         String operandField;
+        System.out.println("line length = " + line.length());
 
         Line lineObj;
         if(isComment(line)) {
@@ -28,6 +29,7 @@ public class Utils {
         }
         else if(line.length() < 10)
         {
+            //we do not have an operation
             errorIndexList.add(22);
             return lineObj = new Line(0, line.substring(0,8), null, null, null, errorIndexList);
         }
@@ -77,9 +79,12 @@ public class Utils {
     private void validateDirective() {
         System.out.println("VALIDATING DIRECTIVE...");
         Operation operation = OperationTable.getOperation(this.operation);
-        System.out.println("DIRECTIVE: " + this.operation);
-        if (operation == null)
+
+        if (operation == null || operation.getFormat() != -1)
             return;
+
+
+        System.out.println("DIRECTIVE: " + this.operation);
 
 
         switch (this.operation){
@@ -92,38 +97,14 @@ public class Utils {
                 else if (this.operand.charAt(0) != '#')
                     errorIndexList.add(20);
 
+                LocationCounter.setLC(Integer.valueOf(this.operand));
                 break;
+
             case "base":
                 if (this.label.length() != 0)
                     errorIndexList.add(4); // this statement can't have a label
                 break;
-            case "resb":
-                if (!Character.isDigit(this.operand.charAt(0)) || this.operand.length() > 1) {
-                    errorIndexList.add(8); // undefined symbol in operand
-                    return;
-                }
-                this.length = Integer.valueOf(this.operand);
-                System.out.println("LEN: " + length);
-                break;
-            case "word":
-                if (!Character.isDigit(this.operand.charAt(0))) {
-                    errorIndexList.add(8); // undefined symbol in operand
-                    return;
-                }
-                this.length = 3;
-                for (int i = 1; i < this.operand.length(); i++) {
-                    if (i != operand.length()-1 && this.operand.charAt(i) == ',' && Character.isDigit(this.operand.charAt(i + 1))) {
-                        this.length += 3;
-                    } else if (i == operand.length()-1 && this.operand.charAt(i) == ',') {
-                        errorIndexList.add(8);
-                        break;
-                    } else if (this.operand.charAt(i) == ',' && !Character.isDigit(this.operand.charAt(i+1))){
-                        errorIndexList.add(8);
-                        break;
-                    }
-                }
-                System.out.println("LEN: " + length);
-                break;
+
             case "nobase":
                 if(this.label.length() != 0)
                 {
@@ -136,45 +117,46 @@ public class Utils {
                     errorIndexList.add(5);
                 }
                 break;
-            case "org":
-                if(this.label.length() != 0)
-                {
-                    System.out.println("org statement can't have a label");
-                    errorIndexList.add(4);
-                }
 
-                if(SymbolTable.getInstance().getSymbol(this.operand) == null)
-                {
-                    System.out.println("undefined symbol in operand");
-                    errorIndexList.add(8);
-                }
-                break;
-            case "end":
-                if(this.label.length() != 0)
-                {
-                    System.out.println("end statement can't have a label");
-                    errorIndexList.add(4);
-                }
-                if(this.operand.length()!=0 && SymbolTable.getInstance().getSymbol(this.operand) == null)
-                {
-                    System.out.println("undefined symbol in operand");
-                    errorIndexList.add(8);
-                }
-                break;
-            case "start":
-                if (this.operand.length() == 0){
-                    errorIndexList.add(21);
+            case "resb":
+                if (this.operand.length() > 4) {
+                    errorIndexList.add(8); // undefined symbol in operand
                     return;
                 }
-                for (int i =0; i < this.operand.length(); i++){
-                    if (!Character.isDigit(this.operand.charAt(i)) && this.operand.charAt(i) != 'a' && this.operand.charAt(i) != 'b'
-                            && this.operand.charAt(i) != 'c' && this.operand.charAt(i) != 'd' && this.operand.charAt(i) != 'e'
-                            && this.operand.charAt(i) != 'f'){
+
+                for(int i=0; i<this.operand.length(); i++)
+                    if(!Character.isDigit(this.operand.charAt(i)))
+                    {
+                        System.out.println("undef symbol in operand");
                         errorIndexList.add(8);
-                        return;
                     }
-                }
+
+
+                this.length = Integer.valueOf(this.operand);
+                System.out.println("LEN: " + length);
+
+                incrementLocationCounter(this.length);
                 break;
+
+            case "resw":
+                if (this.operand.length() > 4) {
+                    errorIndexList.add(8); // undefined symbol in operand
+                    return;
+                }
+
+                for(int i=0; i<this.operand.length(); i++)
+                    if(!Character.isDigit(this.operand.charAt(i)))
+                    {
+                        System.out.println("undef symbol in operand");
+                        errorIndexList.add(8);
+                    }
+
+                this.length = 3 * Integer.valueOf(this.operand);
+                System.out.println("LEN: " + length);
+
+                incrementLocationCounter(this.length);
+                break;
+
             case "byte":
                 //if it doesnt start with c or x, or if it doesn't contain 2 apostrophes, error
                 if((this.operand.charAt(0) != 'c' && this.operand.charAt(0) != 'x') ||
@@ -210,7 +192,78 @@ public class Utils {
                         }
                     }
                 }
+
+                if(errorIndexList.size() == 0)
+                    incrementLocationCounter(this.operand.length() - 3);
                 break;
+
+            case "word":
+                if (!Character.isDigit(this.operand.charAt(0))) {
+                    errorIndexList.add(8); // undefined symbol in operand
+                    return;
+                }
+                this.length = 3;
+                for (int i = 1; i < this.operand.length(); i++) {
+                    if (i != operand.length()-1 && this.operand.charAt(i) == ',' && Character.isDigit(this.operand.charAt(i + 1))) {
+                        this.length += 3;
+                    } else if (i == operand.length()-1 && this.operand.charAt(i) == ',') {
+                        errorIndexList.add(8);
+                        break;
+                    } else if (this.operand.charAt(i) == ',' && !Character.isDigit(this.operand.charAt(i+1))){
+                        errorIndexList.add(8);
+                        break;
+                    }
+                }
+
+
+                incrementLocationCounter(this.length);
+                System.out.println("LEN: " + length);
+                break;
+
+            case "org":
+                if(this.label.length() != 0)
+                {
+                    System.out.println("org statement can't have a label");
+                    errorIndexList.add(4);
+                }
+
+                if(SymbolTable.getInstance().getSymbol(this.operand) == null)
+                {
+                    System.out.println("undefined symbol in operand");
+                    errorIndexList.add(8);
+                }
+                break;
+            case "end":
+                System.out.println("end label is '" + this.label + "'");
+
+                if(this.label.length() != 0)
+                {
+                    System.out.println("end statement can't have a label");
+                    errorIndexList.add(4);
+                }
+                if(this.operand.length()!=0 && SymbolTable.getInstance().getSymbol(this.operand) == null)
+                {
+                    System.out.println("undefined symbol in operand");
+                    errorIndexList.add(8);
+                }
+                break;
+            case "start":
+                //TODO: check that start's operand is valid
+                if (this.operand.trim().length() == 0){
+                    errorIndexList.add(21);
+                    return;
+                }
+                for (int i =0; i < this.operand.length(); i++){
+                    if (!Character.isDigit(this.operand.charAt(i)) && this.operand.charAt(i) != 'a' && this.operand.charAt(i) != 'b'
+                            && this.operand.charAt(i) != 'c' && this.operand.charAt(i) != 'd' && this.operand.charAt(i) != 'e'
+                            && this.operand.charAt(i) != 'f'){
+                        errorIndexList.add(8);
+                        return;
+                    }
+                }
+                LocationCounter.setLC(Integer.valueOf(operand));
+                break;
+
         }
     }
 
@@ -218,43 +271,48 @@ public class Utils {
         return Character.isDigit(c) || c=='a' || c=='b' || c=='c' || c=='d' || c=='e' || c=='f';
     }
 
+    private void incrementLocationCounter(int numberOfBytes) {
+        LocationCounter.setLC(LocationCounter.LC + numberOfBytes);
+    }
 
     private void validateLabel(String labelField) {
         //ALLOW EMPTY LABELS (IN SOME CASES)
 
         System.out.println("VALIDATING LABEL...");
 
-        if (labelField.trim().length() == 0){
-            this.label = labelField;
+        this.label = labelField;
+
+        if (this.label.trim().length() == 0){
+            this.label = this.label.trim();
             return;
         }
 
         //if label starts with whitespace, misplaced label
-        if (Character.isWhitespace(labelField.charAt(0)))
+        if (Character.isWhitespace(this.label.charAt(0)))
         {
             errorIndexList.add(0);
             System.out.println("label starts with whitespace");
         }
 
-        //if label starts with letter, error
-        if (!Character.isLetter(labelField.charAt(0)))
+        //if label doesnt start with letter, error
+        if (!Character.isLetter(this.label.charAt(0)))
         {
             errorIndexList.add(13);
             System.out.println("label starts with undefined symbol");
         }
 
+        this.label = this.label.trim();
+
         //if operation mnemonic is used as label, error
-        if(OperationTable.getOptable().get(labelField.trim()) != null)
+        if(OperationTable.getOptable().get(this.label) != null)
         {
             errorIndexList.add(19);
             System.out.println("mnemonic used as label");
         }
 
-        labelField = labelField.trim();
-        this.label = labelField;
 
 
-        for (int i = 1; i < labelField.length(); i++){
+        for (int i = 1; i < this.label.length(); i++){
             if (!Character.isLetterOrDigit(labelField.charAt(i)))
             {
                 errorIndexList.add(15);
@@ -269,28 +327,28 @@ public class Utils {
 
         System.out.println("VALIDATING OPERATION...");
 
+        this.operation = operationField;
+
         if(Character.isWhitespace(operationField.charAt(0)))
         {
             errorIndexList.add(1);
             System.out.println("operation starts with whitespace");
         }
 
-        operationField = operationField.trim();
+        this.operation = this.operation.trim();
 
-        this.operation = operationField;
-
-        for (int i = 0; i < operationField.length(); i++){
-            if (operationField.charAt(i) == ' ')
+        for (int i = 0; i < this.operation.length(); i++){
+            if (this.operation.charAt(i) == ' ')
             {
                 errorIndexList.add(16);
                 System.out.println("operation contains space in the middle");
             }
         }
 
-        Operation operation = OperationTable.getOptable().get(operationField);
+        Operation operation = OperationTable.getOptable().get(this.operation);
 //        System.out.println(operation.getOperationMnemonic());
 
-        if(operation==null)
+        if(operation == null)
         {
             errorIndexList.add(7);
             System.out.println("operation doesn't exist in optable");
@@ -300,20 +358,21 @@ public class Utils {
 
     private void validateOperandField(String operandField) {
 
+        this.operand = operandField;
+
         System.out.println("VALIDATING OPERAND FIELD...");
 
-        if(Character.isWhitespace(operandField.charAt(0)))
+        if(Character.isWhitespace(this.operand.charAt(0)))
         {
             errorIndexList.add(2);
             System.out.println("space before operand");
         }
 
-        operandField = operandField.trim();
+        this.operand = this.operand.trim();
 
-        operand = operandField;
 
-        for (int i = 0; i < operandField.length(); i++){
-            if (operandField.charAt(i) == ' ')
+        for (int i = 0; i < this.operand.length(); i++){
+            if (this.operand.charAt(i) == ' ')
             {
                 errorIndexList.add(8);
                 System.out.println("operand field contains spaces in between");
@@ -321,12 +380,18 @@ public class Utils {
         }
 
         Operation operation = OperationTable.getOptable().get(this.operation);
+
         if (operation == null)
             return;
+
         int operationFormat = operation.getFormat();
 
+        //if operation is a directive
         if (operationFormat == -1)
             return;
+
+        incrementLocationCounter(operation.getFormat());
+
 
         switch(operationFormat)
         {
@@ -339,48 +404,49 @@ public class Utils {
 
                 if (this.operation.equals("tixr") || this.operation.equals("clear")){
                     System.out.println("HERE");
-                    if (operandField.length() > 1) {
+                    if (this.operand.length() > 1) {
                         errorIndexList.add(8);
                     }
-                    if (RegisterTable.getInstance().getRegTable().get(String.valueOf(operandField.charAt(0))) == null){
+                    if (RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(0))) == null){
                         errorIndexList.add(11);
                         System.out.println("invalid register");
                     }
                     return;
                 }
 
-                if(operandField.length() != 3)
+                if(this.operand.length() != 3)
                     errorIndexList.add(18);
-                if(operandField.charAt(1) != ',')
+                if(this.operand.charAt(1) != ',')
                     errorIndexList.add(17);
 
-                if(RegisterTable.getInstance().getRegTable().get(String.valueOf(operandField.charAt(0))) == null ||
-                        RegisterTable.getInstance().getRegTable().get(String.valueOf(operandField.charAt(2))) == null )
+                if(RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(0))) == null ||
+                        RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(2))) == null )
                 {
                     errorIndexList.add(11);
                     System.out.println("invalid register");
                 }
+
                 break;
 
             case 3:
                 System.out.println("format 3");
-                if(Character.isDigit(operandField.charAt(0)))
+                if(Character.isDigit(this.operand.charAt(0)))
                 {
                     System.out.println("operand cant start with digit, undefined symbol");
                     errorIndexList.add(8);
                 }
-                else if(operandField.charAt(0) != '#' && operandField.charAt(0) != '@' &&
-                        !Character.isLetter(operandField.charAt(0)))
+                else if(this.operand.charAt(0) != '#' && this.operand.charAt(0) != '@' &&
+                        !Character.isLetter(this.operand.charAt(0)))
                 {
                     System.out.println("undefined symbol in operand at index 0");
                     errorIndexList.add(8);
                 }
 
 
-                for (int i = 1; i < operandField.length(); i++){
-                    if (!Character.isLetterOrDigit(operandField.charAt(i)))
+                for (int i = 1; i < this.operand.length(); i++){
+                    if (!Character.isLetterOrDigit(this.operand.charAt(i)))
                     {
-                        if(operandField.charAt(i) == ',' && i == operandField.length()-2 && operandField.charAt(i+1) == 'x')
+                        if(this.operand.charAt(i) == ',' && i == this.operand.length()-2 && this.operand.charAt(i+1) == 'x')
                         {
                             //ok, indexed addressing
                         }
@@ -392,7 +458,7 @@ public class Utils {
                     }
                 }
 
-
+                break;
                 //first character must be alphabetic/#/@
                 //loop: if any characters after character 0 is NOT alphanumeric, error (except ,X)
                 ///////if there's a comma, it has to be followed by an x AND x has to be last element
