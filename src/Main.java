@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
+        SymbolTable symbolTable = SymbolTable.getInstance();
         OperationTable.fillOpTable();
         Error.fillErrorArray();
         Parser parser = new Parser();

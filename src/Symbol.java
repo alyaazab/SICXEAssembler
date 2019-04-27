@@ -12,4 +12,9 @@ public class Symbol {
         this.length = length;
         this.relocatable = relocatable;
     }
+
+    @Override
+    public String toString() {
+        return label + " " + value + " " + length + " " + relocatable;
+    }
 }
