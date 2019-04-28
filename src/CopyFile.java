@@ -1,6 +1,7 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CopyFile {
 
@@ -30,6 +31,17 @@ public class CopyFile {
                 }
                 fileWriter.write(line + "\n");
             }
+            fileWriter.write("\n\n\n-------------------------------------------------------------------------------");
+            fileWriter.write("\n\n\t\t\t\t\t\t*****SYMBOL TABLE*****\n");
+            fileWriter.write("\nLabel Name\t\t\tAddress\t\t\t\tInstruction Length\t\tRelocatable\n");
+
+            Iterator<Symbol> iterator = SymbolTable.getInstance().getSymTab().values().iterator();
+
+            while(iterator.hasNext())
+            {
+                fileWriter.write(iterator.next().toString());
+            }
+
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();

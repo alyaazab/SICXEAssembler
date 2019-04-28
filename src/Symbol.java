@@ -15,6 +15,7 @@ public class Symbol {
 
     @Override
     public String toString() {
-        return label + " " + value + " " + length + " " + relocatable;
+        return String.format("\n%-20s%-20d%-23d%-20b", label, value, length, relocatable);
+
     }
 }

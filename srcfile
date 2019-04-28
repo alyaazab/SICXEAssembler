@@ -3,7 +3,7 @@
          start   000
 .
 arr3     resw    6
-arr1     word    1,2,3
+arr1     WORD    1,2,3
          word    4,5,6
 arr2     word    6,5,4
          word    3,2,1
@@ -12,7 +12,7 @@ bgn      ldx     #0
          lds     #3
          ldt     #18
          tixr    s
-1 loop   lda     arr1,x
+loop     lda     arr1,x
          mul     arr2,x
          sta     arr3,x
          addr    s,x

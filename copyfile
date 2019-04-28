@@ -3,7 +3,7 @@
 0	         start   000
 	.
 0	arr3     resw    6
-12	arr1     word    1,2,3
+12	arr1     WORD    1,2,3
 1b	         word    4,5,6
 24	arr2     word    6,5,4
 2d	         word    3,2,1
@@ -12,13 +12,24 @@
 39	         lds     #3
 3c	         ldt     #18
 3f	         tixr    s
-41	1 loop   lda     arr1,x
- ***ERROR: label cannot start with a digit***
- ***ERROR: labels cannot have spaces in between***
-
+41	loop     lda     arr1,x
 44	         mul     arr2,x
 47	         sta     arr3,x
 4a	         addr    s,x
 4c	         compr   x,t
 4e	         jlt     loop
 51	         end     bgn
+
+
+
+-------------------------------------------------------------------------------
+
+						*****SYMBOL TABLE*****
+
+Label Name			Address				Instruction Length		Relocatable
+
+loop                65                  3                      true                
+bgn                 54                  3                      true                
+arr2                36                  9                      true                
+arr1                18                  9                      true                
+arr3                0                   18                     true

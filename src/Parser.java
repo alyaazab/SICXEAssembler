@@ -62,7 +62,7 @@ public class Parser {
         lineObj = new Line(0, labelField, operationField, operandField, null, errorIndexList);
 
 
-        validateFixedFormat(labelField, operationField, operandField);
+        validateFixedFormat(labelField.toLowerCase(), operationField.toLowerCase(), operandField.toLowerCase());
         addLabelToSymbolTable();
         System.out.println("errors: " + errorIndexList.size());
 //        for(int i=0; i<errorIndexList.size(); i++)
