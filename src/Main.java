@@ -3,12 +3,13 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        SymbolTable symbolTable = SymbolTable.getInstance();
         OperationTable.fillOpTable();
         Error.fillErrorArray();
         Parser parser = new Parser();
         RegisterTable.getInstance().fillRegisterTable();
 
+
+        CopyFile copyFile = new CopyFile();
         ArrayList<String> sourceProgram = SourceFile.readSourceProgramFromFile();
         Line currentLine;
 
@@ -20,10 +21,11 @@ public class Main {
             //if this line is a comment, skip over it
             if(currentLine.getComment() != null){
                 System.out.println("comm");
-                continue;
             }
-
+            copyFile.addLineToList(currentLine);
         }
+
+        copyFile.writeToCopyFile();
 
     }
 

@@ -66,4 +66,19 @@ public class Line {
     public void setErrorIndexList(ArrayList<Integer> errorIndexList) {
         this.errorIndexList = errorIndexList;
     }
+
+    @Override
+    public String toString() {
+        String str = "";
+
+        if(this.operationField != null) {
+            str = str + Integer.toHexString(address) + "\t";
+            str = str + labelField + " ";
+            str = str + operationField + "  ";
+            str = str + operandField;
+            return str;
+        }
+        str = str + "\t" + comment;
+        return str;
+    }
 }

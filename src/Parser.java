@@ -59,6 +59,7 @@ public class Parser {
 //            System.out.println(errorIndexList.get(i));
 
 //        Error.printErrors(errorIndexList);
+        lineObj.setAddress(LocationCounter.LC);
         return lineObj;
 
 

@@ -1,0 +1,20 @@
+	.2345678901234567890
+	.
+3e8	         start   1000
+	.
+3fa	arr3     resw    6
+403	arr1     word    1,2,3
+40c	         word    4,5,6
+415	arr2     word    6,5,4
+41e	         word    3,2,1
+	.
+421	bgn      ldx     #0
+424	         lds     #3
+427	         ldt     #18
+42a	loop     lda     arr1,x
+42d	         mul     arr2,x
+430	         sta     arr3,x
+432	         addr    s,x
+434	         compr   x,t
+437	         jlt     loop
+437	         end     bgn

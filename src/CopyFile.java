@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CopyFile {
@@ -14,6 +16,14 @@ public class CopyFile {
     }
 
     public void writeToCopyFile() {
-        
+        try {
+            FileWriter fileWriter = new FileWriter("copyfile");
+            for (Line line : lineArrayList) {
+                fileWriter.write(line + "\n");
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
