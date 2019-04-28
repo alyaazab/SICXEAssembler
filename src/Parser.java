@@ -1,3 +1,4 @@
+import javax.xml.stream.Location;
 import java.util.ArrayList;
 
 
@@ -65,6 +66,7 @@ public class Parser {
 //            System.out.println(errorIndexList.get(i));
 
 //        Error.printErrors(errorIndexList);
+        lineObj.setAddress(LocationCounter.LC - this.instructionLength);
         return lineObj;
 
 

@@ -1,21 +1,21 @@
 	.2345678901234567890
 	.
-0	         start   1000
+0	         start   000
 	.
 0	arr3     resw    6
-0	arr1     word    1,2,3
-0	         word    4,5,6
-0	arr2     word    6,5,4
-0	         word    3,2,1
+12	arr1     word    1,2,3
+1b	         word    4,5,6
+24	arr2     word    6,5,4
+2d	         word    3,2,1
 	.
-0	bgn      ldx     #0
-0	         lds     #3
-0	         ldt     #18
-0	         tixr    q
-0	loop     lda     arr1,x
-0	         mul     arr2,x
-0	         sta     arr3,x
-0	         addr    s,x
-0	         compr   x,t
-0	         jlt     loop
-0	         end     bgn
+36	bgn      ldx     #0
+39	         lds     #3
+3c	         ldt     #18
+3f	         tixr    q
+41	loop     lda     arr1,x
+44	         mul     arr2,x
+47	         sta     arr3,x
+4a	         addr    s,x
+4c	         compr   x,t
+4e	         jlt     loop
+51	         end     bgn

@@ -1,6 +1,6 @@
 .2345678901234567890
 .
-         start   1000
+         start   000
 .
 arr3     resw    6
 arr1     word    1,2,3
