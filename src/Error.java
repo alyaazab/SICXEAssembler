@@ -43,4 +43,8 @@ public class Error {
         errors[12] = "***ERROR: missing END statement***";
 
     }
+
+    public static String getError(int i){
+        return errors[i];
+    }
 }

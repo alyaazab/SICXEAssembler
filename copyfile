@@ -11,8 +11,11 @@
 36	bgn      ldx     #0
 39	         lds     #3
 3c	         ldt     #18
-3f	         tixr    q
-41	loop     lda     arr1,x
+3f	         tixr    s
+41	1 loop   lda     arr1,x
+ ***ERROR: label cannot start with a digit***
+ ***ERROR: labels cannot have spaces in between***
+
 44	         mul     arr2,x
 47	         sta     arr3,x
 4a	         addr    s,x

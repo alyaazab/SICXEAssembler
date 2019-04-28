@@ -22,6 +22,7 @@ public class Main {
             if(currentLine.getComment() != null){
                 System.out.println("comm");
             }
+            System.out.println("SIZE IN MAIN: " + currentLine.getErrorIndexList().size());
             copyFile.addLineToList(currentLine);
         }
 

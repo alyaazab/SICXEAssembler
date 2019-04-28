@@ -69,16 +69,24 @@ public class Line {
 
     @Override
     public String toString() {
-        String str = "";
+        StringBuilder str = new StringBuilder();
 
         if(this.operationField != null) {
-            str = str + Integer.toHexString(address) + "\t";
-            str = str + labelField + " ";
-            str = str + operationField + "  ";
-            str = str + operandField;
-            return str;
+            str.append(Integer.toHexString(address)).append("\t");
+            str.append(labelField).append(" ");
+            str.append(operationField).append("  ");
+            str.append(operandField);
         }
-        str = str + "\t" + comment;
-        return str;
+        else {
+            str.append("\t").append(comment);
+        }
+        if (errorIndexList.size() > 0){
+            str.append("\n");
+            for (Integer integer : errorIndexList) {
+                String error = Error.getError(integer);
+                str.append(" ").append(error).append("\n");
+            }
+        }
+        return str.toString();
     }
 }

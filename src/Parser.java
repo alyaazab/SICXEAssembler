@@ -1,19 +1,22 @@
-import javax.xml.stream.Location;
 import java.util.ArrayList;
 
 
 public class Parser {
 
-    private ArrayList<Integer> errorIndexList = new ArrayList<>();
+    private ArrayList<Integer> errorIndexList;
     private String commentField;
 
     private String label, operation, operand;
     private int instructionLength;
 
+    public Parser() {
+        this.errorIndexList = new ArrayList<>();
+    }
 
     public Line extractFields(String line) {
 
-        errorIndexList.clear();
+        //errorIndexList.clear();
+        errorIndexList = new ArrayList<>();
         String operandField;
         System.out.println("line length = " + line.length());
 
@@ -29,7 +32,7 @@ public class Parser {
         if(isComment(line))
         {
             System.out.println("this line is a comment");
-            lineObj = new Line(0, null, null, null, line, null);
+            lineObj = new Line(0, null, null, null, line, errorIndexList);
             return lineObj;
         }
 
@@ -67,6 +70,9 @@ public class Parser {
 
 //        Error.printErrors(errorIndexList);
         lineObj.setAddress(LocationCounter.LC - this.instructionLength);
+       // lineObj.setErrorIndexList(errorIndexList);
+        System.out.println(errorIndexList);
+
         return lineObj;
 
 
