@@ -12,22 +12,28 @@ public class Parser {
 
     public Line extractFields(String line) {
 
+        errorIndexList.clear();
         String operandField;
         System.out.println("line length = " + line.length());
 
         Line lineObj;
-        if(isComment(line)) {
-            System.out.println("this line is a comment");
-            lineObj = new Line(0, null, null, null, line, null);
-            return lineObj;
-        }
 
         if(line.length() == 0)
         {
             errorIndexList.add(22);
             return lineObj = new Line(0, null, null, null, null, errorIndexList);
         }
-        else if(line.length() < 10)
+
+
+        if(isComment(line))
+        {
+            System.out.println("this line is a comment");
+            lineObj = new Line(0, null, null, null, line, null);
+            return lineObj;
+        }
+
+
+        if(line.length() < 10)
         {
             //we do not have an operation
             errorIndexList.add(22);
@@ -59,7 +65,6 @@ public class Parser {
 //            System.out.println(errorIndexList.get(i));
 
 //        Error.printErrors(errorIndexList);
-        lineObj.setAddress(LocationCounter.LC);
         return lineObj;
 
 

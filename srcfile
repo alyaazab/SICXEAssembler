@@ -11,6 +11,7 @@ arr2     word    6,5,4
 bgn      ldx     #0
          lds     #3
          ldt     #18
+         tixr    q
 loop     lda     arr1,x
          mul     arr2,x
          sta     arr3,x
