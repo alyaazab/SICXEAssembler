@@ -7,8 +7,7 @@ public class Parser {
     private String commentField;
 
     private String label, operation, operand;
-    private int length;
-    private int lenOfInst;
+    private int instructionLength;
 
 
     public Line extractFields(String line) {
@@ -66,10 +65,10 @@ public class Parser {
     }
 
     private void addLabelToSymbolTable() {
-        if (this.label.trim().length() == 0)
+        if (this.label.length() == 0)
             return;
 
-        if (errorIndexList.size() >0)
+        if (errorIndexList.size() > 0)
         {
             System.out.println("Errors found, label not inserted in symbol table.");
             return;
@@ -79,7 +78,7 @@ public class Parser {
             errorIndexList.add(3);
             return;
         }
-        SymbolTable.getInstance().addToSymTab(this.label, LocationCounter.LC, this.lenOfInst, true);
+        SymbolTable.getInstance().addToSymTab(this.label, LocationCounter.LC - this.instructionLength, this.instructionLength, true);
         System.out.println("Symbol: " + SymbolTable.getInstance().getSymbol(this.label).toString());
     }
 
@@ -105,6 +104,7 @@ public class Parser {
 
 
         System.out.println("DIRECTIVE: " + this.operation);
+        this.instructionLength = operation.getLengthOfInstruction();
 
 
         switch (this.operation){
@@ -112,22 +112,26 @@ public class Parser {
                 if (this.label.length() == 0)
                     errorIndexList.add(0); // missing or misplaced label
 
-                if (this.operand.charAt(0) != '#')
-                    for (int i =1; i < this.operand.length(); i++)
-                        if (!Character.isDigit(this.operand.charAt(i)))
+                if(this.operand.charAt(0) == '#')
+                {
+                    for(int i=1; i<this.operand.length(); i++)
+                    {
+                        if(!Character.isDigit(this.operand.charAt(i)))
+                        {
                             errorIndexList.add(8);
-
+                            return;
+                        }
+                    }
+                    int value = Integer.valueOf(this.operand.substring(1,this.operand.length()));
+                }
                 else if (SymbolTable.getInstance().getSymbol(this.operand) == null)
                     errorIndexList.add(20); // equ should have previously defined operands
 
-                LocationCounter.setLC(Integer.valueOf(this.operand));
-                this.lenOfInst = 0;
                 break;
 
             case "base":
                 if (this.label.length() != 0)
                     errorIndexList.add(4); // this statement can't have a label
-                this.lenOfInst = 0;
                 break;
 
             case "nobase":
@@ -141,7 +145,6 @@ public class Parser {
                     System.out.println("nobase statement cant have an operand");
                     errorIndexList.add(5);
                 }
-                this.lenOfInst = 0;
                 break;
 
             case "resb":
@@ -158,10 +161,8 @@ public class Parser {
                     }
 
 
-                this.length = Integer.valueOf(this.operand);
-                System.out.println("LEN: " + length);
-                this.lenOfInst = this.length;
-                incrementLocationCounter(this.length);
+                this.instructionLength = Integer.valueOf(this.operand);
+                incrementLocationCounter(this.instructionLength);
                 break;
 
             case "resw":
@@ -177,10 +178,8 @@ public class Parser {
                         errorIndexList.add(8);
                     }
 
-                this.length = 3 * Integer.valueOf(this.operand);
-                System.out.println("LEN: " + length);
-                this.lenOfInst = this.length;
-                incrementLocationCounter(this.length);
+                this.instructionLength = 3 * Integer.valueOf(this.operand);
+                incrementLocationCounter(this.instructionLength);
                 break;
 
             case "byte":
@@ -221,7 +220,7 @@ public class Parser {
 
                 if(errorIndexList.size() == 0) {
                     incrementLocationCounter(this.operand.length() - 3);
-                    this.lenOfInst = this.operand.length() - 3;
+                    this.instructionLength = this.operand.length() - 3;
                 }
                 break;
 
@@ -230,10 +229,10 @@ public class Parser {
                     errorIndexList.add(8); // undefined symbol in operand
                     return;
                 }
-                this.length = 3;
+                this.instructionLength = 3;
                 for (int i = 1; i < this.operand.length(); i++) {
                     if (i != operand.length()-1 && this.operand.charAt(i) == ',' && Character.isDigit(this.operand.charAt(i + 1))) {
-                        this.length += 3;
+                        this.instructionLength += 3;
                     } else if (i == operand.length()-1 && this.operand.charAt(i) == ',') {
                         errorIndexList.add(8);
                         break;
@@ -242,9 +241,7 @@ public class Parser {
                         break;
                     }
                 }
-                this.lenOfInst = this.length;
-                incrementLocationCounter(this.length);
-                System.out.println("LEN: " + length);
+                incrementLocationCounter(this.instructionLength);
                 break;
 
             case "org":
@@ -259,7 +256,6 @@ public class Parser {
                     System.out.println("undefined symbol in operand");
                     errorIndexList.add(8);
                 }
-                this.lenOfInst = 0;
                 break;
             case "end":
                 System.out.println("end label is '" + this.label + "'");
@@ -274,7 +270,6 @@ public class Parser {
                     System.out.println("undefined symbol in operand");
                     errorIndexList.add(8);
                 }
-                this.lenOfInst = 0;
                 break;
             case "start":
                 //TODO: check that start's operand is valid
@@ -290,7 +285,6 @@ public class Parser {
                         return;
                     }
                 }
-                this.lenOfInst = 0;
                 LocationCounter.setLC(Integer.valueOf(operand));
                 break;
 
@@ -421,7 +415,7 @@ public class Parser {
             return;
 
         incrementLocationCounter(operation.getFormat());
-        this.lenOfInst = operation.getLengthOfInstruction();
+        this.instructionLength = operation.getLengthOfInstruction();
 
         switch(operationFormat)
         {
