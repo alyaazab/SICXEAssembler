@@ -16,7 +16,7 @@ public class Error {
         errors[3] = "***ERROR: duplicate label definition***";//
         errors[4] = "***ERROR: this statement can't have a label***";//
         errors[13] = "***ERROR: label cannot start with a digit***";//
-        errors[15] = "***ERROR: labels cannot have spaces in between***";//
+        errors[15] = "***ERROR: undefined symbol in label field***";//
         errors[0] = "***ERROR: missing or misplaced label***"; //
         errors[19] = "***ERROR: operation mnemonics cannot be used as labels***"; //
 

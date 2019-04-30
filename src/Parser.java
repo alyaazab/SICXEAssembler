@@ -9,6 +9,12 @@ public class Parser {
     private String label, operation, operand;
     private int instructionLength;
 
+    public boolean isEndStatementFound() {
+        return endStatementFound;
+    }
+
+    private boolean endStatementFound = false;
+
     public Parser() {
         this.errorIndexList = new ArrayList<>();
     }
@@ -17,7 +23,9 @@ public class Parser {
 
         //errorIndexList.clear();
         errorIndexList = new ArrayList<>();
-        String operandField;
+        String operandField = "";
+        String operationField = "";
+        String labelField = "";
         System.out.println("line length = " + line.length());
 
         Line lineObj;
@@ -37,26 +45,46 @@ public class Parser {
         }
 
 
+//        if(line.length() < 10)
+//        {
+//            //we do not have an operation
+//            errorIndexList.add(22);
+//            return lineObj = new Line(0, line.substring(0,8), null, null, null, errorIndexList);
+//        }
+//        else
+//        {
+//            operandField = line.substring(17, line.length());
+
+
         if(line.length() < 10)
         {
-            //we do not have an operation
+            labelField = line.substring(0, 8);
+
+            //we do not have an operation or operand
             errorIndexList.add(22);
             return lineObj = new Line(0, line.substring(0,8), null, null, null, errorIndexList);
         }
-        else
+        else if(line.length() >=10 && line.length()<=15)
         {
+            //we have an operation but no operand
+            labelField = line.substring(0,8);
+            operationField = line.substring(9, line.length());
+        }
+        else if(line.length() > 15)
+        {
+            labelField = line.substring(0,8);
+
+            operationField = line.substring(9, 15);
+
             operandField = line.substring(17, line.length());
         }
 
 
-        String labelField = line.substring(0, 8);
-        String operationField = line.substring(9, 15);
 //        this.commentField = line.substring(35, 66);
 
         System.out.println("label: " + labelField);
         System.out.println("operation: " + operationField);
         System.out.println("operand: " + operandField);
-//        System.out.println(commentField);
 
 
         lineObj = new Line(0, labelField, operationField, operandField, null, errorIndexList);
@@ -65,13 +93,10 @@ public class Parser {
         validateFixedFormat(labelField.toLowerCase(), operationField.toLowerCase(), operandField.toLowerCase());
         addLabelToSymbolTable();
         System.out.println("errors: " + errorIndexList.size());
-//        for(int i=0; i<errorIndexList.size(); i++)
-//            System.out.println(errorIndexList.get(i));
 
-//        Error.printErrors(errorIndexList);
         lineObj.setAddress(LocationCounter.LC - this.instructionLength);
-       // lineObj.setErrorIndexList(errorIndexList);
         System.out.println(errorIndexList);
+
 
         return lineObj;
 
@@ -133,6 +158,7 @@ public class Parser {
                         if(!Character.isDigit(this.operand.charAt(i)))
                         {
                             errorIndexList.add(8);
+                            System.out.println("ONLY DIGITS ALLOWED");
                             return;
                         }
                     }
@@ -272,6 +298,7 @@ public class Parser {
                 }
                 break;
             case "end":
+                endStatementFound = true;
                 System.out.println("end label is '" + this.label + "'");
 
                 if(this.label.length() != 0)
@@ -286,20 +313,19 @@ public class Parser {
                 }
                 break;
             case "start":
-                //TODO: check that start's operand is valid
                 if (this.operand.trim().length() == 0){
                     errorIndexList.add(21);
                     return;
                 }
                 for (int i =0; i < this.operand.length(); i++){
-                    if (!Character.isDigit(this.operand.charAt(i)) && this.operand.charAt(i) != 'a' && this.operand.charAt(i) != 'b'
-                            && this.operand.charAt(i) != 'c' && this.operand.charAt(i) != 'd' && this.operand.charAt(i) != 'e'
-                            && this.operand.charAt(i) != 'f'){
+                    if (!isHexadecimal(this.operand.charAt(i))){
                         errorIndexList.add(8);
                         return;
                     }
                 }
-                LocationCounter.setLC(Integer.valueOf(operand));
+                //convert hex to int first
+
+                LocationCounter.setLC(convertHexToDecimal(this.operand));
                 break;
 
         }
@@ -314,12 +340,12 @@ public class Parser {
     }
 
     private void validateLabel(String labelField) {
-        //ALLOW EMPTY LABELS (IN SOME CASES)
 
         System.out.println("VALIDATING LABEL...");
 
         this.label = labelField;
 
+        //ALLOW EMPTY LABELS (IN SOME CASES)
         if (this.label.trim().length() == 0){
             this.label = this.label.trim();
             return;
@@ -355,6 +381,7 @@ public class Parser {
             {
                 errorIndexList.add(15);
                 System.out.println("label contains undefined symbol");
+                return;
             }
         }
 
@@ -384,7 +411,6 @@ public class Parser {
         }
 
         Operation operation = OperationTable.getOptable().get(this.operation);
-//        System.out.println(operation.getOperationMnemonic());
 
         if(operation == null)
         {
@@ -399,6 +425,13 @@ public class Parser {
         this.operand = operandField;
 
         System.out.println("VALIDATING OPERAND FIELD...");
+
+        //NEWWWWWWWW
+        if(this.operand == "" || this.operand == null)
+        {
+            errorIndexList.add(2);
+            return;
+        }
 
         if(Character.isWhitespace(this.operand.charAt(0)))
         {
@@ -438,7 +471,6 @@ public class Parser {
                 //CLEAR and TIXR instructions can have 1 register operand only
                 //SHIFTL and SHIFTR r1,n
 
-                //TODO: LENGTH CAN BE 1 IF CLEAR OR TIXR INSTRUCTION
 
                 if (this.operation.equals("tixr") || this.operation.equals("clear")){
                     System.out.println("HERE");
@@ -467,15 +499,32 @@ public class Parser {
                 break;
 
             case 3:
-                System.out.println("format 3");
+            case 4:
+                System.out.println("format 3/4");
                 if(Character.isDigit(this.operand.charAt(0)))
                 {
                     System.out.println("operand cant start with digit, undefined symbol");
                     errorIndexList.add(8);
+                    return;
                 }
-                else if(this.operand.charAt(0) != '#' && this.operand.charAt(0) != '@' &&
-                        !Character.isLetter(this.operand.charAt(0)))
+
+                if(this.operand.charAt(0) == '#')
                 {
+                    //make sure all following characters are digits
+                    for(int i=1; i<this.operand.length(); i++)
+                    {
+                        System.out.println("hellooo?");
+                        if(!Character.isDigit(this.operand.charAt(i)))
+                        {
+                            System.out.println("notadigit");
+                            errorIndexList.add(8);
+                            return;
+                        }
+                    }
+                }
+                else if(this.operand.charAt(0) != '@' && !Character.isLetter(this.operand.charAt(0)))
+                {
+                    System.out.println("ginger");
                     System.out.println("undefined symbol in operand at index 0");
                     errorIndexList.add(8);
                 }
@@ -505,5 +554,18 @@ public class Parser {
 
         }
 
+    }
+
+    private int convertHexToDecimal(String hex){
+        String digits = "0123456789ABCDEF";
+        hex = hex.toUpperCase();
+        int val = 0;
+        for (int i = 0; i < hex.length(); i++)
+        {
+            char c = hex.charAt(i);
+            int d = digits.indexOf(c);
+            val = 16*val + d;
+        }
+        return val;
     }
 }

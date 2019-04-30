@@ -23,7 +23,12 @@ public class Main {
                 System.out.println("comm");
             }
             System.out.println("SIZE IN MAIN: " + currentLine.getErrorIndexList().size());
+            if(!parser.isEndStatementFound() && i == sourceProgram.size()-1)
+            {
+                currentLine.getErrorIndexList().add(12);
+            }
             copyFile.addLineToList(currentLine);
+
         }
 
         copyFile.writeToCopyFile();

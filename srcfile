@@ -1,6 +1,6 @@
 .2345678901234567890
 .
-         start   000
+         start   abcd
 .
 arr3     resw    6
 arr1     WORD    1,2,3
@@ -8,11 +8,11 @@ arr1     WORD    1,2,3
 arr2     word    6,5,4
          word    3,2,1
 .
-bgn      ldx     #0
-         lds     #3
-         ldt     #18
+bgn      ldx     q
+         +lds    arr1
+         ldt     #8
          tixr    s
-loop     lda     arr1,x
+loop     lda     arr1,X
          mul     arr2,x
          sta     arr3,x
          addr    s,x
