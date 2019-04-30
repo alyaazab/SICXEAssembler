@@ -1,3 +1,5 @@
+import com.sun.deploy.util.StringUtils;
+
 import java.util.ArrayList;
 
 public class Line {
@@ -19,74 +21,49 @@ public class Line {
     }
 
 
-    public int getAddress() {
-        return address;
-    }
-
     public void setAddress(int address) {
         this.address = address;
-    }
-
-    public String getLabelField() {
-        return labelField;
-    }
-
-    public void setLabelField(String labelField) {
-        this.labelField = labelField;
-    }
-
-    public String getOperationField() {
-        return operationField;
-    }
-
-    public void setOperationField(String operationField) {
-        this.operationField = operationField;
-    }
-
-    public String getOperandField() {
-        return operandField;
-    }
-
-    public void setOperandField(String operandField) {
-        this.operandField = operandField;
     }
 
     public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
     public ArrayList<Integer> getErrorIndexList() {
         return errorIndexList;
     }
 
-    public void setErrorIndexList(ArrayList<Integer> errorIndexList) {
-        this.errorIndexList = errorIndexList;
-    }
-
     @Override
     public String toString() {
-        StringBuilder str = new StringBuilder();
+        String str = "";
 
-        if(this.operationField != null) {
-            str.append(Integer.toHexString(address)).append("\t");
-            str.append(labelField).append(" ");
-            str.append(operationField).append("  ");
-            str.append(operandField);
+        if(this.operationField != "") {
+            str = str + Integer.toHexString(address);
+            str = leftPad(str).toUpperCase();
+
+            str = str + "\t\t" + labelField + "\t" + operationField + "\t" + operandField;
         }
         else {
-            str.append("\t").append(comment);
+            str = str + "\t\t\t" + comment;
         }
         if (errorIndexList.size() > 0){
-            str.append("\n");
+            str = str + "\n";
             for (Integer integer : errorIndexList) {
                 String error = Error.getError(integer);
-                str.append(" ").append(error).append("\n");
+                str = str + " " + error + "\n";
             }
         }
-        return str.toString();
+        return str;
     }
+
+    private static String leftPad(String str){
+
+        String padString = "000000";
+
+        if(str.length() < 6 )
+            return padString.substring(str.length()) + str;
+        else
+            return str;
+    }
+
 }

@@ -4,15 +4,10 @@ import java.util.ArrayList;
 public class Parser {
 
     private ArrayList<Integer> errorIndexList;
-    private String commentField;
+    private String commentField = "";
 
-    private String label, operation, operand;
-    private int instructionLength;
-
-    public boolean isEndStatementFound() {
-        return endStatementFound;
-    }
-
+    private String label = "", operation = "", operand = "";
+    private int instructionLength = 0;
     private boolean endStatementFound = false;
 
     public Parser() {
@@ -21,61 +16,43 @@ public class Parser {
 
     public Line extractFields(String line) {
 
-        //errorIndexList.clear();
         errorIndexList = new ArrayList<>();
         String operandField = "";
         String operationField = "";
         String labelField = "";
-        System.out.println("line length = " + line.length());
-
         Line lineObj;
+
+        System.out.println("line length = " + line.length());
 
         if(line.length() == 0)
         {
             errorIndexList.add(22);
-            return lineObj = new Line(0, null, null, null, null, errorIndexList);
+            return new Line(0, "", "", "", "", errorIndexList);
         }
-
 
         if(isComment(line))
         {
             System.out.println("this line is a comment");
-            lineObj = new Line(0, null, null, null, line, errorIndexList);
-            return lineObj;
+            return new Line(0, "", "", "", line, errorIndexList);
         }
-
-
-//        if(line.length() < 10)
-//        {
-//            //we do not have an operation
-//            errorIndexList.add(22);
-//            return lineObj = new Line(0, line.substring(0,8), null, null, null, errorIndexList);
-//        }
-//        else
-//        {
-//            operandField = line.substring(17, line.length());
-
 
         if(line.length() < 10)
         {
-            labelField = line.substring(0, 8);
-
-            //we do not have an operation or operand
+            //no operation, no operand
+            labelField = line;
             errorIndexList.add(22);
-            return lineObj = new Line(0, line.substring(0,8), null, null, null, errorIndexList);
+            return new Line(0, labelField, "", "", "", errorIndexList);
         }
-        else if(line.length() >=10 && line.length()<=15)
+        else if(line.length()<=15)
         {
             //we have an operation but no operand
             labelField = line.substring(0,8);
             operationField = line.substring(9, line.length());
         }
-        else if(line.length() > 15)
+        else
         {
             labelField = line.substring(0,8);
-
             operationField = line.substring(9, 15);
-
             operandField = line.substring(17, line.length());
         }
 
@@ -92,15 +69,13 @@ public class Parser {
 
         validateFixedFormat(labelField.toLowerCase(), operationField.toLowerCase(), operandField.toLowerCase());
         addLabelToSymbolTable();
+
         System.out.println("errors: " + errorIndexList.size());
 
         lineObj.setAddress(LocationCounter.LC - this.instructionLength);
         System.out.println(errorIndexList);
 
-
         return lineObj;
-
-
     }
 
     private void addLabelToSymbolTable() {
@@ -117,7 +92,10 @@ public class Parser {
             errorIndexList.add(3);
             return;
         }
-        SymbolTable.getInstance().addToSymTab(this.label, LocationCounter.LC - this.instructionLength, this.instructionLength, true);
+
+        SymbolTable.getInstance().addToSymTab(this.label, LocationCounter.LC - this.instructionLength,
+                this.instructionLength, true);
+
         System.out.println("Symbol: " + SymbolTable.getInstance().getSymbol(this.label).toString());
     }
 
@@ -132,6 +110,226 @@ public class Parser {
         validateOperationField(operationField);
         validateOperandField(operandField);
         validateDirective();
+    }
+
+    private void validateLabel(String labelField) {
+
+        System.out.println("VALIDATING LABEL...");
+
+        this.label = labelField;
+
+        //if label is empty, return
+        if (this.label.trim().length() == 0){
+            this.label = this.label.trim();
+            return;
+        }
+
+        //if label starts with whitespace, misplaced label error
+        if (Character.isWhitespace(this.label.charAt(0)))
+        {
+            errorIndexList.add(0);
+            System.out.println("label starts with whitespace");
+        }
+
+        //if label doesn't start with letter, error
+        if (!Character.isLetter(this.label.charAt(0)))
+        {
+            errorIndexList.add(13);
+            System.out.println("label starts with undefined symbol");
+        }
+
+        this.label = this.label.trim();
+
+        //if operation mnemonic is used as label, error
+        if(OperationTable.getOptable().get(this.label) != null)
+        {
+            errorIndexList.add(19);
+            System.out.println("mnemonic used as label");
+        }
+
+        //if label contains symbol other than letter or digit, error
+        for (int i = 1; i < this.label.length(); i++){
+            if (!Character.isLetterOrDigit(labelField.charAt(i)))
+            {
+                errorIndexList.add(15);
+                System.out.println("label contains undefined symbol");
+                return;
+            }
+        }
+
+    }
+
+
+    private void validateOperationField(String operationField) {
+
+        System.out.println("VALIDATING OPERATION...");
+
+        this.operation = operationField;
+
+        //if operation starts with whitespace
+        if(Character.isWhitespace(operationField.charAt(0)))
+        {
+            errorIndexList.add(1);
+            System.out.println("operation starts with whitespace");
+        }
+
+        this.operation = this.operation.trim();
+
+        //if operation contains spaces
+        for (int i = 0; i < this.operation.length(); i++){
+            if (this.operation.charAt(i) == ' ')
+            {
+                errorIndexList.add(16);
+                System.out.println("operation contains space in the middle");
+            }
+        }
+
+        Operation operation = OperationTable.getOptable().get(this.operation);
+
+        if(operation == null)
+        {
+            errorIndexList.add(7);
+            System.out.println("operation doesn't exist in optable");
+        }
+
+    }
+
+    private void validateOperandField(String operandField) {
+
+        this.operand = operandField;
+
+        System.out.println("VALIDATING OPERAND FIELD...");
+
+        Operation operation = OperationTable.getOptable().get(this.operation);
+
+        //if our operation doesn't need an operand and we don't have an operand, return
+        if(operation != null && (operation.isHasOperand() == 0 || operation.isHasOperand() == -1)
+                && this.operand == "")
+            return;
+
+
+        //our operation needs an operand, but we don't have one
+        if(this.operand == "")
+        {
+            System.out.println("no operand");
+            errorIndexList.add(2);
+            return;
+        }
+
+        //if operand starts with whitespace
+        if(Character.isWhitespace(this.operand.charAt(0)))
+        {
+            errorIndexList.add(2);
+            System.out.println("space before operand");
+        }
+
+        this.operand = this.operand.trim();
+
+
+        //if operand contains whitespaces in between
+        for (int i = 0; i < this.operand.length(); i++){
+            if (this.operand.charAt(i) == ' ')
+            {
+                errorIndexList.add(8);
+                System.out.println("operand field contains spaces in between");
+            }
+        }
+
+        operation = OperationTable.getOptable().get(this.operation);
+
+        if (operation == null)
+            return;
+
+        int operationFormat = operation.getFormat();
+
+        //if operation is a directive
+        if (operationFormat == -1)
+            return;
+
+        incrementLocationCounter(operation.getFormat());
+        this.instructionLength = operation.getLengthOfInstruction();
+
+        switch(operationFormat)
+        {
+            case 2:
+                System.out.println("operation is format 2");
+                //CLEAR and TIXR instructions can have 1 register operand only
+                //SHIFTL and SHIFTR r1,n
+
+                if (this.operation.equals("tixr") || this.operation.equals("clear")){
+                    System.out.println("one register operand only");
+                    if (this.operand.length() > 1) {
+                        errorIndexList.add(8);
+                        return;
+                    }
+                    if (RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(0))) == null){
+                        errorIndexList.add(11);
+                        System.out.println("invalid register");
+                        return;
+                    }
+                    return;
+                }
+
+                if(this.operand.length() != 3)
+                    errorIndexList.add(18);
+                if(this.operand.charAt(1) != ',')
+                    errorIndexList.add(17);
+
+                if(RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(0))) == null ||
+                        RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(2))) == null )
+                {
+                    errorIndexList.add(11);
+                    System.out.println("invalid register");
+                }
+
+                break;
+
+            case 3:
+            case 4:
+                System.out.println("format 3/4");
+                if(Character.isDigit(this.operand.charAt(0)))
+                {
+                    System.out.println("operand cant start with digit, undefined symbol");
+                    errorIndexList.add(8);
+                    return;
+                }
+
+                if(this.operand.charAt(0) == '#')
+                {
+                    //make sure all following characters are digits
+                    for(int i=1; i<this.operand.length(); i++)
+                    {
+                        if(!Character.isDigit(this.operand.charAt(i)))
+                        {
+                            errorIndexList.add(8);
+                            return;
+                        }
+                    }
+                }
+                else if(this.operand.charAt(0) != '@' && !Character.isLetter(this.operand.charAt(0)))
+                {
+                    System.out.println("undefined symbol in operand at index 0");
+                    errorIndexList.add(8);
+                }
+
+
+                for (int i = 1; i < this.operand.length(); i++){
+                    if (!Character.isLetterOrDigit(this.operand.charAt(i)))
+                    {
+                        if(this.operand.charAt(i) == ',' && i == this.operand.length()-2 && this.operand.charAt(i+1) == 'x')
+                        {
+                            System.out.println("indexed addressing");
+                        }
+                        else
+                        {
+                            errorIndexList.add(8);
+                            System.out.println("undefined symbol in operand");
+                        }
+                    }
+                }
+                break;
+        }
+
     }
 
     private void validateDirective() {
@@ -331,230 +529,6 @@ public class Parser {
         }
     }
 
-    private boolean isHexadecimal(char c) {
-        return Character.isDigit(c) || c=='a' || c=='b' || c=='c' || c=='d' || c=='e' || c=='f';
-    }
-
-    private void incrementLocationCounter(int numberOfBytes) {
-        LocationCounter.setLC(LocationCounter.LC + numberOfBytes);
-    }
-
-    private void validateLabel(String labelField) {
-
-        System.out.println("VALIDATING LABEL...");
-
-        this.label = labelField;
-
-        //ALLOW EMPTY LABELS (IN SOME CASES)
-        if (this.label.trim().length() == 0){
-            this.label = this.label.trim();
-            return;
-        }
-
-        //if label starts with whitespace, misplaced label
-        if (Character.isWhitespace(this.label.charAt(0)))
-        {
-            errorIndexList.add(0);
-            System.out.println("label starts with whitespace");
-        }
-
-        //if label doesnt start with letter, error
-        if (!Character.isLetter(this.label.charAt(0)))
-        {
-            errorIndexList.add(13);
-            System.out.println("label starts with undefined symbol");
-        }
-
-        this.label = this.label.trim();
-
-        //if operation mnemonic is used as label, error
-        if(OperationTable.getOptable().get(this.label) != null)
-        {
-            errorIndexList.add(19);
-            System.out.println("mnemonic used as label");
-        }
-
-
-
-        for (int i = 1; i < this.label.length(); i++){
-            if (!Character.isLetterOrDigit(labelField.charAt(i)))
-            {
-                errorIndexList.add(15);
-                System.out.println("label contains undefined symbol");
-                return;
-            }
-        }
-
-    }
-
-
-    private void validateOperationField(String operationField) {
-
-        System.out.println("VALIDATING OPERATION...");
-
-        this.operation = operationField;
-
-        if(Character.isWhitespace(operationField.charAt(0)))
-        {
-            errorIndexList.add(1);
-            System.out.println("operation starts with whitespace");
-        }
-
-        this.operation = this.operation.trim();
-
-        for (int i = 0; i < this.operation.length(); i++){
-            if (this.operation.charAt(i) == ' ')
-            {
-                errorIndexList.add(16);
-                System.out.println("operation contains space in the middle");
-            }
-        }
-
-        Operation operation = OperationTable.getOptable().get(this.operation);
-
-        if(operation == null)
-        {
-            errorIndexList.add(7);
-            System.out.println("operation doesn't exist in optable");
-        }
-
-    }
-
-    private void validateOperandField(String operandField) {
-
-        this.operand = operandField;
-
-        System.out.println("VALIDATING OPERAND FIELD...");
-
-        //NEWWWWWWWW
-        if(this.operand == "" || this.operand == null)
-        {
-            errorIndexList.add(2);
-            return;
-        }
-
-        if(Character.isWhitespace(this.operand.charAt(0)))
-        {
-            errorIndexList.add(2);
-            System.out.println("space before operand");
-        }
-
-        this.operand = this.operand.trim();
-
-
-        for (int i = 0; i < this.operand.length(); i++){
-            if (this.operand.charAt(i) == ' ')
-            {
-                errorIndexList.add(8);
-                System.out.println("operand field contains spaces in between");
-            }
-        }
-
-        Operation operation = OperationTable.getOptable().get(this.operation);
-
-        if (operation == null)
-            return;
-
-        int operationFormat = operation.getFormat();
-
-        //if operation is a directive
-        if (operationFormat == -1)
-            return;
-
-        incrementLocationCounter(operation.getFormat());
-        this.instructionLength = operation.getLengthOfInstruction();
-
-        switch(operationFormat)
-        {
-            case 2:
-                System.out.println("operation is format 2");
-                //CLEAR and TIXR instructions can have 1 register operand only
-                //SHIFTL and SHIFTR r1,n
-
-
-                if (this.operation.equals("tixr") || this.operation.equals("clear")){
-                    System.out.println("HERE");
-                    if (this.operand.length() > 1) {
-                        errorIndexList.add(8);
-                    }
-                    if (RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(0))) == null){
-                        errorIndexList.add(11);
-                        System.out.println("invalid register");
-                    }
-                    return;
-                }
-
-                if(this.operand.length() != 3)
-                    errorIndexList.add(18);
-                if(this.operand.charAt(1) != ',')
-                    errorIndexList.add(17);
-
-                if(RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(0))) == null ||
-                        RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(2))) == null )
-                {
-                    errorIndexList.add(11);
-                    System.out.println("invalid register");
-                }
-
-                break;
-
-            case 3:
-            case 4:
-                System.out.println("format 3/4");
-                if(Character.isDigit(this.operand.charAt(0)))
-                {
-                    System.out.println("operand cant start with digit, undefined symbol");
-                    errorIndexList.add(8);
-                    return;
-                }
-
-                if(this.operand.charAt(0) == '#')
-                {
-                    //make sure all following characters are digits
-                    for(int i=1; i<this.operand.length(); i++)
-                    {
-                        System.out.println("hellooo?");
-                        if(!Character.isDigit(this.operand.charAt(i)))
-                        {
-                            System.out.println("notadigit");
-                            errorIndexList.add(8);
-                            return;
-                        }
-                    }
-                }
-                else if(this.operand.charAt(0) != '@' && !Character.isLetter(this.operand.charAt(0)))
-                {
-                    System.out.println("ginger");
-                    System.out.println("undefined symbol in operand at index 0");
-                    errorIndexList.add(8);
-                }
-
-
-                for (int i = 1; i < this.operand.length(); i++){
-                    if (!Character.isLetterOrDigit(this.operand.charAt(i)))
-                    {
-                        if(this.operand.charAt(i) == ',' && i == this.operand.length()-2 && this.operand.charAt(i+1) == 'x')
-                        {
-                            //ok, indexed addressing
-                        }
-                        else
-                        {
-                            errorIndexList.add(8);
-                            System.out.println("undefined symbol in operand");
-                        }
-                    }
-                }
-
-                break;
-                //first character must be alphabetic/#/@
-                //loop: if any characters after character 0 is NOT alphanumeric, error (except ,X)
-                ///////if there's a comma, it has to be followed by an x AND x has to be last element
-                //string,x
-                //string,xxxx
-
-        }
-
-    }
 
     private int convertHexToDecimal(String hex){
         String digits = "0123456789ABCDEF";
@@ -568,4 +542,17 @@ public class Parser {
         }
         return val;
     }
+
+    public boolean isEndStatementFound() {
+        return endStatementFound;
+    }
+
+    private boolean isHexadecimal(char c) {
+        return Character.isDigit(c) || c=='a' || c=='b' || c=='c' || c=='d' || c=='e' || c=='f';
+    }
+
+    private void incrementLocationCounter(int numberOfBytes) {
+        LocationCounter.setLC(LocationCounter.LC + numberOfBytes);
+    }
+
 }

@@ -1,24 +1,30 @@
-	.2345678901234567890
-	.
-abcd	         start   abcd
-	.
-abcd	arr3     resw    6
-abdf	arr1     WORD    1,2,3
-abe8	         word    4,5,6
-abf1	arr2     word    6,5,4
-abfa	         word    3,2,1
-	.
-ac03	bgn      ldx     q
-ac06	         +lds    arr1
-ac0a	         ldt     #8
-ac0d	         tixr    s
-ac0f	loop     lda     arr1,X
-ac12	         mul     arr2,x
-ac15	         sta     arr3,x
-ac18	         addr    s,x
-ac1a	         compr   x,t
-ac1c	         jlt     loop
-ac1f	         end     bgn
+			.2345678901234567890
+			.
+000000		        	start 	0
+			.
+000000		arr3    	resw  	6
+000012		arr1    	WORD  	1,2,3
+00001B		        	word  	4,5,6
+000024		arr2    	word  	6,5,4
+00002D		        	word  	3,2,1
+			.
+000036		bgn     	ldx   	#3
+000039		        	+lds  	@3
+00003D		        	ldt   	#bc
+ ***ERROR: undefined symbol in operand***
+
+000040		        	rmo   	a,x
+000042		        	tixr  	h
+ ***ERROR: illegal address for a register***
+
+000044		loop    	lda   	arr1,X
+000047		        	mul   	arr2,x
+00004A		        	sta   	arr3,x
+00004D		        	addr  	s,x
+00004F		        	end	
+00004F		        	compr 	x,t
+000051		        	jlt   	loop
+000054		        	end	
 
 
 
@@ -28,8 +34,8 @@ ac1f	         end     bgn
 
 Label Name			Address				Instruction Length		Relocatable
 
-loop                44047               3                      true                
-bgn                 44035               3                      true                
-arr2                44017               9                      true                
-arr1                43999               9                      true                
-arr3                43981               18                     true                
+loop                68                  3                      true                
+bgn                 54                  3                      true                
+arr2                36                  9                      true                
+arr1                18                  9                      true                
+arr3                0                   18                     true                
