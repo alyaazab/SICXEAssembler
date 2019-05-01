@@ -314,75 +314,79 @@ public class Parser {
             case 3:
             case 4:
                 System.out.println("format 3/4");
-                if(Character.isDigit(this.operand.charAt(0)))
-                {
-                    System.out.println("operand cant start with digit, undefined symbol");
-                    errorIndexList.add(8);
-                    return;
-                }
-
-                if(this.operand.charAt(0) == '#')
-                {
-                    //make sure all following characters are digits
-                    for(int i=1; i<this.operand.length(); i++)
-                    {
-                        if(!Character.isDigit(this.operand.charAt(i)))
-                        {
-                            errorIndexList.add(8);
-                            return;
-                        }
-                    }
-                }
-                else if(this.operand.charAt(0) == '@')
-                {
-                    //if second character is digit, make sure the rest are also digits
-                    if(Character.isDigit(this.operand.charAt(1)))
-                    {
-                        for(int i=2; i<this.operand.length(); i++)
-                        {
-                            if(!Character.isDigit(this.operand.charAt(i)))
-                            {
-                                errorIndexList.add(8);
-                                return;
-                            }
-                        }
-                    }else if(Character.isLetter(this.operand.charAt(1)))
-                    {
-                        for(int i=2; i<this.operand.length(); i++)
-                        {
-                            if(!Character.isLetterOrDigit(this.operand.charAt(i)))
-                            {
-                                errorIndexList.add(8);
-                                return;
-                            }
-                        }
-                    }
-                }
-                else if(!Character.isLetter(this.operand.charAt(0)))
-                {
-                    System.out.println("undefined symbol in operand at index 0");
-                    errorIndexList.add(8);
-                    return;
-                }
-
-
-                for (int i = 1; i < this.operand.length(); i++){
-                    if (!Character.isLetterOrDigit(this.operand.charAt(i)))
-                    {
-                        if(this.operand.charAt(i) == ',' && i == this.operand.length()-2 && this.operand.charAt(i+1) == 'x')
-                        {
-                            System.out.println("indexed addressing");
-                        }
-                        else
-                        {
-                            errorIndexList.add(8);
-                            System.out.println("undefined symbol in operand");
-                        }
-                    }
-                }
+                validationHelper();
                 break;
         }
 
+    }
+
+    private void validationHelper() {
+        if(Character.isDigit(this.operand.charAt(0)))
+        {
+            System.out.println("operand cant start with digit, undefined symbol");
+            errorIndexList.add(8);
+            return;
+        }
+
+        if(this.operand.charAt(0) == '#')
+        {
+            //make sure all following characters are digits
+            for(int i=1; i<this.operand.length(); i++)
+            {
+                if(!Character.isDigit(this.operand.charAt(i)))
+                {
+                    errorIndexList.add(8);
+                    return;
+                }
+            }
+        }
+        else if(this.operand.charAt(0) == '@')
+        {
+            //if second character is digit, make sure the rest are also digits
+            if(Character.isDigit(this.operand.charAt(1)))
+            {
+                for(int i=2; i<this.operand.length(); i++)
+                {
+                    if(!Character.isDigit(this.operand.charAt(i)))
+                    {
+                        errorIndexList.add(8);
+                        return;
+                    }
+                }
+            }else if(Character.isLetter(this.operand.charAt(1)))
+            {
+                for(int i=2; i<this.operand.length(); i++)
+                {
+                    if(!Character.isLetterOrDigit(this.operand.charAt(i)))
+                    {
+                        errorIndexList.add(8);
+                        return;
+                    }
+                }
+            }
+        }
+        else if(!Character.isLetter(this.operand.charAt(0)))
+        {
+            System.out.println("undefined symbol in operand at index 0");
+            errorIndexList.add(8);
+            return;
+        }
+
+
+        for (int i = 1; i < this.operand.length(); i++){
+            if (!Character.isLetterOrDigit(this.operand.charAt(i)))
+            {
+                if(this.operand.charAt(i) == ',' && i == this.operand.length()-2 && this.operand.charAt(i+1) == 'x')
+                {
+                    System.out.println("indexed addressing");
+                }
+                else
+                {
+                    errorIndexList.add(8);
+                    System.out.println("undefined symbol in operand");
+                }
+            }
+        }
     }
 
     private void validateDirective() {
@@ -429,6 +433,9 @@ public class Parser {
             case "base":
                 if (this.label.length() != 0)
                     errorIndexList.add(4); // this statement can't have a label
+
+                validationHelper();
+
                 break;
 
             case "nobase":

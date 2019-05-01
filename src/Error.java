@@ -26,7 +26,7 @@ public class Error {
         errors[6] = "***ERROR: wrong operation prefix***";
         errors[9] = "***ERROR: not a hexadecimal string***";
         errors[10] = "***ERROR: can't be format 4 instruction***";
-        errors[20] = "***ERROR: EQU should have a previously defined operand***";//
+        errors[20] = "***ERROR: this statement should have a previously defined operand***";//
         errors[21] = "***ERROR: this statement must have an operand***";//
         errors[22] = "***ERROR: missing field(s)***";
 
