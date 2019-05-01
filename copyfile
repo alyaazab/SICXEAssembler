@@ -8,6 +8,9 @@
 000024		arr2    	word  	6,5,4
 00002D		        	word  	3,2,1
 			.
+000036		        	start 	4
+ ***ERROR: more than one start statement found***
+
 000036		bgn     	ldx   	#3
 000039		        	+lds  	@3
 00003D		        	ldt   	#bc

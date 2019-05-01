@@ -8,6 +8,7 @@ arr1     WORD    1,2,3
 arr2     word    6,5,4
          word    3,2,1
 .
+         start   4
 bgn     hldx     #3
          +lds    @3
          ldt     #bc

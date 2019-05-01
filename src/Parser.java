@@ -10,6 +10,7 @@ public class Parser {
     private int instructionLength = 0;
     private boolean endStatementFound = false;
     private boolean statementAfterEndFound = false;
+    private boolean startStatementFound = false;
 
     public Parser() {
         this.errorIndexList = new ArrayList<>();
@@ -512,6 +513,12 @@ public class Parser {
                 }
                 break;
             case "start":
+                if(startStatementFound)
+                {
+                    errorIndexList.add(24);
+                    return;
+                }
+                startStatementFound = true;
                 if (this.operand.trim().length() == 0){
                     errorIndexList.add(21);
                     return;
