@@ -21,7 +21,7 @@
 00004C		        	addr  	s,x
 00004E		        	compr 	x,t
 000050		        	jlt   	loop
-000053		        	end   	bgn
+000053		        	end   	   
 
 
 

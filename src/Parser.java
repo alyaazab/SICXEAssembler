@@ -51,11 +51,18 @@ public class Parser {
             labelField = line.substring(0,8);
             operationField = line.substring(9, line.length());
         }
+        else if(line.length() < 18)
+        {
+            labelField = line.substring(0,8);
+            operationField = line.substring(9, 15);
+            operandField = "";
+        }
         else
         {
             labelField = line.substring(0,8);
             operationField = line.substring(9, 15);
             operandField = line.substring(17, line.length());
+
         }
 
 
@@ -206,12 +213,17 @@ public class Parser {
 
         //if our operation doesn't need an operand and we don't have an operand, return
         if(operation != null && (operation.isHasOperand() == 0 || operation.isHasOperand() == -1)
-                && this.operand == "")
+                && this.operand.trim().equals(""))
+        {
+            this.operand = this.operand.trim();
+            System.out.println("ginger");
             return;
+
+        }
 
 
         //our operation needs an operand, but we don't have one
-        if(this.operand == "")
+        if(this.operand.trim() == "")
         {
             System.out.println("no operand");
             errorIndexList.add(2);
@@ -546,7 +558,7 @@ public class Parser {
                     System.out.println("end statement can't have a label");
                     errorIndexList.add(4);
                 }
-                if(this.operand.length()!=0 && SymbolTable.getInstance().getSymbol(this.operand) == null)
+                if(this.operand.trim().length()!=0 && SymbolTable.getInstance().getSymbol(this.operand) == null)
                 {
                     System.out.println("undefined symbol in operand");
                     errorIndexList.add(8);
