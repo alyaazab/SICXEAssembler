@@ -565,12 +565,19 @@ public class Parser {
                 break;
 
             case "org":
+                this.instructionLength = 0;
+
                 if(this.label.length() != 0)
                 {
                     System.out.println("org statement can't have a label");
                     errorIndexList.add(4);
                 }
 
+                if(this.operand.trim().equals(""))
+                {
+                    errorIndexList.add(2);
+                    return;
+                }
                 if(SymbolTable.getInstance().getSymbol(this.operand) == null)
                 {
                     System.out.println("undefined symbol in operand");

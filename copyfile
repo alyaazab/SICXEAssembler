@@ -2,29 +2,28 @@
 			.
 000000		        	start 	0
 			.
-000000		arr3    	resw  	6
-000012		arr1    	WORD  	1,2,3
-00001B		        	word  	4,5,6
-000024		arr2    	word  	6,5,4
-00002D		        	word  	3,2,1
+000000		arr3    	resb  	6
+000006		arr1    	word  	1,2,3
+00000F		        	word  	4,5,6
+000018		arr2    	word  	6,5,4
+000021		        	word  	3,2,1
 			.
-000036		bgn     	ldx   	#3
-000039		        	ldt   	@len
-00003C		        	rmo   	a,x
-00003E		        	base	
+00002A		bgn     	ldx   	#3
+00002D		        	org   	bgn
+00002D		        	ldt   	@len
+000030		        	rmo   	a,x
+000032		lbl     	base	
+ ***ERROR: this statement can't have a label***
  ***ERROR: missing or misplaced operand field***
 
-00003E		        	tixr  	s
-000040		loop    	lda   	arr1,X
-000043		        	mul   	arr2,x
-000046		        	sta   	arr3,x
-000049		        	addr  	s,x
-00004B		        	compr 	x,t
-00004D		        	jlt   	loop
-000050		        	end   	  g
- ***ERROR: missing or misplaced operand field***
- ***ERROR: undefined symbol in operand***
-
+000032		        	tixr  	s
+000034		loop    	lda   	arr1,X
+000037		        	mul   	arr2,x
+00003A		        	sta   	arr3,x
+00003D		        	addr  	s,x
+00003F		        	compr 	x,t
+000041		        	jlt   	loop
+000044		        	end	
 
 
 
@@ -34,8 +33,8 @@
 
 Label Name			Address				Instruction Length		Relocatable
 
-loop                64                  3                      true                
-bgn                 54                  3                      true                
-arr2                36                  9                      true                
-arr1                18                  9                      true                
-arr3                0                   18                     true                
+loop                52                  3                      true                
+bgn                 42                  3                      true                
+arr2                24                  9                      true                
+arr1                6                   9                      true                
+arr3                0                   6                      true                
