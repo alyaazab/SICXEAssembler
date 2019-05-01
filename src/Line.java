@@ -35,7 +35,7 @@ public class Line {
     public String toString() {
         String str = "";
 
-        if(this.operationField != "") {
+        if(!this.operationField.equals("")) {
             str = str + Integer.toHexString(address);
             str = leftPad(str).toUpperCase();
 

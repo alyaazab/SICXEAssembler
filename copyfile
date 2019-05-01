@@ -1,8 +1,6 @@
 			.2345678901234567890
 			.
-000000		        	start 	0xc
- ***ERROR: not a hexadecimal string***
-
+000000		        	start 	0
 			.
 000000		arr3    	resw  	6
 000012		arr1    	WORD  	1,2,3
@@ -10,29 +8,20 @@
 000024		arr2    	word  	6,5,4
 00002D		        	word  	3,2,1
 			.
-000036		        	start 	4
- ***ERROR: more than one start statement found***
+000036		bgn     	ldx   	#3
+000039		        	base	
+ ***ERROR: missing or misplaced operand field***
 
-000036		bgn     	ldx   	#3b
- ***ERROR: undefined symbol in operand***
-
-000039		        	+lds  	@3
-00003D		        	ldt   	@len,x
- ***ERROR: undefined symbol in operand***
-
-000040		        	rmo   	a,x
-000042		        	tixr  	h
- ***ERROR: illegal address for a register***
-
-000044		loop    	lda   	arr1,X
-000047		        	mul   	arr2,x
-00004A		        	sta   	arr3,x
-00004D		        	end	
-00004D		        	addr  	s,x
-00004F		        	compr 	x,t
-000051		        	jlt   	loop
- ***ERROR: cannot add instructions after end statement***
-
+000039		        	ldt   	@len
+00003C		        	rmo   	a,x
+00003E		        	tixr  	s
+000040		loop    	lda   	arr1,X
+000043		        	mul   	arr2,x
+000046		        	sta   	arr3,x
+000049		        	addr  	s,x
+00004B		        	compr 	x,t
+00004D		        	jlt   	loop
+000050		        	end   	bgn
 
 
 
@@ -42,7 +31,8 @@
 
 Label Name			Address				Instruction Length		Relocatable
 
-loop                68                  3                      true                
+loop                64                  3                      true                
+bgn                 54                  3                      true                
 arr2                36                  9                      true                
 arr1                18                  9                      true                
 arr3                0                   18                     true                

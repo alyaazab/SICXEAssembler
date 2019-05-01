@@ -8,16 +8,15 @@ arr1     WORD    1,2,3
 arr2     word    6,5,4
          word    3,2,1
 .
-         start   4
-bgn      ldx     #3b
-         +lds    @3
-         ldt     @len,x
+bgn      ldx     #3
+         base
+         ldt     @len
          rmo     a,x
-         tixr    h
+         tixr    s
 loop     lda     arr1,X
          mul     arr2,x
          sta     arr3,x
-         end
          addr    s,x
          compr   x,t
          jlt     loop
+         end     bgn
