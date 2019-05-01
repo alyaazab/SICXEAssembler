@@ -13,10 +13,8 @@
 00002A		bgn     	ldx   	#3
 00002D		        	org   	bgn
 00002D		        	ldt   	@len
-000030		        	rmo   	a,x
-000032		lbl     	base	
- ***ERROR: this statement can't have a label***
- ***ERROR: missing or misplaced operand field***
+000030		        	rmo   	a,
+ ***ERROR: missing values in operand field***
 
 000032		        	tixr  	s
 000034		loop    	lda   	arr1,X

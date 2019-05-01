@@ -11,8 +11,7 @@ arr2     word    6,5,4
 bgn      ldx     #3
          org     bgn
          ldt     @len
-         rmo     a,x
-lbl      base
+         rmo     a,
          tixr    s
 loop     lda     arr1,X
          mul     arr2,x
