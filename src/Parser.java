@@ -297,11 +297,20 @@ public class Parser {
                     return;
                 }
 
-                if(this.operand.length() != 3)
+                if(this.operand.length() > 3)
+                {
                     errorIndexList.add(18);
-                if(this.operand.charAt(1) != ',')
+                    return;
+                }
+                else if(this.operand.length() < 3)
+                {
+                    errorIndexList.add(25);
+                    return;
+                }
+                if(this.operand.charAt(1) != ',') {
                     errorIndexList.add(17);
-
+                    return;
+                }
                 if(RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(0))) == null ||
                         RegisterTable.getInstance().getRegTable().get(String.valueOf(this.operand.charAt(2))) == null )
                 {
@@ -434,6 +443,11 @@ public class Parser {
                 if (this.label.length() != 0)
                     errorIndexList.add(4); // this statement can't have a label
 
+                if(this.operand.trim().length() == 0)
+                {
+                    errorIndexList.add(2);
+                    return;
+                }
                 validationHelper();
 
                 break;

@@ -43,6 +43,7 @@ public class Error {
         errors[12] = "***ERROR: missing END statement***";
         errors[23] = "***ERROR: cannot add instructions after end statement***";
         errors[24] = "***ERROR: more than one start statement found***";
+        errors[25] = "***ERROR: missing values in operand field***";
 
     }
 

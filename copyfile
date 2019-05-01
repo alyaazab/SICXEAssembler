@@ -11,7 +11,10 @@
 000036		bgn     	ldx   	#3
 000039		        	ldt   	@len
 00003C		        	rmo   	a,x
-00003E		        	base  	@len
+00003E		        	base  	  
+ ***ERROR: missing or misplaced operand field***
+ ***ERROR: missing or misplaced operand field***
+
 00003E		        	tixr  	s
 000040		loop    	lda   	arr1,X
 000043		        	mul   	arr2,x
