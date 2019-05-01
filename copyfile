@@ -20,11 +20,12 @@
 000044		loop    	lda   	arr1,X
 000047		        	mul   	arr2,x
 00004A		        	sta   	arr3,x
+00004D		        	end	
 00004D		        	addr  	s,x
-00004F		        	end	
 00004F		        	compr 	x,t
 000051		        	jlt   	loop
-000054		        	end	
+ ***ERROR: cannot add instructions after end statement***
+
 
 
 

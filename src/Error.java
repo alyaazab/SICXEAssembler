@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Error {
 
-    public static String[] errors;
+    private static String[] errors;
 
     public static void printErrors(ArrayList<Integer> errorIndexList) {
         for(int i=0; i<errorIndexList.size(); i++)
@@ -41,6 +41,7 @@ public class Error {
         errors[18] = "***ERROR: extra characters at end of statement***";//
 
         errors[12] = "***ERROR: missing END statement***";
+        errors[23] = "***ERROR: cannot add instructions after end statement***";
 
     }
 

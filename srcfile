@@ -16,8 +16,7 @@ bgn     hldx     #3
 loop     lda     arr1,X
          mul     arr2,x
          sta     arr3,x
-         addr    s,x
          end
+         addr    s,x
          compr   x,t
          jlt     loop
-         end

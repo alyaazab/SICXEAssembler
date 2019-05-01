@@ -9,6 +9,7 @@ public class Parser {
     private String label = "", operation = "", operand = "";
     private int instructionLength = 0;
     private boolean endStatementFound = false;
+    private boolean statementAfterEndFound = false;
 
     public Parser() {
         this.errorIndexList = new ArrayList<>();
@@ -555,4 +556,11 @@ public class Parser {
         LocationCounter.setLC(LocationCounter.LC + numberOfBytes);
     }
 
+    public boolean isStatementAfterEndFound() {
+        return statementAfterEndFound;
+    }
+
+    public void setStatementAfterEndFound(boolean statementAfterEndFound) {
+        this.statementAfterEndFound = statementAfterEndFound;
+    }
 }
