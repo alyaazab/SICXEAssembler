@@ -44,6 +44,7 @@ public class Error {
         errors[23] = "***ERROR: cannot add instructions after end statement***";
         errors[24] = "***ERROR: more than one start statement found***";
         errors[25] = "***ERROR: missing values in operand field***";
+        errors[26] = "***ERROR: hex string needs to start with a digit***";
 
     }
 

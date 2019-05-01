@@ -1,6 +1,8 @@
 			.2345678901234567890
 			.
-000000		        	start 	0
+000000		        	start 	abc5
+ ***ERROR: hex string needs to start with a digit***
+
 			.
 000000		arr3    	resb  	6
 000006		arr1    	word  	1,2,3

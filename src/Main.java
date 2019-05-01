@@ -6,11 +6,11 @@ public class Main {
     public static void main(String[] args) {
         OperationTable.fillOpTable();
         Error.fillErrorArray();
-        Parser parser = new Parser();
         RegisterTable.getInstance().fillRegisterTable();
 
-
+        Parser parser = new Parser();
         CopyFile copyFile = new CopyFile();
+
         ArrayList<String> sourceProgram = SourceFile.readSourceProgramFromFile();
         Line currentLine = null;
 

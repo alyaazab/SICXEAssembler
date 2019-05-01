@@ -1,6 +1,6 @@
 .2345678901234567890
 .
-         start   0
+         start   abc5
 .
 arr3     resb    6
 arr1     word    1,2,3

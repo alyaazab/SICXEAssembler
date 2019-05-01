@@ -611,7 +611,13 @@ public class Parser {
                     errorIndexList.add(21);
                     return;
                 }
-                for (int i =0; i < this.operand.length(); i++){
+
+                if(!Character.isDigit(this.operand.charAt(0)))
+                {
+                    errorIndexList.add(26);
+                    return;
+                }
+                for (int i=0; i < this.operand.length(); i++){
                     if (!isHexadecimal(this.operand.charAt(i))){
                         errorIndexList.add(9);
                         return;
