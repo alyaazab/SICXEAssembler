@@ -1,6 +1,8 @@
 			.2345678901234567890
 			.
-000000		        	start 	0
+000000		        	start 	0xc
+ ***ERROR: not a hexadecimal string***
+
 			.
 000000		arr3    	resw  	6
 000012		arr1    	WORD  	1,2,3
@@ -11,9 +13,11 @@
 000036		        	start 	4
  ***ERROR: more than one start statement found***
 
-000036		bgn     	ldx   	#3
+000036		bgn     	ldx   	#3b
+ ***ERROR: undefined symbol in operand***
+
 000039		        	+lds  	@3
-00003D		        	ldt   	#bc
+00003D		        	ldt   	@len,x
  ***ERROR: undefined symbol in operand***
 
 000040		        	rmo   	a,x
@@ -39,7 +43,6 @@
 Label Name			Address				Instruction Length		Relocatable
 
 loop                68                  3                      true                
-bgn                 54                  3                      true                
 arr2                36                  9                      true                
 arr1                18                  9                      true                
 arr3                0                   18                     true                

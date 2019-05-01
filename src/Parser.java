@@ -308,10 +308,36 @@ public class Parser {
                         }
                     }
                 }
-                else if(this.operand.charAt(0) != '@' && !Character.isLetter(this.operand.charAt(0)))
+                else if(this.operand.charAt(0) == '@')
+                {
+                    //if second character is digit, make sure the rest are also digits
+                    if(Character.isDigit(this.operand.charAt(1)))
+                    {
+                        for(int i=2; i<this.operand.length(); i++)
+                        {
+                            if(!Character.isDigit(this.operand.charAt(i)))
+                            {
+                                errorIndexList.add(8);
+                                return;
+                            }
+                        }
+                    }else if(Character.isLetter(this.operand.charAt(1)))
+                    {
+                        for(int i=2; i<this.operand.length(); i++)
+                        {
+                            if(!Character.isLetterOrDigit(this.operand.charAt(i)))
+                            {
+                                errorIndexList.add(8);
+                                return;
+                            }
+                        }
+                    }
+                }
+                else if(!Character.isLetter(this.operand.charAt(0)))
                 {
                     System.out.println("undefined symbol in operand at index 0");
                     errorIndexList.add(8);
+                    return;
                 }
 
 
@@ -519,18 +545,19 @@ public class Parser {
                     return;
                 }
                 startStatementFound = true;
+
                 if (this.operand.trim().length() == 0){
                     errorIndexList.add(21);
                     return;
                 }
                 for (int i =0; i < this.operand.length(); i++){
                     if (!isHexadecimal(this.operand.charAt(i))){
-                        errorIndexList.add(8);
+                        errorIndexList.add(9);
                         return;
                     }
                 }
-                //convert hex to int first
 
+                //convert hex to int first
                 LocationCounter.setLC(convertHexToDecimal(this.operand));
                 break;
 
