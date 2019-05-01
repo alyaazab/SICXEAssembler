@@ -19,4 +19,4 @@ loop     lda     arr1,X
          addr    s,x
          compr   x,t
          jlt     loop
-         end     bgn
+         end

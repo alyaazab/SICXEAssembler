@@ -11,8 +11,7 @@
 000036		bgn     	ldx   	#3
 000039		        	ldt   	@len
 00003C		        	rmo   	a,x
-00003E		        	base  	  
- ***ERROR: missing or misplaced operand field***
+00003E		        	base	
  ***ERROR: missing or misplaced operand field***
 
 00003E		        	tixr  	s
@@ -22,7 +21,10 @@
 000049		        	addr  	s,x
 00004B		        	compr 	x,t
 00004D		        	jlt   	loop
-000050		        	end   	bgn
+000050		        	end   	  g
+ ***ERROR: missing or misplaced operand field***
+ ***ERROR: undefined symbol in operand***
+
 
 
 

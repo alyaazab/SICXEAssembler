@@ -224,19 +224,21 @@ public class Parser {
         //our operation needs an operand, but we don't have one
         if(this.operand.trim().equals(""))
         {
+            operation = OperationTable.getOptable().get(this.operation);
+            int operationFormat = operation.getFormat();
+            //if operation is a directive
+            if (operationFormat == -1) {
+                return;
+            }
             System.out.println("no operand");
             errorIndexList.add(2);
 
-            operation = OperationTable.getOptable().get(this.operation);
 
-            if (operation == null)
+            if (operation == null) {
                 return;
+            }
 
-            int operationFormat = operation.getFormat();
 
-            //if operation is a directive
-            if (operationFormat == -1)
-                return;
 
             incrementLocationCounter(operation.getFormat());
             this.instructionLength = operation.getLengthOfInstruction();
