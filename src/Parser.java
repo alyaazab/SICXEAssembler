@@ -400,8 +400,14 @@ public class Parser {
         switch (this.operation){
             case "equ":
                 if (this.label.length() == 0)
+                {
                     errorIndexList.add(0); // missing or misplaced label
+                }
 
+                if(this.operand.trim().length() == 0)
+                {
+                    return;
+                }
                 if(this.operand.charAt(0) == '#')
                 {
                     for(int i=1; i<this.operand.length(); i++)

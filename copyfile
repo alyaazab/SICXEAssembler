@@ -9,19 +9,17 @@
 00002D		        	word  	3,2,1
 			.
 000036		bgn     	ldx   	#3
-000039		        	ldt	
- ***ERROR: missing or misplaced operand field***
-
-00003C		        	ldt   	@len
-00003F		        	rmo   	a,x
-000041		        	tixr  	s
-000043		loop    	lda   	arr1,X
-000046		        	mul   	arr2,x
-000049		        	sta   	arr3,x
-00004C		        	addr  	s,x
-00004E		        	compr 	x,t
-000050		        	jlt   	loop
-000053		        	end   	   
+000039		        	ldt   	@len
+00003C		        	rmo   	a,x
+00003E		        	nobase	
+00003E		        	tixr  	s
+000040		loop    	lda   	arr1,X
+000043		        	mul   	arr2,x
+000046		        	sta   	arr3,x
+000049		        	addr  	s,x
+00004B		        	compr 	x,t
+00004D		        	jlt   	loop
+000050		        	end   	bgn
 
 
 
@@ -31,7 +29,7 @@
 
 Label Name			Address				Instruction Length		Relocatable
 
-loop                67                  3                      true                
+loop                64                  3                      true                
 bgn                 54                  3                      true                
 arr2                36                  9                      true                
 arr1                18                  9                      true                
