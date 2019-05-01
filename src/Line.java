@@ -41,9 +41,11 @@ public class Line {
 
             str = str + "\t\t" + labelField + "\t" + operationField + "\t" + operandField;
         }
-        else {
+        else if(!this.comment.equals("")) {
             str = str + "\t\t\t" + comment;
         }
+        else
+            str = str + "\t\t\t" + labelField + "\t" + "        " + "\t" + operandField;
         if (errorIndexList.size() > 0){
             str = str + "\n";
             for (Integer integer : errorIndexList) {

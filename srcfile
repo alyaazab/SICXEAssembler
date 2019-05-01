@@ -9,7 +9,7 @@ arr2     word    6,5,4
          word    3,2,1
 .
 bgn      ldx     #3
-         base
+                 x
          ldt     @len
          rmo     a,x
          tixr    s

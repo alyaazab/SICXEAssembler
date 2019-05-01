@@ -9,8 +9,9 @@
 00002D		        	word  	3,2,1
 			.
 000036		bgn     	ldx   	#3
-000039		        	base	
- ***ERROR: missing or misplaced operand field***
+000036		        	      	x
+ ***ERROR: missing or misplaced operation mnemonic***
+ ***ERROR: unrecognized operation code***
 
 000039		        	ldt   	@len
 00003C		        	rmo   	a,x
