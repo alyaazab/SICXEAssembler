@@ -221,9 +221,8 @@ public class Parser {
 
         }
 
-
         //our operation needs an operand, but we don't have one
-        if(this.operand.trim() == "")
+        if(this.operand.trim().equals(""))
         {
             System.out.println("no operand");
             errorIndexList.add(2);
