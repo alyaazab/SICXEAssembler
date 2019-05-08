@@ -1,23 +1,7 @@
 .2345678901234567890
 .
-         start   abc5
+         start   0000
 .
-arr3     resb    6
 arr1     word    1,2,3
-         word    4,5,6
-arr2     word    6,5,4
-         word    3,2,1
-.
-bgn      ldx     #3
-         org     bgn
-         ldt     @len
-         rmo     a,x
-lbl      base
-         tixr    s
 loop     lda     arr1,X
-         mul     arr2,x
-         sta     arr3,x
-         addr    s,x
-         compr   x,t
-         jlt     loop
          end

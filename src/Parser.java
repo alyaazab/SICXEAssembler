@@ -11,6 +11,7 @@ public class Parser {
     private boolean endStatementFound = false;
     private boolean statementAfterEndFound = false;
     private boolean startStatementFound = false;
+    private Operation operationObject = null;
 
     public Parser() {
         this.errorIndexList = new ArrayList<>();
@@ -50,6 +51,7 @@ public class Parser {
             //we have an operation but no operand
             labelField = line.substring(0,8);
             operationField = line.substring(9, line.length());
+            operandField = "";
         }
         else if(line.length() < 18)
         {
@@ -62,15 +64,17 @@ public class Parser {
             labelField = line.substring(0,8);
             operationField = line.substring(9, 15);
             operandField = line.substring(17, line.length());
-
         }
 
-
-//        this.commentField = line.substring(35, 66);
 
         System.out.println("label: " + labelField);
         System.out.println("operation: " + operationField);
         System.out.println("operand: " + operandField);
+
+        this.operand = operandField.toLowerCase();
+
+        System.out.println("TESTOPERANDFIELD: " + operandField + operandField.length());
+        System.out.println("TESTOPERAND: " + this.operand + this.operand.length());
 
 
         lineObj = new Line(0, labelField, operationField, operandField, null, errorIndexList);
@@ -117,12 +121,15 @@ public class Parser {
     private void validateFixedFormat(String labelField, String operationField, String operandField) {
         validateLabel(labelField);
         validateOperationField(operationField);
-        validateOperandField(operandField);
+        //TODO: check if directive or operation, if directive: validateDirective, else, validateOperand IF NEEDS OPERAND
+        if(needsOperand())
+            validateOperandField(operandField);
+
         validateDirective();
     }
 
-    private void validateLabel(String labelField) {
 
+    private void validateLabel(String labelField) {
         System.out.println("VALIDATING LABEL...");
 
         this.label = labelField;
@@ -169,6 +176,8 @@ public class Parser {
     }
 
 
+
+
     private void validateOperationField(String operationField) {
 
         System.out.println("VALIDATING OPERATION...");
@@ -190,12 +199,13 @@ public class Parser {
             {
                 errorIndexList.add(16);
                 System.out.println("operation contains space in the middle");
+                return;
             }
         }
 
-        Operation operation = OperationTable.getOptable().get(this.operation);
+        this.operationObject = OperationTable.getOptable().get(this.operation);
 
-        if(operation == null)
+        if(this.operationObject == null)
         {
             errorIndexList.add(7);
             System.out.println("operation doesn't exist in optable");
@@ -203,29 +213,51 @@ public class Parser {
 
     }
 
-    private void validateOperandField(String operandField) {
+    private boolean needsOperand() {
+//        this.operand = operandField;
 
-        this.operand = operandField;
-
-        System.out.println("VALIDATING OPERAND FIELD...");
-
-        Operation operation = OperationTable.getOptable().get(this.operation);
+        System.out.println("TESTOPERAND: " + this.operand+ this.operand.length());
 
         //if our operation doesn't need an operand and we don't have an operand, return
-        if(operation != null && (operation.isHasOperand() == 0 || operation.isHasOperand() == -1)
+
+        if(this.operationObject != null && (this.operationObject.isHasOperand() == 0 || this.operationObject.isHasOperand() == -1)
                 && this.operand.trim().equals(""))
         {
             this.operand = this.operand.trim();
             System.out.println("ginger");
-            return;
+            System.out.println("TESTOPERAND: " + this.operand+ this.operand.length());
+
+            return false;
 
         }
+        System.out.println("TESTOPERAND: " + this.operand+ this.operand.length());
 
+
+        return true;
+    }
+
+
+    private void validateOperandField(String operandField) {
+       // this.operand = operandField;
+        System.out.println("TESTOPERAND: " + this.operand+ this.operand.length());
+
+        System.out.println("VALIDATING OPERAND FIELD...");
+
+//        //if our operation doesn't need an operand and we don't have an operand, return
+//        if(operation != null && (this.operationObject.isHasOperand() == 0 || this.operationObject.isHasOperand() == -1)
+//                && this.operand.trim().equals(""))
+//        {
+//            this.operand = this.operand.trim();
+//            System.out.println("ginger");
+//            return;
+//
+//        }
+
+        System.out.println("brownie");
         //our operation needs an operand, but we don't have one
         if(this.operand.trim().equals(""))
         {
-            operation = OperationTable.getOptable().get(this.operation);
-            int operationFormat = operation.getFormat();
+            int operationFormat = this.operationObject.getFormat();
             //if operation is a directive
             if (operationFormat == -1) {
                 return;
@@ -234,14 +266,14 @@ public class Parser {
             errorIndexList.add(2);
 
 
-            if (operation == null) {
+            if (this.operationObject == null) {
                 return;
             }
 
 
 
-            incrementLocationCounter(operation.getFormat());
-            this.instructionLength = operation.getLengthOfInstruction();
+            incrementLocationCounter(this.operationObject.getFormat());
+            this.instructionLength = this.operationObject.getLengthOfInstruction();
             return;
         }
 
@@ -264,19 +296,18 @@ public class Parser {
             }
         }
 
-        operation = OperationTable.getOptable().get(this.operation);
 
-        if (operation == null)
+        if (this.operationObject == null)
             return;
 
-        int operationFormat = operation.getFormat();
+        int operationFormat = this.operationObject.getFormat();
 
         //if operation is a directive
         if (operationFormat == -1)
             return;
 
-        incrementLocationCounter(operation.getFormat());
-        this.instructionLength = operation.getLengthOfInstruction();
+        incrementLocationCounter(this.operationObject.getFormat());
+        this.instructionLength = this.operationObject.getLengthOfInstruction();
 
         switch(operationFormat)
         {
@@ -324,6 +355,8 @@ public class Parser {
 
             case 3:
             case 4:
+                System.out.println("TESTOPERAND: " + this.operand+ this.operand.length());
+
                 System.out.println("format 3/4");
                 validationHelper();
                 break;
@@ -332,6 +365,8 @@ public class Parser {
     }
 
     private void validationHelper() {
+        System.out.println("TESTOPERAND: " + this.operand+ this.operand.length());
+
         if(Character.isDigit(this.operand.charAt(0)))
         {
             System.out.println("operand cant start with digit, undefined symbol");
@@ -384,6 +419,8 @@ public class Parser {
         }
 
 
+        System.out.println("TESTOPERAND: " + this.operand+ this.operand.length());
+
         for (int i = 1; i < this.operand.length(); i++){
             if (!Character.isLetterOrDigit(this.operand.charAt(i)))
             {
@@ -393,8 +430,11 @@ public class Parser {
                 }
                 else
                 {
+                    System.out.println("TESTOPERAND: " + this.operand+ this.operand.length());
+
                     errorIndexList.add(8);
                     System.out.println("undefined symbol in operand");
+                    System.out.println("boooooo");
                 }
             }
         }
