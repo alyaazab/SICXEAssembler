@@ -1,29 +1,10 @@
 			.2345678901234567890
 			.
-000000		        	start 	abc5
- ***ERROR: hex string needs to start with a digit***
-
+000000		        	start 	0000
 			.
-000000		arr3    	resb  	6
-000006		arr1    	word  	1,2,3
-00000F		        	word  	4,5,6
-000018		arr2    	word  	6,5,4
-000021		        	word  	3,2,1
-			.
-00002A		bgn     	ldx   	#3
-00002D		        	org   	bgn
-00002D		        	ldt   	@len
-000030		        	rmo   	a,
- ***ERROR: missing values in operand field***
-
-000032		        	tixr  	s
-000034		loop    	lda   	arr1,X
-000037		        	mul   	arr2,x
-00003A		        	sta   	arr3,x
-00003D		        	addr  	s,x
-00003F		        	compr 	x,t
-000041		        	jlt   	loop
-000044		        	end	
+000000		arr1    	word  	1,2,3
+000009		loop    	lda   	arr1,X
+00000C		        	end	
 
 
 
@@ -33,8 +14,5 @@
 
 Label Name			Address				Instruction Length		Relocatable
 
-loop                52                  3                      true                
-bgn                 42                  3                      true                
-arr2                24                  9                      true                
-arr1                6                   9                      true                
-arr3                0                   6                      true                
+loop                9                   3                      true                
+arr1                0                   9                      true                
