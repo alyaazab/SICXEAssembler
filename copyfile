@@ -4,6 +4,7 @@
 			.
 000000		arr1    	word  	1,2,3
 000009		loop    	lda   	arr1,X
+00000C		test    	equ   	loop
 00000C		        	end	
 
 
@@ -14,5 +15,6 @@
 
 Label Name			Address				Instruction Length		Relocatable
 
+test                12                  0                      true                
 loop                9                   3                      true                
 arr1                0                   9                      true                

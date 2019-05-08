@@ -4,4 +4,5 @@
 .
 arr1     word    1,2,3
 loop     lda     arr1,X
+test     equ     loop
          end

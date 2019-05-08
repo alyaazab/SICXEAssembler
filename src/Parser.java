@@ -122,10 +122,12 @@ public class Parser {
         validateLabel(labelField);
         validateOperationField(operationField);
         //TODO: check if directive or operation, if directive: validateDirective, else, validateOperand IF NEEDS OPERAND
-        if(needsOperand())
-            validateOperandField(operandField);
-
-        validateDirective();
+        if(this.operationObject != null && this.operationObject.getFormat() == -1){
+            validateDirective();
+        } else if (this.operationObject != null && this.operationObject.getFormat() != -1){
+            if(needsOperand())
+                validateOperandField(operandField);
+        }
     }
 
 
@@ -257,11 +259,11 @@ public class Parser {
         //our operation needs an operand, but we don't have one
         if(this.operand.trim().equals(""))
         {
-            int operationFormat = this.operationObject.getFormat();
-            //if operation is a directive
-            if (operationFormat == -1) {
-                return;
-            }
+//            int operationFormat = this.operationObject.getFormat();
+//            //if operation is a directive
+//            if (operationFormat == -1) {
+//                return;
+//            }
             System.out.println("no operand");
             errorIndexList.add(2);
 
@@ -303,8 +305,8 @@ public class Parser {
         int operationFormat = this.operationObject.getFormat();
 
         //if operation is a directive
-        if (operationFormat == -1)
-            return;
+//        if (operationFormat == -1)
+//            return;
 
         incrementLocationCounter(this.operationObject.getFormat());
         this.instructionLength = this.operationObject.getLengthOfInstruction();
