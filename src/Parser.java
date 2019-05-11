@@ -113,7 +113,7 @@ public class Parser {
             } else if(baseRegisterAvailable == 0)
             {
                 //CHECK IF SAME OPERAND
-                if(operation.equals("base") && operand == baseRegisterValue)
+                if(operation.equals("base") && operand.equals(baseRegisterValue))
                     baseRegisterAvailable = 1;
                 else
                     baseRegisterAvailable = -1;
