@@ -68,28 +68,25 @@ public class ObjectCodeGenerator {
 
                     setNIXFlags(operandField);
 
-                    if(n == 1 && i == 1)
+                    if(n == 1 && i == 1 && x == 0) // direct, without indexing
                     {
-                        //check for PC relative or Base relative to set b and p flags
-                        int targetAddress = SymbolTable.getInstance().getSymbol(operandField.trim()).getValue();
-                        int displacement = targetAddress - line.getAddress();
-
-                        if(displacement >= -2048 && displacement <= 2047)
-                        {
-                            p=1;
-                            b=0;
-                        }
-                        else if(line.isBaseRegisterSet())
-                        {
-                            p=0;
-                            b=1;
-                        }
-                        else
-                        {
-                            System.out.println("disp is = " + displacement);
-                            System.out.println("DISPLACEMENT OUT OF RANGE, CANNOT USE PC OR BASE RELATIVE ADDRESSING");
-                            p=0;
-                            b=0;
+                        setBPFlags(operandField.trim(), line);
+                    }else if (n == 1 && i == 1 && x == 1){ // direct, with indexing
+                        String subOperand = operandField.trim().substring(0, operandField.trim().length() - 1);
+                        setBPFlags(subOperand, line);
+                    }else if (n == 1 && i == 0){ // indirect
+                        String subOperand = operandField.trim().substring(1);
+                        setBPFlags(subOperand, line);
+                    }else if(n == 0 && i == 1){
+                        String subOperand = operandField.trim().substring(1);
+                        try {
+                            int imm = Integer.parseInt(subOperand);
+                            p = 0;
+                            b = 0;
+                            String paddedString = leftPad(convertDecToBin(imm), 12);
+                            System.out.println("binary value: " + paddedString);
+                        }catch (NumberFormatException e){
+                            setBPFlags(subOperand, line);
                         }
                     }
                     System.out.println("KITTY B = " + b + "   P = " + p);
@@ -107,6 +104,30 @@ public class ObjectCodeGenerator {
             instructionCode = instructionCode + opcode + r1 + r2;
             System.out.println("INSTRUCTION CODE: " + instructionCode);
 
+        }
+    }
+
+    private void setBPFlags(String str, Line line) {
+        //check for PC relative or Base relative to set b and p flags
+        int targetAddress = SymbolTable.getInstance().getSymbol(str).getValue();
+        int displacement = targetAddress - line.getAddress();
+
+        if(displacement >= -2048 && displacement <= 2047)
+        {
+            p=1;
+            b=0;
+        }
+        else if(line.isBaseRegisterSet())
+        {
+            p=0;
+            b=1;
+        }
+        else
+        {
+            System.out.println("disp is = " + displacement);
+            System.out.println("DISPLACEMENT OUT OF RANGE, CANNOT USE PC OR BASE RELATIVE ADDRESSING");
+            p=0;
+            b=0;
         }
     }
 
@@ -166,6 +187,13 @@ public class ObjectCodeGenerator {
 
             if(str.length() < 4)
                 return padString.substring(str.length()) + str;
+        }else if (n == 12) {
+
+            padString = "000000000000";
+
+            if(str.length() < 12)
+                return padString.substring(str.length()) + str;
+
         }
 
 
