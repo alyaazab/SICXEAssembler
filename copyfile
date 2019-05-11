@@ -1,11 +1,30 @@
+			.2345678901234567890
 			.
+000000		        	start 	0000
 			.
-000000		        	start 	0
-000000		bgn     	lda   	#3
-000003		        	addr  	s,a
-000005		        	tixr  	s
-000007		        	clear 	x
-000009		        	end   	bgn
+000000		arr3    	resb  	6
+000006		arr1    	word  	1,2,3
+00000F		        	word  	4,5,6
+000018		arr2    	word  	6,5,4
+000021		        	word  	3,2,1
+00002A		label   	byte  	C'abcd'
+00002E		lbl2    	byte  	X'abc12'
+000033		alpha   	resw  	2
+000039		test    	equ   	alpha
+			.
+000039		bgn     	ldx   	#3
+00003C		        	base  	#2
+00003C		beta    	resw  	1000
+000BF4		        	ldb   	alpha
+000BF7		        	ldt   	@arr1
+000BFA		        	ldb   	alpha
+000BFD		        	base  	alpha
+000BFD		        	rmo   	a,x
+000BFF		        	tixr  	s
+000C01		        	nobase	
+000C01		        	addr  	s,x
+000C03		        	compr 	x,t
+000C05		        	end	
 
 
 
@@ -15,4 +34,12 @@
 
 Label Name			Address				Instruction Length		Relocatable
 
-bgn                 0                   3                      true                
+test                57                  0                      true                
+alpha               51                  6                      true                
+bgn                 57                  3                      true                
+label               42                  4                      true                
+arr2                24                  9                      true                
+arr1                6                   9                      true                
+lbl2                46                  5                      true                
+beta                60                  3000                   true                
+arr3                0                   6                      true                

@@ -1,8 +1,27 @@
+.2345678901234567890
 .
+         start   0000
 .
-         start   0
-bgn      lda     #3
-         addr    s,a
+arr3     resb    6
+arr1     word    1,2,3
+         word    4,5,6
+arr2     word    6,5,4
+         word    3,2,1
+label    byte    C'abcd'
+lbl2     byte    X'abc12'
+alpha    resw    2
+test     equ     alpha
+.
+bgn      ldx     #3
+         base    #2
+beta     resw    1000
+         ldb     alpha
+         ldt     @arr1
+         ldb     alpha
+         base    alpha
+         rmo     a,x
          tixr    s
-         clear   x
-         end     bgn
+         nobase
+         addr    s,x
+         compr   x,t
+         end

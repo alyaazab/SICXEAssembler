@@ -13,6 +13,10 @@ public class Symbol {
         this.relocatable = relocatable;
     }
 
+    public int getValue() {
+        return value;
+    }
+
     @Override
     public String toString() {
         return String.format("\n%-20s%-20d%-23d%-20b", label, value, length, relocatable);

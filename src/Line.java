@@ -10,8 +10,14 @@ public class Line {
     private ArrayList<Integer> errorIndexList;
     private Operation operation;
 
+    public boolean isBaseRegisterSet() {
+        return baseRegisterSet;
+    }
+
+    private boolean baseRegisterSet;
+
     public Line(int address, String labelField, String operationField, String operandField, String comment,
-                ArrayList<Integer> errorIndexList, Operation operation) {
+                ArrayList<Integer> errorIndexList, Operation operation, boolean baseRegisterSet) {
         this.address = address;
         this.labelField = labelField;
         this.operationField = operationField;
@@ -19,6 +25,7 @@ public class Line {
         this.comment = comment;
         this.errorIndexList = errorIndexList;
         this.operation = operation;
+        this.baseRegisterSet = baseRegisterSet;
     }
 
 
@@ -44,6 +51,10 @@ public class Line {
 
     public String getOperandField() {
         return operandField;
+    }
+
+    public int getAddress() {
+        return address;
     }
 
     @Override

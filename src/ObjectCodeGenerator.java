@@ -44,6 +44,7 @@ public class ObjectCodeGenerator {
                 case -1:
                     //directive, no opcode
 
+                    System.out.println("KITTY B = " + b + "   P = " + p);
 
                     break;
                 case 2:
@@ -65,30 +66,26 @@ public class ObjectCodeGenerator {
                     System.out.println("opcode = " + opcode);
                     e = 0;
 
-                    if (operandField.charAt(0) == '#') {
-                        i = 1;
-                        x = 0;
-                        n = 0;
-                        System.out.println("addressing mode: immediate" );
-                    } else if(operandField.charAt(0) == '@'){
-                        n = 1;
-                        i = 0;
-                        x = 0;
-                        System.out.println("addressing mode: indirect");
-                    } else {
-                        String trimmedOperand = operandField.trim();
-                        if (trimmedOperand.charAt(trimmedOperand.length() - 2) == ','){
-                            n = 1;
-                            i = 1;
-                            x = 1;
-                            System.out.println("addressing mode: direct, with indexing");
-                        } else {
-                            n = 1;
-                            i = 1;
-                            x = 0;
-                            System.out.println("addressing mode: direct, without indexing");
+                    setNIXFlags(operandField);
+
+                    if(n == 1 && i == 1)
+                    {
+                        //check for PC relative or Base relative to set b and p flags
+                        int targetAddress = SymbolTable.getInstance().getSymbol(operandField.trim()).getValue();
+                        int displacement = targetAddress - line.getAddress();
+
+                        if(displacement >= -2048 && displacement <= 2047)
+                        {
+                            p=1;
+                            b=0;
+                        }
+                        else if(line.isBaseRegisterSet())
+                        {
+                            p=0;
+                            b=1;
                         }
                     }
+                    System.out.println("KITTY B = " + b + "   P = " + p);
                     break;
 
 
@@ -96,7 +93,7 @@ public class ObjectCodeGenerator {
                     opcode = convertHexToBin(operation.getBinaryCode()).substring(0,6);
                     System.out.println("opcode = " + opcode);
                     e = 1;
-                    
+
                     break;
             }
 
@@ -113,6 +110,33 @@ public class ObjectCodeGenerator {
 
 
         return leftPad(binary, 8);
+    }
+
+    private void setNIXFlags(String operandField) {
+        if (operandField.charAt(0) == '#') {
+            i = 1;
+            x = 0;
+            n = 0;
+            System.out.println("addressing mode: immediate" );
+        } else if(operandField.charAt(0) == '@'){
+            n = 1;
+            i = 0;
+            x = 0;
+            System.out.println("addressing mode: indirect");
+        } else {
+            String trimmedOperand = operandField.trim();
+            if (trimmedOperand.charAt(trimmedOperand.length() - 2) == ','){
+                n = 1;
+                i = 1;
+                x = 1;
+                System.out.println("addressing mode: direct, with indexing");
+            } else {
+                n = 1;
+                i = 1;
+                x = 0;
+                System.out.println("addressing mode: direct, without indexing");
+            }
+        }
     }
 
     private String convertDecToBin(int decimal) {

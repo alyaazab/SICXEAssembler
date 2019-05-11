@@ -11,6 +11,8 @@ public class Parser {
     private boolean startStatementFound = false;
     private Operation operationObject = null;
 
+    private int baseRegisterValue = -1;
+
     public Parser() {
         this.errorIndexList = new ArrayList<>();
     }
@@ -28,13 +30,15 @@ public class Parser {
         if(line.length() == 0)
         {
             errorIndexList.add(22);
-            return new Line(0, "", "", "", "", errorIndexList, null);
+            return new Line(0, "", "", "", "",
+                    errorIndexList, null, baseRegisterValue==1);
         }
 
         if(isComment(line))
         {
             System.out.println("this line is a comment");
-            return new Line(0, "", "", "", line, errorIndexList, null);
+            return new Line(0, "", "", "", line,
+                    errorIndexList, null, baseRegisterValue==1);
         }
 
         if(line.length() < 10)
@@ -42,7 +46,8 @@ public class Parser {
             //no operation, no operand
             labelField = line;
             errorIndexList.add(22);
-            return new Line(0, labelField, "", "", "", errorIndexList, null);
+            return new Line(0, labelField, "", "", "",
+                    errorIndexList, null, baseRegisterValue==1);
         }
         else if(line.length()<=15)
         {
@@ -77,7 +82,7 @@ public class Parser {
 
 
         lineObj = new Line(0, labelField, operationField, operandField, "",
-                errorIndexList, this.operationObject);
+                errorIndexList, this.operationObject, baseRegisterValue==1);
 
 
         validateFixedFormat(labelField.toLowerCase(), operationField.toLowerCase(), operandField.toLowerCase());
@@ -89,6 +94,7 @@ public class Parser {
         System.out.println(errorIndexList);
         lineObj.setOperation(this.operationObject);
 
+        System.out.println("KITKAT: baseRegisterValue = " + baseRegisterValue);
         return lineObj;
     }
 
@@ -213,6 +219,14 @@ public class Parser {
             errorIndexList.add(7);
             System.out.println("operation doesn't exist in optable");
         }
+
+        if(errorIndexList.size() == 0 && operation.equals("ldb"))
+        {
+            baseRegisterValue = 0;
+
+        }
+        else
+            baseRegisterValue = -1;
 
     }
 
@@ -486,6 +500,7 @@ public class Parser {
                 break;
 
             case "base":
+
                 if (this.label.length() != 0)
                     errorIndexList.add(4); // this statement can't have a label
 
@@ -496,9 +511,19 @@ public class Parser {
                 }
                 validationHelper();
 
+                if(errorIndexList.size() == 0)
+                {
+                    System.out.println("no errors");
+                    if(baseRegisterValue == 0) {
+                        baseRegisterValue = 1;
+                        System.out.println("base was 0 now 1");
+                    }
+                }
+
                 break;
 
             case "nobase":
+
                 if(this.label.length() != 0)
                 {
                     System.out.println("nobase statement cant have a label");
@@ -509,6 +534,10 @@ public class Parser {
                     System.out.println("nobase statement cant have an operand");
                     errorIndexList.add(5);
                 }
+
+                if(errorIndexList.size() == 0)
+                    baseRegisterValue = -1;
+
                 break;
 
             case "resb":
@@ -707,5 +736,13 @@ public class Parser {
 
     public void setStatementAfterEndFound(boolean statementAfterEndFound) {
         this.statementAfterEndFound = statementAfterEndFound;
+    }
+
+    public int getBaseRegisterValue() {
+        return baseRegisterValue;
+    }
+
+    public void setBaseRegisterValue(int baseRegisterValue) {
+        this.baseRegisterValue = baseRegisterValue;
     }
 }
