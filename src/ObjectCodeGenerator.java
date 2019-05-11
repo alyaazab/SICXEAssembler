@@ -85,18 +85,19 @@ public class ObjectCodeGenerator {
                     e = 0;
 
                     setNIXFlags(operandField);
+                    String subOperand = "";
 
                     if(n == 1 && i == 1 && x == 0) // direct, without indexing
                     {
                         setBPFlags(operandField.trim(), line);
                     }else if (n == 1 && i == 1 && x == 1){ // direct, with indexing
-                        String subOperand = operandField.trim().substring(0, operandField.trim().length() - 1);
+                        subOperand = operandField.trim().substring(0, operandField.trim().length() - 1);
                         setBPFlags(subOperand, line);
                     }else if (n == 1 && i == 0){ // indirect
-                        String subOperand = operandField.trim().substring(1);
+                        subOperand = operandField.trim().substring(1);
                         setBPFlags(subOperand, line);
                     }else if(n == 0 && i == 1){
-                        String subOperand = operandField.trim().substring(1);
+                        subOperand = operandField.trim().substring(1);
                         try {
                             int imm = Integer.parseInt(subOperand);
                             p = 0;
@@ -118,6 +119,24 @@ public class ObjectCodeGenerator {
                     b = 0;
                     p = 0;
                     setNIXFlags(operandField);
+                    int address = -1;
+                    if (n == 1 && i == 1 && x == 0){
+                        address = SymbolTable.getInstance().getSymbol(operandField.trim()).getValue();
+                    }else if (n == 1 && i == 1 && x == 1){ // direct, with indexing
+                        subOperand = operandField.trim().substring(0, operandField.trim().length() - 1);
+                        address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
+                    }else if (n == 1 && i == 0){ // indirect
+                        subOperand = operandField.trim().substring(1);
+                        address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
+                    }else if(n == 0 && i == 1){
+                        subOperand = operandField.trim().substring(1);
+                        try {
+                            address = Integer.parseInt(subOperand);
+                        }catch (NumberFormatException e){
+                            address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
+                        }
+                    }
+                    String binaryAddress = leftPad(convertDecToBin(address),20);
                     break;
             }
 
