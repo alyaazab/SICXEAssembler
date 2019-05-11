@@ -86,27 +86,35 @@ public class ObjectCodeGenerator {
 
                     setNIXFlags(operandField);
                     String subOperand = "";
+                    String binaryAddress = "";
+                    int address = -1;
+                    int flag = 0;
+
 
                     if(n == 1 && i == 1 && x == 0) // direct, without indexing
                     {
-                        setBPFlags(operandField.trim(), line);
+                       subOperand = operandField.trim();
                     }else if (n == 1 && i == 1 && x == 1){ // direct, with indexing
                         subOperand = operandField.trim().substring(0, operandField.trim().length() - 1);
-                        setBPFlags(subOperand, line);
                     }else if (n == 1 && i == 0){ // indirect
                         subOperand = operandField.trim().substring(1);
-                        setBPFlags(subOperand, line);
                     }else if(n == 0 && i == 1){
                         subOperand = operandField.trim().substring(1);
                         try {
-                            int imm = Integer.parseInt(subOperand);
+                            address = Integer.parseInt(subOperand);
                             p = 0;
                             b = 0;
-                            String paddedString = leftPad(convertDecToBin(imm), 12);
-                            System.out.println("binary value: " + paddedString);
+                            binaryAddress = leftPad(convertDecToBin(address), 12);
+                            System.out.println("binary value: " + binaryAddress);
+                            flag = 1;
                         }catch (NumberFormatException e){
-                            setBPFlags(subOperand, line);
+                            flag = 0;
                         }
+                    }
+                    if (flag == 0) {
+                        setBPFlags(subOperand, line);
+                        address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
+                        binaryAddress = leftPad(convertDecToBin(address),12);
                     }
                     System.out.println("KITTY B = " + b + "   P = " + p);
                     break;
@@ -118,8 +126,8 @@ public class ObjectCodeGenerator {
                     e = 1;
                     b = 0;
                     p = 0;
+                    address = -1;
                     setNIXFlags(operandField);
-                    int address = -1;
                     if (n == 1 && i == 1 && x == 0){
                         address = SymbolTable.getInstance().getSymbol(operandField.trim()).getValue();
                     }else if (n == 1 && i == 1 && x == 1){ // direct, with indexing
@@ -136,7 +144,7 @@ public class ObjectCodeGenerator {
                             address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
                         }
                     }
-                    String binaryAddress = leftPad(convertDecToBin(address),20);
+                    binaryAddress = leftPad(convertDecToBin(address),20);
                     break;
             }
 
@@ -147,6 +155,7 @@ public class ObjectCodeGenerator {
     }
 
     private void setBPFlags(String str, Line line) {
+        if (str.equals("")) return;
         //check for PC relative or Base relative to set b and p flags
         int targetAddress = SymbolTable.getInstance().getSymbol(str).getValue();
         int displacement = targetAddress - line.getAddress();
