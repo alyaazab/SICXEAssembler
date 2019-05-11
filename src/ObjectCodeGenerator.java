@@ -113,8 +113,6 @@ public class ObjectCodeGenerator {
                     }
                     if (flag == 0) {
                         setBPFlags(subOperand, line);
-                        address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
-                        binaryAddress = leftPad(convertDecToBin(address),12);
                     }
                     System.out.println("KITTY B = " + b + "   P = " + p);
                     break;
