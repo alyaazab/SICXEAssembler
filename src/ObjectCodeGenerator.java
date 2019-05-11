@@ -48,12 +48,14 @@ public class ObjectCodeGenerator {
                     break;
                 case 2:
                     opcode = convertHexToBin(operation.getBinaryCode());
+                    System.out.println("opcode = " + opcode);
+
                     //get r1 and r2
-                    r1 = Integer.toString(RegisterTable.getInstance().getRegTable()
-                            .get(operandField.substring(0, 1)).getAddress());
+                    r1 = leftPad(convertDecToBin(RegisterTable.getInstance().getRegTable()
+                            .get(operandField.substring(0, 1)).getAddress()), 4);
                     if(operandField.trim().length() > 1)
-                        r2 = Integer.toString(RegisterTable.getInstance().getRegTable()
-                                .get(operandField.substring(2, 3)).getAddress());
+                        r2 = leftPad(convertDecToBin(RegisterTable.getInstance().getRegTable()
+                                .get(operandField.substring(2, 3)).getAddress()),4);
 
                     break;
 
@@ -88,17 +90,33 @@ public class ObjectCodeGenerator {
         String binary = Integer.toBinaryString(decimal);
 
 
-        return leftPad(binary);
+        return leftPad(binary, 8);
     }
 
-    private static String leftPad(String str){
+    private String convertDecToBin(int decimal) {
+        return Integer.toBinaryString(decimal);
+    }
 
-        String padString = "00000000";
+    private static String leftPad(String str, int n){
 
-        if(str.length() < 8 )
-            return padString.substring(str.length()) + str;
-        else
-            return str;
+        String padString;
+
+        if(n==8)
+        {
+            padString = "00000000";
+            if(str.length() < 8 )
+                return padString.substring(str.length()) + str;
+        }
+        else if(n==4)
+        {
+            padString = "0000";
+
+            if(str.length() < 4)
+                return padString.substring(str.length()) + str;
+        }
+
+
+        return str;
     }
 
 }

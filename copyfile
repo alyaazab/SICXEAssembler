@@ -4,7 +4,8 @@
 000000		bgn     	lda   	#3
 000003		        	addr  	s,a
 000005		        	tixr  	s
-000007		        	end   	bgn
+000007		        	clear 	x
+000009		        	end   	bgn
 
 
 
