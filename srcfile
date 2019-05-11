@@ -2,29 +2,14 @@
 .
          start   0000
 .
-arr3     resb    6
-arr1     word    1,2,3
-         word    4,5,6
-arr2     word    6,5,4
-         word    3,2,1
-label    byte    C'abcd'
-lbl2     byte    X'abc12'
-alpha    resw    2
-test     equ     alpha
+length   resw    1
+buffer   resw    1
+         lda     #3
+         ldb     length
+         base    length
 .
-bgn      ldx     #3
-         base    #2
-hi       word    5
-beta     resw    1000
-gamma    word    3
-         ldb     alpha
-         ldt     @arr1
-         ldb     gamma
-         base    gamma
-         lda     hi
-         rmo     a,x
-         tixr    s
-         nobase
-         addr    s,x
-         compr   x,t
+.
+.
+hi       resw    1000
+         lda     buffer
          end

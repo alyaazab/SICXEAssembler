@@ -7,6 +7,7 @@ public class ObjectCodeGenerator {
     private String opcode = "";
     private int operationFormat=0;
     private String instructionCode = "", r1="", r2="", flags="",  disp="", address="";
+    private int baseRegisterOperand = -1;
 
     public ObjectCodeGenerator(ArrayList<Line> lineArrayList) {
         this.lineArrayList = lineArrayList;
@@ -36,6 +37,23 @@ public class ObjectCodeGenerator {
                 continue;
             }
 
+
+            if(operation.getOperationMnemonic().equals("base") && line.isBaseRegisterSet())
+            {
+                String operand = line.getOperandField().trim();
+                if(operand.charAt(0) == '#' || operand.charAt(0) == '@')
+                {
+                    operand = operand.substring(1);
+                }
+                if(operand.charAt(operand.length()-2) == ',')
+                {
+                    operand = operand.substring(0, operand.length()-1);
+                }
+                if(Character.isDigit(operand.charAt(0)))
+                    baseRegisterOperand = Integer.valueOf(operand);
+                else
+                    baseRegisterOperand = SymbolTable.getInstance().getSymbol(operand).getValue();
+            }
 
 
 
@@ -119,12 +137,17 @@ public class ObjectCodeGenerator {
         }
         else if(line.isBaseRegisterSet())
         {
-            p=0;
-            b=1;
+            displacement = targetAddress - baseRegisterOperand;
+            System.out.println("target address = " + targetAddress);
+            System.out.println("base reg operand = " + baseRegisterOperand);
+            if(displacement >=0 && displacement < 4096)
+            {
+                b=1;
+                p=0;
+            }
         }
         else
         {
-            System.out.println("disp is = " + displacement);
             System.out.println("DISPLACEMENT OUT OF RANGE, CANNOT USE PC OR BASE RELATIVE ADDRESSING");
             p=0;
             b=0;
