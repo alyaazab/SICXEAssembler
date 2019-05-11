@@ -14,11 +14,14 @@ test     equ     alpha
 .
 bgn      ldx     #3
          base    #2
+hi       word    5
 beta     resw    1000
+gamma    word    3
          ldb     alpha
          ldt     @arr1
-         ldb     alpha
-         base    alpha
+         ldb     gamma
+         base    gamma
+         lda     hi
          rmo     a,x
          tixr    s
          nobase

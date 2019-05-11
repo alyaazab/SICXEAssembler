@@ -84,6 +84,13 @@ public class ObjectCodeGenerator {
                             p=0;
                             b=1;
                         }
+                        else
+                        {
+                            System.out.println("disp is = " + displacement);
+                            System.out.println("DISPLACEMENT OUT OF RANGE, CANNOT USE PC OR BASE RELATIVE ADDRESSING");
+                            p=0;
+                            b=0;
+                        }
                     }
                     System.out.println("KITTY B = " + b + "   P = " + p);
                     break;

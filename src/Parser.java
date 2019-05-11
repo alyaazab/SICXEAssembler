@@ -11,7 +11,8 @@ public class Parser {
     private boolean startStatementFound = false;
     private Operation operationObject = null;
 
-    private int baseRegisterValue = -1;
+    private int baseRegisterAvailable = -1;
+    private String baseRegisterValue = "";
 
     public Parser() {
         this.errorIndexList = new ArrayList<>();
@@ -31,14 +32,14 @@ public class Parser {
         {
             errorIndexList.add(22);
             return new Line(0, "", "", "", "",
-                    errorIndexList, null, baseRegisterValue==1);
+                    errorIndexList, null, baseRegisterAvailable==1);
         }
 
         if(isComment(line))
         {
             System.out.println("this line is a comment");
             return new Line(0, "", "", "", line,
-                    errorIndexList, null, baseRegisterValue==1);
+                    errorIndexList, null, baseRegisterAvailable==1);
         }
 
         if(line.length() < 10)
@@ -47,7 +48,7 @@ public class Parser {
             labelField = line;
             errorIndexList.add(22);
             return new Line(0, labelField, "", "", "",
-                    errorIndexList, null, baseRegisterValue==1);
+                    errorIndexList, null, baseRegisterAvailable==1);
         }
         else if(line.length()<=15)
         {
@@ -82,7 +83,7 @@ public class Parser {
 
 
         lineObj = new Line(0, labelField, operationField, operandField, "",
-                errorIndexList, this.operationObject, baseRegisterValue==1);
+                errorIndexList, this.operationObject, baseRegisterAvailable==1);
 
 
         validateFixedFormat(labelField.toLowerCase(), operationField.toLowerCase(), operandField.toLowerCase());
@@ -94,8 +95,39 @@ public class Parser {
         System.out.println(errorIndexList);
         lineObj.setOperation(this.operationObject);
 
-        System.out.println("KITKAT: baseRegisterValue = " + baseRegisterValue);
+        checkBaseRelativeAddressing();
+
+        lineObj.setBaseRegisterSet(baseRegisterAvailable == 1);
+
+        System.out.println("KITKAT: baseRegisterValue = " + baseRegisterAvailable);
         return lineObj;
+    }
+
+    private void checkBaseRelativeAddressing() {
+        if(errorIndexList.size() == 0)
+        {
+            if(baseRegisterAvailable == 1)
+            {
+                if(operation.equals("nobase"))
+                    baseRegisterAvailable = -1;
+            } else if(baseRegisterAvailable == 0)
+            {
+                //CHECK IF SAME OPERAND
+                if(operation.equals("base") && operand == baseRegisterValue)
+                    baseRegisterAvailable = 1;
+                else
+                    baseRegisterAvailable = -1;
+            }
+            else if(baseRegisterAvailable == -1)
+            {
+                if(operation.equals("ldb"))
+                {
+                    baseRegisterAvailable = 0;
+                    baseRegisterValue = operand;
+                }
+            }
+
+        }
     }
 
     private void addLabelToSymbolTable() {
@@ -220,13 +252,8 @@ public class Parser {
             System.out.println("operation doesn't exist in optable");
         }
 
-        if(errorIndexList.size() == 0 && operation.equals("ldb"))
-        {
-            baseRegisterValue = 0;
 
-        }
-        else
-            baseRegisterValue = -1;
+
 
     }
 
@@ -511,15 +538,6 @@ public class Parser {
                 }
                 validationHelper();
 
-                if(errorIndexList.size() == 0)
-                {
-                    System.out.println("no errors");
-                    if(baseRegisterValue == 0) {
-                        baseRegisterValue = 1;
-                        System.out.println("base was 0 now 1");
-                    }
-                }
-
                 break;
 
             case "nobase":
@@ -534,9 +552,6 @@ public class Parser {
                     System.out.println("nobase statement cant have an operand");
                     errorIndexList.add(5);
                 }
-
-                if(errorIndexList.size() == 0)
-                    baseRegisterValue = -1;
 
                 break;
 
@@ -739,10 +754,10 @@ public class Parser {
     }
 
     public int getBaseRegisterValue() {
-        return baseRegisterValue;
+        return baseRegisterAvailable;
     }
 
     public void setBaseRegisterValue(int baseRegisterValue) {
-        this.baseRegisterValue = baseRegisterValue;
+        this.baseRegisterAvailable = baseRegisterValue;
     }
 }

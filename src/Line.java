@@ -14,6 +14,10 @@ public class Line {
         return baseRegisterSet;
     }
 
+    public void setBaseRegisterSet(boolean baseRegisterSet) {
+        this.baseRegisterSet = baseRegisterSet;
+    }
+
     private boolean baseRegisterSet;
 
     public Line(int address, String labelField, String operationField, String operandField, String comment,

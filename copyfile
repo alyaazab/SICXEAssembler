@@ -14,17 +14,20 @@
 			.
 000039		bgn     	ldx   	#3
 00003C		        	base  	#2
-00003C		beta    	resw  	1000
-000BF4		        	ldb   	alpha
-000BF7		        	ldt   	@arr1
+00003C		hi      	word  	5
+00003F		beta    	resw  	1000
+000BF7		gamma   	word  	3
 000BFA		        	ldb   	alpha
-000BFD		        	base  	alpha
-000BFD		        	rmo   	a,x
-000BFF		        	tixr  	s
-000C01		        	nobase	
-000C01		        	addr  	s,x
-000C03		        	compr 	x,t
-000C05		        	end	
+000BFD		        	ldt   	@arr1
+000C00		        	ldb   	gamma
+000C03		        	base  	gamma
+000C03		        	lda   	hi
+000C06		        	rmo   	a,x
+000C08		        	tixr  	s
+000C0A		        	nobase	
+000C0A		        	addr  	s,x
+000C0C		        	compr 	x,t
+000C0E		        	end	
 
 
 
@@ -34,6 +37,7 @@
 
 Label Name			Address				Instruction Length		Relocatable
 
+hi                  60                  3                      true                
 test                57                  0                      true                
 alpha               51                  6                      true                
 bgn                 57                  3                      true                
@@ -41,5 +45,6 @@ label               42                  4                      true
 arr2                24                  9                      true                
 arr1                6                   9                      true                
 lbl2                46                  5                      true                
-beta                60                  3000                   true                
+beta                63                  3000                   true                
+gamma               3063                3                      true                
 arr3                0                   6                      true                
