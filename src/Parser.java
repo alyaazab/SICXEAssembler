@@ -4,8 +4,6 @@ import java.util.ArrayList;
 public class Parser {
 
     private ArrayList<Integer> errorIndexList;
-    private String commentField = "";
-
     private String label = "", operation = "", operand = "";
     private int instructionLength = 0;
     private boolean endStatementFound = false;
@@ -20,9 +18,9 @@ public class Parser {
     public Line extractFields(String line) {
 
         errorIndexList = new ArrayList<>();
-        String operandField = "";
-        String operationField = "";
-        String labelField = "";
+        String operandField;
+        String operationField;
+        String labelField;
         Line lineObj;
 
         System.out.println("line length = " + line.length());
@@ -30,13 +28,13 @@ public class Parser {
         if(line.length() == 0)
         {
             errorIndexList.add(22);
-            return new Line(0, "", "", "", "", errorIndexList);
+            return new Line(0, "", "", "", "", errorIndexList, null);
         }
 
         if(isComment(line))
         {
             System.out.println("this line is a comment");
-            return new Line(0, "", "", "", line, errorIndexList);
+            return new Line(0, "", "", "", line, errorIndexList, null);
         }
 
         if(line.length() < 10)
@@ -44,7 +42,7 @@ public class Parser {
             //no operation, no operand
             labelField = line;
             errorIndexList.add(22);
-            return new Line(0, labelField, "", "", "", errorIndexList);
+            return new Line(0, labelField, "", "", "", errorIndexList, null);
         }
         else if(line.length()<=15)
         {
@@ -77,7 +75,9 @@ public class Parser {
         System.out.println("TESTOPERAND: " + this.operand + this.operand.length());
 
 
-        lineObj = new Line(0, labelField, operationField, operandField, null, errorIndexList);
+
+        lineObj = new Line(0, labelField, operationField, operandField, "",
+                errorIndexList, this.operationObject);
 
 
         validateFixedFormat(labelField.toLowerCase(), operationField.toLowerCase(), operandField.toLowerCase());
@@ -87,6 +87,7 @@ public class Parser {
 
         lineObj.setAddress(LocationCounter.LC - this.instructionLength);
         System.out.println(errorIndexList);
+        lineObj.setOperation(this.operationObject);
 
         return lineObj;
     }
@@ -445,6 +446,7 @@ public class Parser {
     private void validateDirective() {
         System.out.println("VALIDATING DIRECTIVE...");
         Operation operation = OperationTable.getOperation(this.operation);
+        operationObject = operation;
 
         if (operation == null || operation.getFormat() != -1)
             return;

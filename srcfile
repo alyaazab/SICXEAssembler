@@ -1,8 +1,7 @@
-.2345678901234567890
 .
-         start   0000
 .
-arr1     word    1,2,3
-loop     lda     arr1,X
-test     equ     loop
-         end
+         start   0
+bgn      lda     #3
+         addr    s,a
+         tixr    s
+         end     bgn

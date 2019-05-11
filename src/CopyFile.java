@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 public class CopyFile {
 
-
     private ArrayList<Line> lineArrayList;
 
     public CopyFile() {
@@ -46,5 +45,10 @@ public class CopyFile {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public ArrayList<Line> getLineArrayList() {
+        return lineArrayList;
     }
 }

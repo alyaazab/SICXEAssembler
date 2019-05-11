@@ -42,6 +42,12 @@ public class Main {
 
         copyFile.writeToCopyFile();
 
+        ArrayList<Line> lineArrayList= copyFile.getLineArrayList();
+        System.out.println("arraylist size = " + lineArrayList.size());
+
+        ObjectCodeGenerator objectCodeGenerator = new ObjectCodeGenerator(lineArrayList);
+        objectCodeGenerator.generateObjectCode();
+
     }
 
 }

@@ -8,14 +8,17 @@ public class Line {
     private String operandField;
     private String comment;
     private ArrayList<Integer> errorIndexList;
+    private Operation operation;
 
-    public Line(int address, String labelField, String operationField, String operandField, String comment, ArrayList<Integer> errorIndexList) {
+    public Line(int address, String labelField, String operationField, String operandField, String comment,
+                ArrayList<Integer> errorIndexList, Operation operation) {
         this.address = address;
         this.labelField = labelField;
         this.operationField = operationField;
         this.operandField = operandField;
         this.comment = comment;
         this.errorIndexList = errorIndexList;
+        this.operation = operation;
     }
 
 
@@ -29,6 +32,18 @@ public class Line {
 
     public ArrayList<Integer> getErrorIndexList() {
         return errorIndexList;
+    }
+
+    public Operation getOperation() {
+        return operation;
+    }
+
+    public void setOperation(Operation operation) {
+        this.operation = operation;
+    }
+
+    public String getOperandField() {
+        return operandField;
     }
 
     @Override

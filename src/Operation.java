@@ -69,4 +69,10 @@ public class Operation {
     public void setHasLabel(int hasLabel) {
         this.hasLabel = hasLabel;
     }
+
+    @Override
+    public String toString() {
+
+        return operationMnemonic;
+    }
 }
