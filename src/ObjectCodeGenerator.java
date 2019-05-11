@@ -65,6 +65,30 @@ public class ObjectCodeGenerator {
                     System.out.println("opcode = " + opcode);
                     e = 0;
 
+                    if (operandField.charAt(0) == '#') {
+                        i = 1;
+                        x = 0;
+                        n = 0;
+                        System.out.println("addressing mode: immediate" );
+                    } else if(operandField.charAt(0) == '@'){
+                        n = 1;
+                        i = 0;
+                        x = 0;
+                        System.out.println("addressing mode: indirect");
+                    } else {
+                        String trimmedOperand = operandField.trim();
+                        if (trimmedOperand.charAt(trimmedOperand.length() - 2) == ','){
+                            n = 1;
+                            i = 1;
+                            x = 1;
+                            System.out.println("addressing mode: direct, with indexing");
+                        } else {
+                            n = 1;
+                            i = 1;
+                            x = 0;
+                            System.out.println("addressing mode: direct, without indexing");
+                        }
+                    }
                     break;
 
 
@@ -72,9 +96,7 @@ public class ObjectCodeGenerator {
                     opcode = convertHexToBin(operation.getBinaryCode()).substring(0,6);
                     System.out.println("opcode = " + opcode);
                     e = 1;
-
-
-
+                    
                     break;
             }
 
