@@ -115,7 +115,9 @@ public class ObjectCodeGenerator {
                     opcode = convertHexToBin(operation.getBinaryCode()).substring(0,6);
                     System.out.println("opcode = " + opcode);
                     e = 1;
-
+                    b = 0;
+                    p = 0;
+                    setNIXFlags(operandField);
                     break;
             }
 
