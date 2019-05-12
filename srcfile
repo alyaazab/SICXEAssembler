@@ -4,7 +4,7 @@
 .
 length   resw    1
 buffer   resw    1
-         +lda    length,x
+         lda     length,x
          ldb     length
          base    length
 .
@@ -12,4 +12,5 @@ buffer   resw    1
 .
 hi       resw    1000
          lda     buffer
+b        byte    c'32'
          end

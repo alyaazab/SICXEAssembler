@@ -66,6 +66,7 @@ public class ObjectCodeGenerator {
                     n = i = x = b = p = e = -1;
                     System.out.println("KITTY B = " + b + "   P = " + p);
 
+
                     break;
                 case 2:
                     opcode = convertHexToBin(operation.getBinaryCode());
@@ -147,11 +148,28 @@ public class ObjectCodeGenerator {
                     break;
             }
 
-            instructionCode = instructionCode + opcode + " " + r1 + " " + r2 + " " + n + i + x + b + p + e + " " + binaryAddress;
+            instructionCode = instructionCode + opcode + r1 + r2 + n + i + x + b + p + e + binaryAddress;
             System.out.println("INSTRUCTION CODE: " + instructionCode);
+            createOnjectCode();
             System.out.println("---------new line--------------");
 
         }
+    }
+
+    private void createOnjectCode() {
+        if (n != -1) {
+            String instructionObjectCode = convertBinaryToHex(instructionCode);
+            if (instructionObjectCode.length() < 6)
+                instructionObjectCode = "0" + instructionObjectCode;
+            System.out.println("object code: " + instructionObjectCode);
+        }
+    }
+
+    private String convertBinaryToHex(String instructionCode) {
+        // convert to decimal first
+        int decimal = Integer.parseInt(instructionCode, 2);
+        // then convert to hex
+        return Integer.toString(decimal, 16);
     }
 
     private String setBPFlags(String str, Line line) {

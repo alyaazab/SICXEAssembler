@@ -4,15 +4,16 @@
 			.
 000000		length  	resw  	1
 000003		buffer  	resw  	1
-000006		        	+lda  	length,x
-00000A		        	ldb   	length
-00000D		        	base  	length
+000006		        	lda   	length,x
+000009		        	ldb   	length
+00000C		        	base  	length
 			.
 			.
 			.
-00000D		hi      	resw  	1000
-000BC5		        	lda   	buffer
-000BC8		        	end	
+00000C		hi      	resw  	1000
+000BC4		        	lda   	buffer
+000BC7		b       	byte  	c'32'
+000BC9		        	end	
 
 
 
@@ -22,6 +23,7 @@
 
 Label Name			Address				Instruction Length		Relocatable
 
-hi                  13                  3000                   true                
+hi                  12                  3000                   true                
+b                   3015                2                      true                
 length              0                   3                      true                
 buffer              3                   3                      true                
