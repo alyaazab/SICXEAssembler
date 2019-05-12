@@ -12,7 +12,7 @@
 			.
 00000C		hi      	resw  	1000
 000BC4		        	lda   	buffer
-000BC7		b       	byte  	c'32'
+000BC7		b       	byte  	x'a0'
 000BC9		        	end	
 
 
