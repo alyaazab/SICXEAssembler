@@ -60,9 +60,9 @@ public class Main {
 
         ObjectCodeGenerator objectCodeGenerator = new ObjectCodeGenerator();
 
-        for (int i = 0; i < lineArrayList.size(); i++) {
-            Line line = lineArrayList.get(i);
+        for (Line line : lineArrayList) {
             objectCodeGenerator.generateObjectCode(line);
+
         }
 
         ListFile listFile = new ListFile(lineArrayList);
