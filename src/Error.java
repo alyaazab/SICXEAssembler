@@ -47,7 +47,7 @@ public class Error {
         errors[26] = "***ERROR: hex string needs to start with a digit***";
 
         errors[27] = "***ERROR: displacement out of range***";
-        errors[28] = "***ERROR: operand not found in label***";
+        errors[28] = "***ERROR: operand not found in symbol table***";
 
     }
 

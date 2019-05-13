@@ -98,35 +98,9 @@ public class ObjectCodeGenerator {
                 e = 0;
 
                 setNIXFlags(operandField);
-                int address;
-                int flag = 0;
 
+                binaryAddress = objectCodeHelper(operandField, 3);
 
-                if (n == 1 && i == 1 && x == 0) // direct, without indexing
-                {
-                    subOperand = operandField.trim();
-                } else if (n == 1 && i == 1 && x == 1) { // direct, with indexing
-                    subOperand = operandField.trim().substring(0, operandField.trim().length() - 2);
-                } else if (n == 1 && i == 0) { // indirect
-                    subOperand = operandField.trim().substring(1);
-                } else if (n == 0 && i == 1) {
-                    subOperand = operandField.trim().substring(1);
-                    try {
-                        address = Integer.parseInt(subOperand);
-                        p = 0;
-                        b = 0;
-                        binaryAddress = leftPad(convertDecToBin(address), 12);
-                        System.out.println("binary value: " + binaryAddress);
-                        flag = 1;
-                    } catch (NumberFormatException e) {
-                        flag = 0;
-                    }
-                }
-                if (flag == 0 && SymbolTable.getInstance().getSymbol(subOperand) != null) {
-                    binaryAddress = setBPFlags(subOperand, line);
-                } else {
-                    line.getErrorIndexList().add(28);
-                }
                 System.out.println("KITTY B = " + b + "   P = " + p);
                 break;
 
@@ -137,30 +111,8 @@ public class ObjectCodeGenerator {
                 e = 1;
                 b = 0;
                 p = 0;
-                address = -1;
-                flag = 0;
                 setNIXFlags(operandField);
-                if (n == 1 && i == 1 && x == 0) {
-                    subOperand = operandField.trim();
-                } else if (n == 1 && i == 1 && x == 1) { // direct, with indexing
-                    subOperand = operandField.trim().substring(0, operandField.trim().length() - 2);
-                } else if (n == 1 && i == 0) { // indirect
-                    subOperand = operandField.trim().substring(1);
-                } else if (n == 0 && i == 1) {
-                    subOperand = operandField.trim().substring(1);
-                    try {
-                        address = Integer.parseInt(subOperand);
-                        flag = 1;
-                    } catch (NumberFormatException e) {
-                        flag = 0;
-                    }
-                }
-                if (flag == 0 && SymbolTable.getInstance().getSymbol(subOperand) == null){
-                    line.getErrorIndexList().add(28);
-                    System.out.println("operand not found in symbol table");
-                }else {
-                    binaryAddress = leftPad(convertDecToBin(address), 20);
-                }
+                binaryAddress = objectCodeHelper(operandField, 4);
                 break;
         }
 
@@ -170,6 +122,59 @@ public class ObjectCodeGenerator {
         line.setObjectCode(instructionObjectCode);
         System.out.println("line object code: " + line.getObjectCode());
         System.out.println("---------new line--------------");
+    }
+
+    private String objectCodeHelper(String operandField, int format) {
+        int address = -1;
+        int flag = 0;
+        String subOperand = "";
+        String binaryAddress = "";
+
+        if (n == 1 && i == 1 && x == 0) // direct, without indexing
+        {
+            subOperand = operandField.trim();
+        } else if (n == 1 && i == 1 && x == 1) { // direct, with indexing
+            System.out.println("direct, with indexing");
+            subOperand = operandField.trim().substring(0, operandField.trim().length() - 2);
+        } else if (n == 1 && i == 0) { // indirect
+            subOperand = operandField.trim().substring(1);
+        } else if (n == 0 && i == 1) {
+            subOperand = operandField.trim().substring(1);
+
+            if (format == 3) {
+                try {
+                    address = Integer.parseInt(subOperand);
+                    p = 0;
+                    b = 0;
+                    binaryAddress = leftPad(convertDecToBin(address), 12);
+                    System.out.println("binary value: " + binaryAddress);
+                    flag = 1;
+                } catch (NumberFormatException e) {
+                    flag = 0;
+                }
+            } else {
+                try {
+                    address = Integer.parseInt(subOperand);
+                    flag = 1;
+                } catch (NumberFormatException e) {
+                    flag = 0;
+                }
+            }
+        }
+        if (flag == 0 && SymbolTable.getInstance().getSymbol(subOperand) == null) {
+            line.getErrorIndexList().add(28);
+        } else {
+            if (flag == 0)
+                address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
+
+            if (format == 3)
+                binaryAddress = setBPFlags(subOperand, line);
+            else
+                binaryAddress = leftPad(convertDecToBin(address), 20);
+        }
+
+        System.out.println("KITTY B = " + b + "   P = " + p);
+        return binaryAddress;
     }
 
     private void createOnjectCode() {

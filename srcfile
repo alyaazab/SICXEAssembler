@@ -4,7 +4,7 @@
 .
 length   resw    1
 buffer   resw    1
-         lda     str,x
+         lda     length,x
          ldb     length
          base    length
 .

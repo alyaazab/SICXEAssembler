@@ -4,7 +4,7 @@
 			.
 000000 			length  		resw  		1
 000003 			buffer  		resw  		1
-000006 			        		lda   		str,x
+000006 			        		lda   		length,x
 000009 			        		ldb   		length
 00000C 			        		base  		length
 			.
@@ -38,9 +38,7 @@ buffer              3                   3                      true
 			.
 000000 			length  		resw  		1
 000003 			buffer  		resw  		1
-000006 			        		lda   		str,x
- ***ERROR: operand not found in label***
-
+000006 03affa			        		lda   		length,x
 000009 6b2ff7			        		ldb   		length
 00000C 			        		base  		length
 			.
