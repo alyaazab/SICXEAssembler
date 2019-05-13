@@ -46,6 +46,9 @@ public class Error {
         errors[25] = "***ERROR: missing values in operand field***";
         errors[26] = "***ERROR: hex string needs to start with a digit***";
 
+        errors[27] = "***ERROR: displacement out of range***";
+        errors[28] = "***ERROR: operand not found in label***";
+
     }
 
     public static String getError(int i){

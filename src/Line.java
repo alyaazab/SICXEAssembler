@@ -76,9 +76,9 @@ public class Line {
 
         if(!this.operationField.equals("")) {
             str = str + Integer.toHexString(address);
-            str = leftPad(str).toUpperCase();
+            str = leftPad(str).toUpperCase() + " " + objectCode;
 
-            str = str + "\t\t" + labelField + " " + objectCode + "\t" + operationField + "\t" + operandField;
+            str = str + "\t\t\t" + labelField + "\t\t" + operationField + "\t\t" + operandField;
         }
         else if(!this.comment.equals("")) {
             str = str + "\t\t\t" + comment;

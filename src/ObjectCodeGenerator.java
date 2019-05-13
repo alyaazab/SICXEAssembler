@@ -6,14 +6,17 @@ public class ObjectCodeGenerator {
     private String instructionCode = "", r1 = "", r2 = "", flags = "", disp = "", address = "";
     private int baseRegisterOperand = -1;
     private String instructionObjectCode = "";
+    private Line line;
 
     public ObjectCodeGenerator() {
     }
 
     public void generateObjectCode(Line line) {
+        this.line = line;
         String binaryAddress = "";
         instructionCode = "";
         instructionObjectCode = "";
+        String subOperand = "";
         //if line is a comment, skip
         if (!line.getComment().equals(""))
             return;
@@ -95,7 +98,6 @@ public class ObjectCodeGenerator {
                 e = 0;
 
                 setNIXFlags(operandField);
-                String subOperand = "";
                 int address;
                 int flag = 0;
 
@@ -120,8 +122,10 @@ public class ObjectCodeGenerator {
                         flag = 0;
                     }
                 }
-                if (flag == 0) {
+                if (flag == 0 && SymbolTable.getInstance().getSymbol(subOperand) != null) {
                     binaryAddress = setBPFlags(subOperand, line);
+                } else {
+                    line.getErrorIndexList().add(28);
                 }
                 System.out.println("KITTY B = " + b + "   P = " + p);
                 break;
@@ -134,24 +138,29 @@ public class ObjectCodeGenerator {
                 b = 0;
                 p = 0;
                 address = -1;
+                flag = 0;
                 setNIXFlags(operandField);
                 if (n == 1 && i == 1 && x == 0) {
-                    address = SymbolTable.getInstance().getSymbol(operandField.trim()).getValue();
+                    subOperand = operandField.trim();
                 } else if (n == 1 && i == 1 && x == 1) { // direct, with indexing
                     subOperand = operandField.trim().substring(0, operandField.trim().length() - 2);
-                    address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
                 } else if (n == 1 && i == 0) { // indirect
                     subOperand = operandField.trim().substring(1);
-                    address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
                 } else if (n == 0 && i == 1) {
                     subOperand = operandField.trim().substring(1);
                     try {
                         address = Integer.parseInt(subOperand);
+                        flag = 1;
                     } catch (NumberFormatException e) {
-                        address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
+                        flag = 0;
                     }
                 }
-                binaryAddress = leftPad(convertDecToBin(address), 20);
+                if (flag == 0 && SymbolTable.getInstance().getSymbol(subOperand) == null){
+                    line.getErrorIndexList().add(28);
+                    System.out.println("operand not found in symbol table");
+                }else {
+                    binaryAddress = leftPad(convertDecToBin(address), 20);
+                }
                 break;
         }
 
@@ -164,7 +173,10 @@ public class ObjectCodeGenerator {
     }
 
     private void createOnjectCode() {
-        if (n != -1 && n != -2) {
+        if (line.getErrorIndexList().size() > 0){
+            this.instructionObjectCode = "";
+        }
+        else if (n != -1 && n != -2) {
             this.instructionObjectCode = leftPad(convertBinaryToHex(instructionCode), 6);
         } else if (n == -2)
             this.instructionObjectCode = opcode;
@@ -175,6 +187,7 @@ public class ObjectCodeGenerator {
         System.out.println("DISPLACEMENT OUT OF RANGE, CANNOT USE PC OR BASE RELATIVE ADDRESSING");
         p = 0;
         b = 0;
+        line.getErrorIndexList().add(27);
     }
 
     private String setBPFlags(String str, Line line) {
@@ -182,7 +195,7 @@ public class ObjectCodeGenerator {
         int targetAddress = SymbolTable.getInstance().getSymbol(str).getValue();
         int displacement = targetAddress - line.getAddress();
         System.out.println("disp: " + displacement);
-        String binaryAddress = null;
+        String binaryAddress = "";
         if (displacement >= -2048 && displacement <= 2047) {
             p = 1;
             b = 0;

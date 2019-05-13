@@ -59,6 +59,9 @@ public class Main {
             objectCodeGenerator.generateObjectCode(line);
         }
 
+        ListFile listFile = new ListFile(lineArrayList);
+        listFile.writeToListFile();
+
     }
 
 }

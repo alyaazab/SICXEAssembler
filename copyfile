@@ -1,20 +1,20 @@
 			.2345678901234567890
 			.
-000000		         	start 	0000
+000000 			        		start 		0000
 			.
-000000		length   	resw  	1
-000003		buffer   	resw  	1
-000006		         	lda   	length,x
-000009		         	ldb   	length
-00000C		         	base  	length
+000000 			length  		resw  		1
+000003 			buffer  		resw  		1
+000006 			        		lda   		str,x
+000009 			        		ldb   		length
+00000C 			        		base  		length
 			.
 			.
 			.
-00000C		hi       	resw  	1000
-000BC4		         	lda   	buffer
-000BC7		b        	byte  	x'a0'
-000BC9		         	word  	5,55,10
-000BD2		         	end	
+00000C 			hi      		resw  		1000
+000BC4 			        		lda   		buffer
+000BC7 			b       		byte  		x'a0'
+000BC9 			        		word  		5
+000BCC 			        		end		
 
 
 
@@ -28,3 +28,27 @@ hi                  12                  3000                   true
 b                   3015                2                      true                
 length              0                   3                      true                
 buffer              3                   3                      true                
+
+
+----Pass 2-----
+
+			.2345678901234567890
+			.
+000000 			        		start 		0000
+			.
+000000 			length  		resw  		1
+000003 			buffer  		resw  		1
+000006 			        		lda   		str,x
+ ***ERROR: operand not found in label***
+
+000009 6b2ff7			        		ldb   		length
+00000C 			        		base  		length
+			.
+			.
+			.
+00000C 			hi      		resw  		1000
+000BC4 034003			        		lda   		buffer
+000BC7 a0			b       		byte  		x'a0'
+000BC9 000005
+			        		word  		5
+000BCC 			        		end		

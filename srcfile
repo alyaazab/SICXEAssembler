@@ -4,7 +4,7 @@
 .
 length   resw    1
 buffer   resw    1
-         lda     length,x
+         lda     str,x
          ldb     length
          base    length
 .
@@ -13,5 +13,5 @@ buffer   resw    1
 hi       resw    1000
          lda     buffer
 b        byte    x'a0'
-         word    5,55,10
+         word    5
          end
