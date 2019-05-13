@@ -62,6 +62,14 @@ public class Line {
         return address;
     }
 
+    public void setObjectCode(String objectCode) {
+        this.objectCode = objectCode;
+    }
+
+    public String getObjectCode() {
+        return objectCode;
+    }
+
     @Override
     public String toString() {
         String str = "";

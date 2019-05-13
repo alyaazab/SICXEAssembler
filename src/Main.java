@@ -1,4 +1,7 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Objects;
 
 public class Main {
@@ -46,7 +49,6 @@ public class Main {
             System.out.println("errors found, no pass 2");
             return;
         }
-
 
         ArrayList<Line> lineArrayList= copyFile.getLineArrayList();
         System.out.println("arraylist size = " + lineArrayList.size());

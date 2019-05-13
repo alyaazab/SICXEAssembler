@@ -13,6 +13,7 @@ public class ObjectCodeGenerator {
     public void generateObjectCode(Line line) {
         String binaryAddress = "";
         instructionCode = "";
+        instructionObjectCode = "";
         //if line is a comment, skip
         if (!line.getComment().equals(""))
             return;
@@ -157,9 +158,9 @@ public class ObjectCodeGenerator {
         instructionCode = instructionCode + opcode + r1 + r2 + n + i + x + b + p + e + binaryAddress;
         System.out.println("INSTRUCTION CODE: " + instructionCode);
         createOnjectCode();
+        line.setObjectCode(instructionObjectCode);
+        System.out.println("line object code: " + line.getObjectCode());
         System.out.println("---------new line--------------");
-
-
     }
 
     private void createOnjectCode() {
