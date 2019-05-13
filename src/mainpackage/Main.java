@@ -60,7 +60,8 @@ public class Main {
 
         ObjectCodeGenerator objectCodeGenerator = new ObjectCodeGenerator();
 
-        for (Line line : lineArrayList) {
+        for (int i = 0; i < lineArrayList.size(); i++) {
+            Line line = lineArrayList.get(i);
             objectCodeGenerator.generateObjectCode(line);
         }
 

@@ -66,6 +66,10 @@ public class Line {
         return address;
     }
 
+    public String getLabelField() {
+        return labelField;
+    }
+
     public void setObjectCode(String objectCode) {
         this.objectCode = objectCode;
     }
