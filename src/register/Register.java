@@ -1,3 +1,5 @@
+package register;
+
 public class Register {
 
     private int address;

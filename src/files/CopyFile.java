@@ -1,3 +1,10 @@
+package files;
+
+import mainpackage.Error;
+import mainpackage.Line;
+import symbol.Symbol;
+import symbol.SymbolTable;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;

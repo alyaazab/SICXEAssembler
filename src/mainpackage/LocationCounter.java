@@ -1,3 +1,5 @@
+package mainpackage;
+
 public class LocationCounter {
 
     public static int LC = 0;

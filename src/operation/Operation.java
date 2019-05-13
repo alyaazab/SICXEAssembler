@@ -1,3 +1,5 @@
+package operation;
+
 public class Operation {
 
     private String operationMnemonic;

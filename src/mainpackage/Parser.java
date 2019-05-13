@@ -1,3 +1,10 @@
+package mainpackage;
+
+import operation.Operation;
+import operation.OperationTable;
+import register.RegisterTable;
+import symbol.SymbolTable;
+
 import java.util.ArrayList;
 
 
@@ -140,7 +147,7 @@ public class Parser {
             return;
         }
         if (SymbolTable.getInstance().getSymbol(this.label) != null){
-            System.out.println("Error, duplicate label");
+            System.out.println("mainpackage.Error, duplicate label");
             errorIndexList.add(3);
             return;
         }
@@ -148,7 +155,7 @@ public class Parser {
         SymbolTable.getInstance().addToSymTab(this.label, LocationCounter.LC - this.instructionLength,
                 this.instructionLength, true);
 
-        System.out.println("Symbol: " + SymbolTable.getInstance().getSymbol(this.label).toString());
+        System.out.println("symbol.Symbol: " + SymbolTable.getInstance().getSymbol(this.label).toString());
     }
 
 

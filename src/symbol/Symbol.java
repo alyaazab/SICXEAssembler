@@ -1,3 +1,5 @@
+package symbol;
+
 public class Symbol {
 
     private int value;

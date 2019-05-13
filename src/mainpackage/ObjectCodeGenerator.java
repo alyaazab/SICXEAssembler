@@ -1,3 +1,9 @@
+package mainpackage;
+
+import operation.Operation;
+import register.RegisterTable;
+import symbol.SymbolTable;
+
 public class ObjectCodeGenerator {
 
     private int n = 0, i = 0, x = 0, b = 0, p = 0, e = 0;

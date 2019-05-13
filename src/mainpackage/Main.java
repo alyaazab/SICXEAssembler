@@ -1,3 +1,11 @@
+package mainpackage;
+
+import files.CopyFile;
+import files.ListFile;
+import files.SourceFile;
+import operation.OperationTable;
+import register.RegisterTable;
+
 import java.util.ArrayList;
 import java.util.Objects;
 

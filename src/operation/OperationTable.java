@@ -1,3 +1,5 @@
+package operation;
+
 import java.util.HashMap;
 
 public class OperationTable {

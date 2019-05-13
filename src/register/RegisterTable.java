@@ -1,3 +1,5 @@
+package register;
+
 import java.util.HashMap;
 
 public class RegisterTable {

@@ -1,3 +1,7 @@
+package files;
+
+import mainpackage.Line;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
