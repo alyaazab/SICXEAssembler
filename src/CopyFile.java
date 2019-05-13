@@ -6,6 +6,7 @@ import java.util.Iterator;
 public class CopyFile {
 
     private ArrayList<Line> lineArrayList;
+    private boolean errorFound;
 
     public CopyFile() {
         this.lineArrayList = new ArrayList<>();
@@ -27,6 +28,7 @@ public class CopyFile {
                         String error = Error.getError(integer);
                         System.out.println("ERROR: " + error);
                     }
+                    errorFound = true;
                 }
                 fileWriter.write(line + "\n");
             }
@@ -41,6 +43,11 @@ public class CopyFile {
                 fileWriter.write(iterator.next().toString());
             }
 
+
+            if (errorFound){
+                fileWriter.write("\n\n\n" + "errors found, no pass 2");
+            }
+
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,5 +57,9 @@ public class CopyFile {
 
     public ArrayList<Line> getLineArrayList() {
         return lineArrayList;
+    }
+
+    public boolean isErrorFound() {
+        return errorFound;
     }
 }

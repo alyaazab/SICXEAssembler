@@ -42,6 +42,12 @@ public class Main {
 
         copyFile.writeToCopyFile();
 
+        if (copyFile.isErrorFound()){
+            System.out.println("errors found, no pass 2");
+            return;
+        }
+
+
         ArrayList<Line> lineArrayList= copyFile.getLineArrayList();
         System.out.println("arraylist size = " + lineArrayList.size());
 

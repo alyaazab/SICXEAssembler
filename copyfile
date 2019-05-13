@@ -4,7 +4,9 @@
 			.
 000000		length  	resw  	1
 000003		buffer  	resw  	1
-000006		        	lda   	length,x
+000006		        	lda   	length,,x
+ ***ERROR: undefined symbol in operand***
+
 000009		        	ldb   	length
 00000C		        	base  	length
 			.
@@ -28,3 +30,4 @@ hi                  12                  3000                   true
 b                   3015                2                      true                
 length              0                   3                      true                
 buffer              3                   3                      true                
+errors found, no pass 2
