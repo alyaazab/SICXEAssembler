@@ -1,180 +1,173 @@
-import java.util.ArrayList;
-
 public class ObjectCodeGenerator {
 
-    ArrayList<Line> lineArrayList;
     private int n = 0, i = 0, x = 0, b = 0, p = 0, e = 0;
     private String opcode = "";
     private int operationFormat = 0;
     private String instructionCode = "", r1 = "", r2 = "", flags = "", disp = "", address = "";
     private int baseRegisterOperand = -1;
+    private String instructionObjectCode = "";
 
-    public ObjectCodeGenerator(ArrayList<Line> lineArrayList) {
-        this.lineArrayList = lineArrayList;
+    public ObjectCodeGenerator() {
     }
 
-    public void generateObjectCode() {
-        for (Line line : lineArrayList) {
-            String binaryAddress = "";
-            instructionCode = "";
-            //if line is a comment, skip
-            if (!line.getComment().equals(""))
-                continue;
+    public void generateObjectCode(Line line) {
+        String binaryAddress = "";
+        instructionCode = "";
+        //if line is a comment, skip
+        if (!line.getComment().equals(""))
+            return;
 
-            Operation operation = line.getOperation();
-            String operandField = line.getOperandField();
-
-
-            //print operation
-            if (operation != null) {
-                System.out.println(operation.toString());
-                operationFormat = operation.getFormat();
-            } else {
-                System.out.println("operation is null");
-                continue;
-            }
+        Operation operation = line.getOperation();
+        String operandField = line.getOperandField();
 
 
-            if (operation.getOperationMnemonic().equals("base") && line.isBaseRegisterSet()) {
-                String operand = line.getOperandField().trim();
-                if (operand.charAt(0) == '#' || operand.charAt(0) == '@') {
-                    operand = operand.substring(1);
-                }
-                if (operand.charAt(operand.length() - 2) == ',') {
-                    operand = operand.substring(0, operand.length() - 1);
-                }
-                if (Character.isDigit(operand.charAt(0)))
-                    baseRegisterOperand = Integer.valueOf(operand);
-                else
-                    baseRegisterOperand = SymbolTable.getInstance().getSymbol(operand).getValue();
-            }
-
-
-            switch (operationFormat) {
-                case -1:
-                    //directive, no opcode
-                    opcode = "";
-                    n = i = x = b = p = e = -1;
-                    System.out.println("KITTY B = " + b + "   P = " + p);
-
-                    if (operation.getOperationMnemonic().equals("byte")) {
-                        for (int i = 2; i < operandField.trim().length() - 1; i++) {
-                            if (operandField.charAt(0) == 'c') {
-                                int asciiValue = operandField.charAt(i);
-                                opcode = opcode + convertDecToHex(asciiValue);
-                                System.out.println("opcode: " + opcode);
-                            } else {
-                                opcode = opcode + operandField.charAt(i);
-                            }
-                        }
-                        n = -2;
-                    }
-
-                    else if (operation.getOperationMnemonic().equals("word")){
-                        String [] splittedOperand = operandField.trim().split(",");
-                        for (String s : splittedOperand) {
-                            int value = Integer.valueOf(s);
-                            opcode = opcode + leftPad(convertDecToHex(value), 6) + "\n";
-                        }
-                        n = -2;
-                    }
-
-                    break;
-                case 2:
-                    opcode = convertHexToBin(operation.getBinaryCode());
-                    System.out.println("opcode = " + opcode);
-
-                    //get r1 and r2
-                    r1 = leftPad(convertDecToBin(RegisterTable.getInstance().getRegTable()
-                            .get(operandField.substring(0, 1)).getAddress()), 4);
-                    if (operandField.trim().length() > 1)
-                        r2 = leftPad(convertDecToBin(RegisterTable.getInstance().getRegTable()
-                                .get(operandField.substring(2, 3)).getAddress()), 4);
-
-                    break;
-
-
-                case 3:
-                    opcode = convertHexToBin(operation.getBinaryCode()).substring(0, 6);
-                    System.out.println("opcode = " + opcode);
-                    e = 0;
-
-                    setNIXFlags(operandField);
-                    String subOperand = "";
-                    int address;
-                    int flag = 0;
-
-
-                    if (n == 1 && i == 1 && x == 0) // direct, without indexing
-                    {
-                        subOperand = operandField.trim();
-                    } else if (n == 1 && i == 1 && x == 1) { // direct, with indexing
-                        subOperand = operandField.trim().substring(0, operandField.trim().length() - 2);
-                    } else if (n == 1 && i == 0) { // indirect
-                        subOperand = operandField.trim().substring(1);
-                    } else if (n == 0 && i == 1) {
-                        subOperand = operandField.trim().substring(1);
-                        try {
-                            address = Integer.parseInt(subOperand);
-                            p = 0;
-                            b = 0;
-                            binaryAddress = leftPad(convertDecToBin(address), 12);
-                            System.out.println("binary value: " + binaryAddress);
-                            flag = 1;
-                        } catch (NumberFormatException e) {
-                            flag = 0;
-                        }
-                    }
-                    if (flag == 0) {
-                        binaryAddress = setBPFlags(subOperand, line);
-                    }
-                    System.out.println("KITTY B = " + b + "   P = " + p);
-                    break;
-
-
-                case 4:
-                    opcode = convertHexToBin(operation.getBinaryCode()).substring(0, 6);
-                    System.out.println("opcode = " + opcode);
-                    e = 1;
-                    b = 0;
-                    p = 0;
-                    address = -1;
-                    setNIXFlags(operandField);
-                    if (n == 1 && i == 1 && x == 0) {
-                        address = SymbolTable.getInstance().getSymbol(operandField.trim()).getValue();
-                    } else if (n == 1 && i == 1 && x == 1) { // direct, with indexing
-                        subOperand = operandField.trim().substring(0, operandField.trim().length() - 2);
-                        address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
-                    } else if (n == 1 && i == 0) { // indirect
-                        subOperand = operandField.trim().substring(1);
-                        address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
-                    } else if (n == 0 && i == 1) {
-                        subOperand = operandField.trim().substring(1);
-                        try {
-                            address = Integer.parseInt(subOperand);
-                        } catch (NumberFormatException e) {
-                            address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
-                        }
-                    }
-                    binaryAddress = leftPad(convertDecToBin(address), 20);
-                    break;
-            }
-
-            instructionCode = instructionCode + opcode + r1 + r2 + n + i + x + b + p + e + binaryAddress;
-            System.out.println("INSTRUCTION CODE: " + instructionCode);
-            createOnjectCode();
-            System.out.println("---------new line--------------");
-
+        //print operation
+        if (operation != null) {
+            System.out.println(operation.toString());
+            operationFormat = operation.getFormat();
+        } else {
+            System.out.println("operation is null");
+            return;
         }
+
+
+        if (operation.getOperationMnemonic().equals("base") && line.isBaseRegisterSet()) {
+            String operand = line.getOperandField().trim();
+            if (operand.charAt(0) == '#' || operand.charAt(0) == '@') {
+                operand = operand.substring(1);
+            }
+            if (operand.charAt(operand.length() - 2) == ',') {
+                operand = operand.substring(0, operand.length() - 1);
+            }
+            if (Character.isDigit(operand.charAt(0)))
+                baseRegisterOperand = Integer.valueOf(operand);
+            else
+                baseRegisterOperand = SymbolTable.getInstance().getSymbol(operand).getValue();
+        }
+
+
+        switch (operationFormat) {
+            case -1:
+                //directive, no opcode
+                opcode = "";
+                n = i = x = b = p = e = -1;
+                System.out.println("KITTY B = " + b + "   P = " + p);
+
+                if (operation.getOperationMnemonic().equals("byte")) {
+                    for (int i = 2; i < operandField.trim().length() - 1; i++) {
+                        if (operandField.charAt(0) == 'c') {
+                            int asciiValue = operandField.charAt(i);
+                            opcode = opcode + convertDecToHex(asciiValue);
+                            System.out.println("opcode: " + opcode);
+                        } else {
+                            opcode = opcode + operandField.charAt(i);
+                        }
+                    }
+                    n = -2;
+                } else if (operation.getOperationMnemonic().equals("word")) {
+                    String[] splittedOperand = operandField.trim().split(",");
+                    for (String s : splittedOperand) {
+                        int value = Integer.valueOf(s);
+                        opcode = opcode + leftPad(convertDecToHex(value), 6) + "\n";
+                    }
+                    n = -2;
+                }
+
+                break;
+            case 2:
+                opcode = convertHexToBin(operation.getBinaryCode());
+                System.out.println("opcode = " + opcode);
+
+                //get r1 and r2
+                r1 = leftPad(convertDecToBin(RegisterTable.getInstance().getRegTable()
+                        .get(operandField.substring(0, 1)).getAddress()), 4);
+                if (operandField.trim().length() > 1)
+                    r2 = leftPad(convertDecToBin(RegisterTable.getInstance().getRegTable()
+                            .get(operandField.substring(2, 3)).getAddress()), 4);
+
+                break;
+
+
+            case 3:
+                opcode = convertHexToBin(operation.getBinaryCode()).substring(0, 6);
+                System.out.println("opcode = " + opcode);
+                e = 0;
+
+                setNIXFlags(operandField);
+                String subOperand = "";
+                int address;
+                int flag = 0;
+
+
+                if (n == 1 && i == 1 && x == 0) // direct, without indexing
+                {
+                    subOperand = operandField.trim();
+                } else if (n == 1 && i == 1 && x == 1) { // direct, with indexing
+                    subOperand = operandField.trim().substring(0, operandField.trim().length() - 2);
+                } else if (n == 1 && i == 0) { // indirect
+                    subOperand = operandField.trim().substring(1);
+                } else if (n == 0 && i == 1) {
+                    subOperand = operandField.trim().substring(1);
+                    try {
+                        address = Integer.parseInt(subOperand);
+                        p = 0;
+                        b = 0;
+                        binaryAddress = leftPad(convertDecToBin(address), 12);
+                        System.out.println("binary value: " + binaryAddress);
+                        flag = 1;
+                    } catch (NumberFormatException e) {
+                        flag = 0;
+                    }
+                }
+                if (flag == 0) {
+                    binaryAddress = setBPFlags(subOperand, line);
+                }
+                System.out.println("KITTY B = " + b + "   P = " + p);
+                break;
+
+
+            case 4:
+                opcode = convertHexToBin(operation.getBinaryCode()).substring(0, 6);
+                System.out.println("opcode = " + opcode);
+                e = 1;
+                b = 0;
+                p = 0;
+                address = -1;
+                setNIXFlags(operandField);
+                if (n == 1 && i == 1 && x == 0) {
+                    address = SymbolTable.getInstance().getSymbol(operandField.trim()).getValue();
+                } else if (n == 1 && i == 1 && x == 1) { // direct, with indexing
+                    subOperand = operandField.trim().substring(0, operandField.trim().length() - 2);
+                    address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
+                } else if (n == 1 && i == 0) { // indirect
+                    subOperand = operandField.trim().substring(1);
+                    address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
+                } else if (n == 0 && i == 1) {
+                    subOperand = operandField.trim().substring(1);
+                    try {
+                        address = Integer.parseInt(subOperand);
+                    } catch (NumberFormatException e) {
+                        address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
+                    }
+                }
+                binaryAddress = leftPad(convertDecToBin(address), 20);
+                break;
+        }
+
+        instructionCode = instructionCode + opcode + r1 + r2 + n + i + x + b + p + e + binaryAddress;
+        System.out.println("INSTRUCTION CODE: " + instructionCode);
+        createOnjectCode();
+        System.out.println("---------new line--------------");
+
+
     }
 
     private void createOnjectCode() {
-        String instructionObjectCode = "";
         if (n != -1 && n != -2) {
-            instructionObjectCode = leftPad(convertBinaryToHex(instructionCode), 6);
+            this.instructionObjectCode = leftPad(convertBinaryToHex(instructionCode), 6);
         } else if (n == -2)
-            instructionObjectCode = opcode;
-        System.out.println("object code: " + instructionObjectCode);
+            this.instructionObjectCode = opcode;
+        System.out.println("object code: " + this.instructionObjectCode);
     }
 
     private void printOutOfRangeError() {
@@ -207,7 +200,7 @@ public class ObjectCodeGenerator {
         }
 
         if (p != 0 || b != 0)
-            binaryAddress = leftPad(setBinaryAddress(displacement),12);
+            binaryAddress = leftPad(setBinaryAddress(displacement), 12);
 
         return binaryAddress;
     }
@@ -242,12 +235,12 @@ public class ObjectCodeGenerator {
     private String setBinaryAddress(int displacement) {
         String hexAddress = convertDecToHex(displacement);
         System.out.println("HEX ADDRESS: " + hexAddress);
-        hexAddress = removeSimilarDigitsFromHex(hexAddress);
+        hexAddress = truncateHexAddress(hexAddress);
         System.out.println("HEX ADDRESS: " + hexAddress);
         return convertHexToBin(hexAddress);
     }
 
-    private String removeSimilarDigitsFromHex(String hexAddress) {
+    private String truncateHexAddress(String hexAddress) {
         if (hexAddress.length() > 3)
             return hexAddress.substring(hexAddress.length() - 3);
         else if (hexAddress.length() == 1)
@@ -299,12 +292,12 @@ public class ObjectCodeGenerator {
             if (str.length() < 12)
                 return padString.substring(str.length()) + str;
 
-        } else if (n == 20){
+        } else if (n == 20) {
             padString = "00000000000000000000";
 
             if (str.length() < 20)
                 return padString.substring(str.length()) + str;
-        } else if (n == 6){
+        } else if (n == 6) {
             padString = "000000";
 
             if (str.length() < 6)
@@ -313,4 +306,7 @@ public class ObjectCodeGenerator {
         return str;
     }
 
+    public String getInstructionObjectCode() {
+        return instructionObjectCode;
+    }
 }
