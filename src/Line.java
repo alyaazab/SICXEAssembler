@@ -9,6 +9,7 @@ public class Line {
     private String comment;
     private ArrayList<Integer> errorIndexList;
     private Operation operation;
+    private String objectCode = "";
 
     public boolean isBaseRegisterSet() {
         return baseRegisterSet;
@@ -69,7 +70,7 @@ public class Line {
             str = str + Integer.toHexString(address);
             str = leftPad(str).toUpperCase();
 
-            str = str + "\t\t" + labelField + "\t" + operationField + "\t" + operandField;
+            str = str + "\t\t" + labelField + " " + objectCode + "\t" + operationField + "\t" + operandField;
         }
         else if(!this.comment.equals("")) {
             str = str + "\t\t\t" + comment;
