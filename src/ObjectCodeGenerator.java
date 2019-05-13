@@ -13,32 +13,6 @@ public class ObjectCodeGenerator {
         this.lineArrayList = lineArrayList;
     }
 
-    private static String leftPad(String str, int n) {
-
-        String padString;
-
-        if (n == 8) {
-            padString = "00000000";
-            if (str.length() < 8)
-                return padString.substring(str.length()) + str;
-        } else if (n == 4) {
-            padString = "0000";
-
-            if (str.length() < 4)
-                return padString.substring(str.length()) + str;
-        } else if (n == 12) {
-
-            padString = "000000000000";
-
-            if (str.length() < 12)
-                return padString.substring(str.length()) + str;
-
-        }
-
-
-        return str;
-    }
-
     public void generateObjectCode() {
         for (Line line : lineArrayList) {
             String binaryAddress = "";
@@ -96,6 +70,14 @@ public class ObjectCodeGenerator {
                         n = -2;
                     }
 
+                    else if (operation.getOperationMnemonic().equals("word")){
+                        String [] splittedOperand = operandField.trim().split(",");
+                        for (String s : splittedOperand) {
+                            int value = Integer.valueOf(s);
+                            opcode = opcode + leftPad(convertDecToHex(value), 6) + "\n";
+                        }
+                        n = -2;
+                    }
 
                     break;
                 case 2:
@@ -119,7 +101,7 @@ public class ObjectCodeGenerator {
 
                     setNIXFlags(operandField);
                     String subOperand = "";
-                    int address = -1;
+                    int address;
                     int flag = 0;
 
 
@@ -189,9 +171,7 @@ public class ObjectCodeGenerator {
     private void createOnjectCode() {
         String instructionObjectCode = "";
         if (n != -1 && n != -2) {
-            instructionObjectCode = convertBinaryToHex(instructionCode);
-            if (instructionObjectCode.length() < 6)
-                instructionObjectCode = "0" + instructionObjectCode;
+            instructionObjectCode = leftPad(convertBinaryToHex(instructionCode), 6);
         } else if (n == -2)
             instructionObjectCode = opcode;
         System.out.println("object code: " + instructionObjectCode);
@@ -212,8 +192,6 @@ public class ObjectCodeGenerator {
         if (displacement >= -2048 && displacement <= 2047) {
             p = 1;
             b = 0;
-            binaryAddress = setBinaryAddress(displacement);
-
         } else if (line.isBaseRegisterSet()) {
             displacement = targetAddress - baseRegisterOperand;
             System.out.println("target address = " + targetAddress);
@@ -221,17 +199,16 @@ public class ObjectCodeGenerator {
             if (displacement >= 0 && displacement < 4096) {
                 b = 1;
                 p = 0;
-                binaryAddress = setBinaryAddress(displacement);
-
-                System.out.println("binary address: " + binaryAddress);
             } else {
                 printOutOfRangeError();
             }
         } else {
             printOutOfRangeError();
         }
-        if (binaryAddress.length() < 12)
-            binaryAddress = "0000" + binaryAddress;
+
+        if (p != 0 || b != 0)
+            binaryAddress = leftPad(setBinaryAddress(displacement),12);
+
         return binaryAddress;
     }
 
@@ -300,6 +277,40 @@ public class ObjectCodeGenerator {
 
     private String convertDecToHex(int decimal) {
         return Integer.toHexString(decimal);
+    }
+
+    private static String leftPad(String str, int n) {
+
+        String padString;
+
+        if (n == 8) {
+            padString = "00000000";
+            if (str.length() < 8)
+                return padString.substring(str.length()) + str;
+        } else if (n == 4) {
+            padString = "0000";
+
+            if (str.length() < 4)
+                return padString.substring(str.length()) + str;
+        } else if (n == 12) {
+
+            padString = "000000000000";
+
+            if (str.length() < 12)
+                return padString.substring(str.length()) + str;
+
+        } else if (n == 20){
+            padString = "00000000000000000000";
+
+            if (str.length() < 20)
+                return padString.substring(str.length()) + str;
+        } else if (n == 6){
+            padString = "000000";
+
+            if (str.length() < 6)
+                return padString.substring(str.length()) + str;
+        }
+        return str;
     }
 
 }
