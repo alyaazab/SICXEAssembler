@@ -221,7 +221,8 @@ public class ObjectCodeGenerator {
         //check for PC relative or Base relative to set b and p flags
         System.out.println("STR " + str);
         int targetAddress = SymbolTable.getInstance().getSymbol(str).getValue();
-        int displacement = targetAddress - line.getAddress();
+        int displacement = targetAddress - line.getAddress() - line.getOperation().getLengthOfInstruction();
+        System.out.println("displacement: " + displacement);
         System.out.println("disp: " + displacement);
         String binaryAddress = "";
         if (displacement >= -2048 && displacement <= 2047) {
