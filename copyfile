@@ -1,20 +1,21 @@
-			.2345678901234567890
+			.23456789012345678901234567890123456
+			. ALT & Enter to toggle full screen
+			.Label.  Opcode  The  O p e r a n d
 			.
-000000 			        		start 		0000
-			.
-000000 			length  		resw  		1
-000003 			buffer  		resw  		1
-000006 			        		lda   		length,x
-000009 			        		ldb   		length
-00000C 			        		base  		length
-			.
-			.
-			.
-00000C 			hi      		resw  		1000
-000BC4 			        		lda   		buffer
-000BC7 			b       		byte  		x'a0'
-000BC9 			        		word  		5
-000BCC 			        		end		
+001000 			myprog  		start 		1000
+001000 			lbl     		word  		5
+001003 			bgn     		lda   		#3
+001006 			        		ldx   		#5
+001009 			        		lda   		lbl
+00100C 			        		tixr  		s
+00100E 			        		rmo   		a,x
+001010 			        		ldt   		#3
+001013 			        		ldx   		#8
+001016 			        		ldx   		#5
+001019 			        		lda   		lbl
+00101C 			        		tixr  		a
+00101E 			        		rmo   		s,x
+001020 			        		END   		bgn
 
 
 
@@ -24,29 +25,29 @@
 
 Label Name			Address				Instruction Length		Relocatable
 
-hi                  12                  3000                   true                
-b                   3015                2                      true                
-length              0                   3                      true                
-buffer              3                   3                      true                
+lbl                 4096                3                      true                
+bgn                 4099                3                      true                
+myprog              4096                0                      true                
 
 
 ----Pass 2-----
 
-			.2345678901234567890
+			.23456789012345678901234567890123456
+			. ALT & Enter to toggle full screen
+			.Label.  Opcode  The  O p e r a n d
 			.
-000000 			        		start 		0000
-			.
-000000 			length  		resw  		1
-000003 			buffer  		resw  		1
-000006 03affa			        		lda   		length,x
-000009 6b2ff7			        		ldb   		length
-00000C 			        		base  		length
-			.
-			.
-			.
-00000C 			hi      		resw  		1000
-000BC4 034003			        		lda   		buffer
-000BC7 a0			b       		byte  		x'a0'
-000BC9 000005
-			        		word  		5
-000BCC 			        		end		
+001000 			myprog  		start 		1000
+001000 000005
+			lbl     		word  		5
+001003 010003			bgn     		lda   		#3
+001006 050005			        		ldx   		#5
+001009 032ff7			        		lda   		lbl
+00100C 00b840			        		tixr  		s
+00100E 00ac01			        		rmo   		a,x
+001010 750003			        		ldt   		#3
+001013 050008			        		ldx   		#8
+001016 050005			        		ldx   		#5
+001019 032fe7			        		lda   		lbl
+00101C 00b800			        		tixr  		a
+00101E 00ac41			        		rmo   		s,x
+001020 			        		END   		bgn

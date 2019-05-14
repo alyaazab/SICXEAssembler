@@ -2,6 +2,7 @@ package mainpackage;
 
 import files.CopyFile;
 import files.ListFile;
+import files.ObjectFile;
 import files.SourceFile;
 import operation.OperationTable;
 import register.RegisterTable;
@@ -59,10 +60,12 @@ public class Main {
         System.out.println("arraylist size = " + lineArrayList.size());
 
         ObjectCodeGenerator objectCodeGenerator = new ObjectCodeGenerator();
+        ObjectFile objectFile = new ObjectFile();
+
 
         for (Line line : lineArrayList) {
             objectCodeGenerator.generateObjectCode(line);
-
+            objectFile.addToRecords(line);
         }
 
         ListFile listFile = new ListFile(lineArrayList);

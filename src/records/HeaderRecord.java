@@ -8,6 +8,6 @@ public class HeaderRecord extends Record {
 
     @Override
     public String toString() {
-        return startOfLine + name + "^" + leftPad(Integer.toHexString(address)) + "^" + leftPad(Integer.toHexString(programLength));
+        return startOfLine + name + "^" + address + "^" + programLength;
     }
 }

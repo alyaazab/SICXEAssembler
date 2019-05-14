@@ -8,6 +8,6 @@ public class EndRecord extends Record {
 
     @Override
     public String toString() {
-        return startOfLine + leftPad(Integer.toHexString(address));
+        return startOfLine + address;
     }
 }

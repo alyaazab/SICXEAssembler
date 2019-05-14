@@ -8,6 +8,6 @@ public class TextRecord extends Record{
 
     @Override
     public String toString() {
-        return startOfLine + leftPad(Integer.toHexString(address)) + "^" + Integer.toHexString(textLength) + "^" + objectCodesString;
+        return startOfLine + address + "^" + textLength + "^" + objectCodesString;
     }
 }

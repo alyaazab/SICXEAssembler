@@ -2,18 +2,19 @@ package records;
 
 public abstract class Record {
 
-    int address = -1;
+    String address = "";
     String name = "";
-    int textLength;
-    int programLength;
+    String textLength;
+    String programLength;
     String startOfLine = "";
     String objectCodesString = "";
 
-    public int getAddress() {
+
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(int address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
@@ -25,20 +26,28 @@ public abstract class Record {
         this.name = name;
     }
 
-    public int getTextLength() {
+    public String getTextLength() {
         return textLength;
     }
 
-    public void setTextLength(int textLength) {
+    public void setTextLength(String textLength) {
         this.textLength = textLength;
     }
 
-    public int getProgramLength() {
+    public String getProgramLength() {
         return programLength;
     }
 
-    public void setProgramLength(int programLength) {
+    public void setProgramLength(String programLength) {
         this.programLength = programLength;
+    }
+
+    public String getStartOfLine() {
+        return startOfLine;
+    }
+
+    public void setStartOfLine(String startOfLine) {
+        this.startOfLine = startOfLine;
     }
 
     public String getObjectCodesString() {
@@ -55,16 +64,6 @@ public abstract class Record {
 
     public int getObjectCodesStringLength(){
         return objectCodesString.length();
-    }
-
-     String leftPad(String str){
-
-        String padString = "000000";
-
-        if(str.length() < 6 )
-            return padString.substring(str.length()) + str;
-        else
-            return str;
     }
 
     @Override

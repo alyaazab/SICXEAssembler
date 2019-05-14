@@ -60,6 +60,8 @@ public class ObjectCodeGenerator {
             case -1:
                 //directive, no opcode
                 opcode = "";
+                r1 = "";
+                r2 = "";
                 n = i = x = b = p = e = -1;
                 System.out.println("KITTY B = " + b + "   P = " + p);
 
@@ -94,11 +96,19 @@ public class ObjectCodeGenerator {
                 if (operandField.trim().length() > 1)
                     r2 = leftPad(convertDecToBin(RegisterTable.getInstance().getRegTable()
                             .get(operandField.substring(2, 3)).getAddress()), 4);
+                else {
+                    r2 = "0000";
+                }
+
+                System.out.println("r1: " + r1);
+                System.out.println("r2: " + r2);
 
                 break;
 
 
             case 3:
+                r1 = "";
+                r2 = "";
                 opcode = convertHexToBin(operation.getBinaryCode()).substring(0, 6);
                 System.out.println("opcode = " + opcode);
                 e = 0;
@@ -112,6 +122,8 @@ public class ObjectCodeGenerator {
 
 
             case 4:
+                r1 = "";
+                r2 = "";
                 opcode = convertHexToBin(operation.getBinaryCode()).substring(0, 6);
                 System.out.println("opcode = " + opcode);
                 e = 1;
@@ -169,7 +181,7 @@ public class ObjectCodeGenerator {
         }
         if (flag == 0 && SymbolTable.getInstance().getSymbol(subOperand) == null) {
             line.getErrorIndexList().add(28);
-        } else {
+        } else if (SymbolTable.getInstance().getSymbol(subOperand) != null){
             if (flag == 0)
                 address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
 
@@ -184,6 +196,10 @@ public class ObjectCodeGenerator {
     }
 
     private void createOnjectCode() {
+        if (line.getOperation().getFormat() == 2){
+            instructionCode = opcode + r1 + r2;
+            this. instructionObjectCode = convertBinaryToHex(instructionCode);
+        }
         if (line.getErrorIndexList().size() > 0){
             this.instructionObjectCode = "";
         }
@@ -203,6 +219,7 @@ public class ObjectCodeGenerator {
 
     private String setBPFlags(String str, Line line) {
         //check for PC relative or Base relative to set b and p flags
+        System.out.println("STR " + str);
         int targetAddress = SymbolTable.getInstance().getSymbol(str).getValue();
         int displacement = targetAddress - line.getAddress();
         System.out.println("disp: " + displacement);

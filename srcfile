@@ -1,17 +1,18 @@
-.2345678901234567890
+.23456789012345678901234567890123456
+. ALT & Enter to toggle full screen
+.Label.  Opcode  The  O p e r a n d
 .
-         start   0000
-.
-length   resw    1
-buffer   resw    1
-         lda     length,x
-         ldb     length
-         base    length
-.
-.
-.
-hi       resw    1000
-         lda     buffer
-b        byte    x'a0'
-         word    5
-         end
+myprog   start   1000
+lbl      word    5
+bgn      lda     #3
+         ldx     #5
+         lda     lbl
+         tixr    s
+         rmo     a,x
+         ldt     #3
+         ldx     #8
+         ldx     #5
+         lda     lbl
+         tixr    a
+         rmo     s,x
+         END     bgn
