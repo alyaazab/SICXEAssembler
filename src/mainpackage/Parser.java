@@ -20,6 +20,7 @@ public class Parser {
 
     private int baseRegisterAvailable = -1;
     private String baseRegisterValue = "";
+    private int orgInstructionAddress = 0;
 
     public Parser() {
         this.errorIndexList = new ArrayList<>();
@@ -94,11 +95,16 @@ public class Parser {
 
 
         validateFixedFormat(labelField.toLowerCase(), operationField.toLowerCase(), operandField.toLowerCase());
-        addLabelToSymbolTable();
+
+        if(!this.operation.equals("equ"))
+            addLabelToSymbolTable();
 
         System.out.println("errors: " + errorIndexList.size());
 
-        lineObj.setAddress(LocationCounter.LC - this.instructionLength);
+        if(this.operation.equals("org"))
+            lineObj.setAddress(orgInstructionAddress);
+        else
+            lineObj.setAddress(LocationCounter.LC - this.instructionLength);
         System.out.println(errorIndexList);
         lineObj.setOperation(this.operationObject);
 
@@ -530,6 +536,11 @@ public class Parser {
                 }
                 else if (SymbolTable.getInstance().getSymbol(this.operand) == null)
                     errorIndexList.add(20); // equ should have previously defined operands
+                else
+                {
+                    int operandAddress = SymbolTable.getInstance().getSymbol(this.operand.trim()).getValue();
+                    SymbolTable.getInstance().addToSymTab(this.label, operandAddress, this.instructionLength, true);
+                }
 
                 break;
 
@@ -691,6 +702,18 @@ public class Parser {
                 {
                     System.out.println("undefined symbol in operand");
                     errorIndexList.add(8);
+                }
+
+                int newAddress = SymbolTable.getInstance().getSymbol(this.operand).getValue();
+
+
+                if(errorIndexList.size() == 0)
+                {
+                    System.out.println("i want to go to address " + newAddress);
+                    System.out.println("i am at address " + LocationCounter.LC);
+                    System.out.println("increment by " + -(LocationCounter.LC - newAddress));
+                    orgInstructionAddress = LocationCounter.LC;
+                    incrementLocationCounter(newAddress - LocationCounter.LC);
                 }
                 break;
             case "end":

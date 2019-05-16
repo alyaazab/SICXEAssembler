@@ -59,7 +59,8 @@ public class ObjectFile {
         } else {
             if (line.getOperation().getFormat() == -1
                     && !line.getOperation().getOperationMnemonic().equals("byte")
-                    && !line.getOperation().getOperationMnemonic().equals("word")) {
+                    && !line.getOperation().getOperationMnemonic().equals("word")
+                    && !line.getOperation().getOperationMnemonic().equals("org")) {
                 System.out.println("DIRECTIVE");
                 return;
             }
