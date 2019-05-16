@@ -8,14 +8,14 @@
 001006 			bgn     		lda   		#3
 001009 			        		ldx   		tst
 00100C 			        		lda   		lbl
-00100F 			test    		EQU   		lbl
-00100F 			        		ldx   		tst+lbl
-00100F 			        		tixr  		s
-001011 			        		rmo   		a,x
-001013 			        		ldt   		#3
-001016 			        		ldx   		#8
-001019 			        		ldx   		#5
-00101C 			        		org   		bgn
+00100F 			test    		EQU   		l+t*d
+00100F 			        		ldx   		tst
+001012 			        		tixr  		s
+001014 			        		rmo   		a,x
+001016 			        		ldt   		#3
+001019 			        		ldx   		#8
+00101C 			        		ldx   		#5
+00101F 			        		org   		bgn
 001006 			        		lda   		lbl
 001009 			        		tixr  		a
 00100B 			        		rmo   		s,x
@@ -30,7 +30,6 @@
 Label Name			Address				Instruction Length		Relocatable
 
 tst                 4099                3                      true                
-test                4096                0                      true                
 lbl                 4096                3                      true                
 bgn                 4102                3                      true                
 myprog              4096                0                      true                
@@ -48,16 +47,14 @@ myprog              4096                0                      true
 001006 010003			bgn     		lda   		#3
 001009 072ff7			        		ldx   		tst
 00100C 032ff1			        		lda   		lbl
-00100F 			test    		EQU   		lbl
-00100F 			        		ldx   		tst+lbl
- ***ERROR: operand not found in symbol table***
-
-00100F b840			        		tixr  		s
-001011 ac01			        		rmo   		a,x
-001013 750003			        		ldt   		#3
-001016 050008			        		ldx   		#8
-001019 050005			        		ldx   		#5
-00101C 			        		org   		bgn
+00100F 			test    		EQU   		l+t*d
+00100F 072ff1			        		ldx   		tst
+001012 b840			        		tixr  		s
+001014 ac01			        		rmo   		a,x
+001016 750003			        		ldt   		#3
+001019 050008			        		ldx   		#8
+00101C 050005			        		ldx   		#5
+00101F 			        		org   		bgn
 001006 032ff7			        		lda   		lbl
 001009 b800			        		tixr  		a
 00100B ac41			        		rmo   		s,x

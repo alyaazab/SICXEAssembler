@@ -176,15 +176,6 @@ public class Parser {
 
         if(this.operationObject != null)
         {
-            if(containsOperator(this.operand))
-            {
-                if(Postfix.infixToPostfix(this.operand.trim()))
-                    return;
-                else
-                    System.out.println("POSTFIX ERROR");
-            }
-
-
             if(this.operationObject.getFormat() == -1)
                 validateDirective();
             else if(needsOperand())
@@ -330,7 +321,6 @@ public class Parser {
         //our operation needs an operand, but we don't have one
         if(this.operand.trim().equals(""))
         {
-            System.out.println("no operand");
             errorIndexList.add(2);
 
             if (this.operationObject == null) {
@@ -366,14 +356,25 @@ public class Parser {
         if (this.operationObject == null)
             return;
 
+
+
         int operationFormat = this.operationObject.getFormat();
 
-        //if operation is a directive
-//        if (operationFormat == -1)
-//            return;
+
 
         incrementLocationCounter(this.operationObject.getFormat());
         this.instructionLength = this.operationObject.getLengthOfInstruction();
+
+        if(containsOperator(this.operand))
+        {
+            if(Postfix.infixToPostfix(this.operand.trim()))
+                return;
+            else
+            {
+                errorIndexList.add(30);
+                return;
+            }
+        }
 
         switch(operationFormat)
         {
@@ -518,6 +519,17 @@ public class Parser {
         System.out.println("DIRECTIVE: " + this.operation);
         this.instructionLength = operation.getLengthOfInstruction();
 
+
+        if(containsOperator(this.operand))
+        {
+            if(Postfix.infixToPostfix(this.operand.trim()))
+               return;
+            else
+            {
+                errorIndexList.add(30);
+                return;
+            }
+        }
 
         switch (this.operation){
             case "equ":

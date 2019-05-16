@@ -8,8 +8,8 @@ tst      byte    c'abc'
 bgn      lda     #3
          ldx     tst
          lda     lbl
-test     EQU     lbl
-         ldx     tst+lbl
+test     EQU     l+t*d
+         ldx     tst
          tixr    s
          rmo     a,x
          ldt     #3
