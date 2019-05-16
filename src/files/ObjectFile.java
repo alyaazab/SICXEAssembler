@@ -49,8 +49,8 @@ public class ObjectFile {
             endRecord.setAddress(firstExecAddress);
             int end = line.getAddress();
             int start = Integer.parseInt(startAddress, 16);
-            String endAddrees = leftPad(Integer.toHexString(end-start));
-            headerRecord.setProgramLength(endAddrees);
+            String endAddress = leftPad(Integer.toHexString(end-start));
+            headerRecord.setProgramLength(endAddress);
 
             start = Integer.parseInt(textRecord.getAddress(),16);
             textRecord.setTextLength(Integer.toHexString(end-start));

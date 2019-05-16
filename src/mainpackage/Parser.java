@@ -598,6 +598,8 @@ public class Parser {
                 break;
 
             case "byte":
+                int numberOfBytes = 0;
+
                 //if it doesnt start with c or x, or if it doesn't contain 2 apostrophes, error
                 if((this.operand.charAt(0) != 'c' && this.operand.charAt(0) != 'x') ||
                         this.operand.charAt(1) != '\'' || this.operand.charAt(this.operand.length()-1) != '\'')
@@ -606,8 +608,10 @@ public class Parser {
                     errorIndexList.add(8);
                 } else if (this.operand.charAt(0) == 'c')
                 {
-                    if(this.operand.length() > 18)
+                    if(this.operand.length() > 18){
                         System.out.println("operand too long");
+                        errorIndexList.add(18);
+                    }
 
                     for(int i=2; i<this.operand.length()-1; i++)
                     {
@@ -615,13 +619,20 @@ public class Parser {
                         {
                             System.out.println("undefined symbol in operand");
                             errorIndexList.add(8);
+                            break;
                         }
                     }
+
+                    numberOfBytes = this.operand.length()-3;
                 } else if(this.operand.charAt(0) == 'x')
                 {
                     if(this.operand.length() > 17)
                     {
                         System.out.println("operand too long");
+                        errorIndexList.add(18);
+                    } else if(this.operand.length()%2 == 0)
+                    {
+                        errorIndexList.add(29);
                     }
                     for(int i=2; i<this.operand.length()-1; i++)
                     {
@@ -629,13 +640,16 @@ public class Parser {
                         {
                             System.out.println("undef symbol in operand");
                             errorIndexList.add(8);
+                            break;
                         }
                     }
+                    numberOfBytes = (this.operand.length()-3) / 2;
+                    System.out.println("number of bytes = " + numberOfBytes);
                 }
 
                 if(errorIndexList.size() == 0) {
-                    incrementLocationCounter(this.operand.length() - 3);
-                    this.instructionLength = this.operand.length() - 3;
+                    incrementLocationCounter(numberOfBytes);
+                    this.instructionLength = numberOfBytes;
                 }
                 break;
 

@@ -50,6 +50,8 @@ public class Error {
 
         errors[27] = "***ERROR: displacement out of range***";
         errors[28] = "***ERROR: operand not found in symbol table***";
+        errors[29] = "***ERROR: incorrect length of byte operand***";
+
 
     }
 

@@ -136,7 +136,7 @@ public class ObjectCodeGenerator {
 
         instructionCode = instructionCode + opcode + r1 + r2 + n + i + x + b + p + e + binaryAddress;
         System.out.println("INSTRUCTION CODE: " + instructionCode);
-        createOnjectCode();
+        createObjectCode();
         line.setObjectCode(instructionObjectCode);
         System.out.println("line object code: " + line.getObjectCode());
         System.out.println("---------new line--------------");
@@ -195,7 +195,7 @@ public class ObjectCodeGenerator {
         return binaryAddress;
     }
 
-    private void createOnjectCode() {
+    private void createObjectCode() {
         if (line.getErrorIndexList().size() > 0){
             this.instructionObjectCode = "";
         }

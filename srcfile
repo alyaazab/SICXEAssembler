@@ -4,6 +4,7 @@
 .
 myprog   start   1000
 lbl      word    5
+tst      byte    x'ab'
 bgn      lda     #3
          ldx     #5
          lda     lbl
