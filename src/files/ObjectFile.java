@@ -6,6 +6,8 @@ import records.HeaderRecord;
 import records.Record;
 import records.TextRecord;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ObjectFile {
@@ -93,7 +95,16 @@ public class ObjectFile {
     }
 
     public void writeToObjectFile() {
+        try {
+            FileWriter fileWriter = new FileWriter("objfile");
+            for (Record record : records){
+                fileWriter.write(record + "\n");
+            }
 
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     String leftPad(String str){

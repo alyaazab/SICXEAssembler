@@ -71,6 +71,8 @@ public class Main {
         ListFile listFile = new ListFile(lineArrayList);
         listFile.writeToListFile();
 
+        objectFile.writeToObjectFile();
+
     }
 
 }
