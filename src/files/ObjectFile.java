@@ -65,7 +65,7 @@ public class ObjectFile {
             if (!line.getOperation().getOperationMnemonic().equals("org")){
                 if (textRecord.getAddress().equals("")){
                     textRecord.setAddress(leftPad(Integer.toHexString(line.getAddress())));
-                } else if (textRecord.getObjectCodesStringLength() < 63){
+                } if (textRecord.getObjectCodesStringLength() < 63){
                     textRecord.addToObjectCodesString(line.getObjectCode());
                 } else {
                     recordHelper(line);
@@ -92,6 +92,7 @@ public class ObjectFile {
         records.add(textRecord);
         textRecord = new TextRecord();
         textRecord.setAddress(leftPad(Integer.toHexString(line.getAddress())));
+        textRecord.addToObjectCodesString(line.getObjectCode());
     }
 
     public void writeToObjectFile() {
