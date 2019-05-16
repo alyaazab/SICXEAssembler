@@ -173,13 +173,40 @@ public class Parser {
     private void validateFixedFormat(String labelField, String operationField, String operandField) {
         validateLabel(labelField);
         validateOperationField(operationField);
-        //TODO: check if directive or operation, if directive: validateDirective, else, validateOperand IF NEEDS OPERAND
-        if(this.operationObject != null && this.operationObject.getFormat() == -1){
-            validateDirective();
-        } else if (this.operationObject != null && this.operationObject.getFormat() != -1){
-            if(needsOperand())
+
+        if(this.operationObject != null)
+        {
+            if(containsOperator(this.operand))
+            {
+                if(Postfix.infixToPostfix(this.operand.trim()))
+                    return;
+                else
+                    System.out.println("POSTFIX ERROR");
+            }
+
+
+            if(this.operationObject.getFormat() == -1)
+                validateDirective();
+            else if(needsOperand())
                 validateOperandField(operandField);
         }
+
+    }
+
+
+
+    private boolean containsOperator(String string) {
+
+        for(int i=0; i<string.length(); i++)
+        {
+            char c = string.charAt(i);
+
+            if(c=='+' || c=='-' || c=='*' || c=='/' || c=='(' || c==')')
+                return true;
+
+        }
+
+        return false;
     }
 
 
@@ -296,41 +323,23 @@ public class Parser {
 
     private void validateOperandField(String operandField) {
        // this.operand = operandField;
-        System.out.println("TESTOPERAND: " + this.operand+ this.operand.length());
 
         System.out.println("VALIDATING OPERAND FIELD...");
 
-//        //if our operation doesn't need an operand and we don't have an operand, return
-//        if(operation != null && (this.operationObject.isHasOperand() == 0 || this.operationObject.isHasOperand() == -1)
-//                && this.operand.trim().equals(""))
-//        {
-//            this.operand = this.operand.trim();
-//            System.out.println("ginger");
-//            return;
-//
-//        }
 
-        System.out.println("brownie");
         //our operation needs an operand, but we don't have one
         if(this.operand.trim().equals(""))
         {
-//            int operationFormat = this.operationObject.getFormat();
-//            //if operation is a directive
-//            if (operationFormat == -1) {
-//                return;
-//            }
             System.out.println("no operand");
             errorIndexList.add(2);
-
 
             if (this.operationObject == null) {
                 return;
             }
 
-
-
-            incrementLocationCounter(this.operationObject.getFormat());
-            this.instructionLength = this.operationObject.getLengthOfInstruction();
+//            incrementLocationCounter(this.operationObject.getFormat());
+//            this.instructionLength = this.operationObject.getLengthOfInstruction();
+            this.instructionLength = 0;
             return;
         }
 
@@ -665,6 +674,12 @@ public class Parser {
                 break;
 
             case "word":
+                if(this.operand.trim().equals(""))
+                {
+                    errorIndexList.add(2);
+                    this.instructionLength = 0;
+                    return;
+                }
                 if (!Character.isDigit(this.operand.charAt(0))) {
                     errorIndexList.add(8); // undefined symbol in operand
                     return;

@@ -6,9 +6,10 @@ myprog   start   1000
 lbl      word    5
 tst      byte    c'abc'
 bgn      lda     #3
-         ldx     #5
+         ldx     tst
          lda     lbl
 test     EQU     lbl
+         ldx     tst+lbl
          tixr    s
          rmo     a,x
          ldt     #3

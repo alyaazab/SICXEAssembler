@@ -20,8 +20,12 @@ public class Postfix {
                 if(i == operand.length()-1)
                 {
                     System.out.println(suboperand);
-                    operator = (char) stack.pop();
-                    System.out.println(operator);
+                    if(!stack.isEmpty())
+                    {
+                        operator = (char) stack.pop();
+                        System.out.println(operator);
+
+                    }
 
                 }
                 else
@@ -43,9 +47,6 @@ public class Postfix {
         }
 
         return stack.isEmpty();
-
-
-
 
     }
 
