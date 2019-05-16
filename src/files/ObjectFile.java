@@ -16,8 +16,9 @@ public class ObjectFile {
     private ArrayList<Record> records;
     private boolean isHeaderCreated;
     private Record textRecord, headerRecord, endRecord;
-    private String startAddress;
+    private String firstExecAddress;
     private boolean isFirstExecFound;
+    private String startAddress;
 
     public ObjectFile() {
         records = new ArrayList<>();
@@ -39,12 +40,13 @@ public class ObjectFile {
             headerRecord.setName(line.getLabelField().trim());
             headerRecord.setAddress(leftPad(Integer.toHexString(line.getAddress())));
             records.add(headerRecord);
+            startAddress = leftPad(Integer.toHexString(line.getAddress()));
             if (line.getOperation().getFormat() != -1) {
-                startAddress = headerRecord.getAddress();
+                firstExecAddress = headerRecord.getAddress();
                 isFirstExecFound = true;
             }
         } else if (line.getOperation().getOperationMnemonic().equals("end")) {
-            endRecord.setAddress(startAddress);
+            endRecord.setAddress(firstExecAddress);
             int end = line.getAddress();
             int start = Integer.parseInt(startAddress, 16);
             String endAddrees = leftPad(Integer.toHexString(end-start));
@@ -75,7 +77,7 @@ public class ObjectFile {
             }
         }
         if (!isFirstExecFound && line.getOperation().getFormat() != -1) {
-            startAddress = leftPad(Integer.toHexString(line.getAddress()));
+            firstExecAddress = leftPad(Integer.toHexString(line.getAddress()));
             isFirstExecFound = true;
         }
 
