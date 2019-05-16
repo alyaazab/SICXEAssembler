@@ -37,17 +37,16 @@ myprog              4096                0                      true
 			.Label.  Opcode  The  O p e r a n d
 			.
 001000 			myprog  		start 		1000
-001000 000005
-			lbl     		word  		5
+001000 000005			lbl     		word  		5
 001003 010003			bgn     		lda   		#3
 001006 050005			        		ldx   		#5
 001009 032ff4			        		lda   		lbl
-00100C 00b840			        		tixr  		s
-00100E 00ac01			        		rmo   		a,x
+00100C b840			        		tixr  		s
+00100E ac01			        		rmo   		a,x
 001010 750003			        		ldt   		#3
 001013 050008			        		ldx   		#8
 001016 050005			        		ldx   		#5
 001019 032fe4			        		lda   		lbl
-00101C 00b800			        		tixr  		a
-00101E 00ac41			        		rmo   		s,x
+00101C b800			        		tixr  		a
+00101E ac41			        		rmo   		s,x
 001020 			        		END   		bgn

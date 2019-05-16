@@ -6,7 +6,7 @@ import symbol.SymbolTable;
 
 public class ObjectCodeGenerator {
 
-    private int n = 0, i = 0, x = 0, b = 0, p = 0, e = 0;
+    private int n = 0, i=0, x = 0, b = 0, p = 0, e = 0;
     private String opcode = "";
     private int operationFormat = 0;
     private String instructionCode = "", r1 = "", r2 = "", flags = "", disp = "", address = "";
@@ -80,7 +80,7 @@ public class ObjectCodeGenerator {
                     String[] splittedOperand = operandField.trim().split(",");
                     for (String s : splittedOperand) {
                         int value = Integer.valueOf(s);
-                        opcode = opcode + leftPad(convertDecToHex(value), 6) + "\n";
+                        opcode = opcode + leftPad(convertDecToHex(value), 6);
                     }
                     n = -2;
                 }
@@ -196,17 +196,19 @@ public class ObjectCodeGenerator {
     }
 
     private void createOnjectCode() {
-        if (line.getOperation().getFormat() == 2){
-            instructionCode = opcode + r1 + r2;
-            this. instructionObjectCode = convertBinaryToHex(instructionCode);
-        }
         if (line.getErrorIndexList().size() > 0){
             this.instructionObjectCode = "";
         }
+        else if (line.getOperation().getFormat() == 2){
+            instructionCode = opcode + r1 + r2;
+            this. instructionObjectCode = convertBinaryToHex(instructionCode);
+        }
         else if (n != -1 && n != -2) {
             this.instructionObjectCode = leftPad(convertBinaryToHex(instructionCode), 6);
-        } else if (n == -2)
+        }
+        else if (n == -2)
             this.instructionObjectCode = opcode;
+
         System.out.println("object code: " + this.instructionObjectCode);
     }
 
