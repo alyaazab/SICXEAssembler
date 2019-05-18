@@ -552,6 +552,8 @@ public class Parser {
 
             case "base":
 
+                //checkImmediate();
+
                 if (this.label.length() != 0)
                     errorIndexList.add(4); // this statement can't have a label
 
@@ -699,6 +701,8 @@ public class Parser {
             case "org":
                 this.instructionLength = 0;
 
+                //checkImmediate();
+
                 if(this.label.length() != 0)
                 {
                     System.out.println("org statement can't have a label");
@@ -710,13 +714,19 @@ public class Parser {
                     errorIndexList.add(2);
                     return;
                 }
-                if(SymbolTable.getInstance().getSymbol(this.operand) == null)
+
+                String s = this.operand;
+                if (this.operand.charAt(0) == '#')
+                    s = s.substring(1);
+
+                if(SymbolTable.getInstance().getSymbol(s) == null)
                 {
                     System.out.println("undefined symbol in operand");
                     errorIndexList.add(8);
+                    return;
                 }
 
-                int newAddress = SymbolTable.getInstance().getSymbol(this.operand).getValue();
+                int newAddress = SymbolTable.getInstance().getSymbol(s).getValue();
 
 
                 if(errorIndexList.size() == 0)
@@ -772,6 +782,21 @@ public class Parser {
                 LocationCounter.setLC(convertHexToDecimal(this.operand));
                 break;
 
+        }
+    }
+
+    private void checkImmediate() {
+        if(this.operand.charAt(0) == '#')
+        {
+            //make sure all following characters are digits
+            for(int i=1; i<this.operand.length(); i++)
+            {
+                if(!Character.isDigit(this.operand.charAt(i)) && !Character.isLetter(this.operand.charAt(i)))
+                {
+                    errorIndexList.add(8);
+                    return;
+                }
+            }
         }
     }
 

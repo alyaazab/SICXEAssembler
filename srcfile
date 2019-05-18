@@ -12,8 +12,9 @@ test     EQU     #3
          ldx     tst
          tixr    s
          rmo     a,x
-         org     lbl+3
+         org     #1lbl
          lda     #tst
+         base    #tst
          ldx     #8
          ldx     #5
          org     bgn
