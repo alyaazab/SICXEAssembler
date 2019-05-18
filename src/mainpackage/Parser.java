@@ -186,21 +186,6 @@ public class Parser {
 
 
 
-    private boolean containsOperator(String string) {
-
-        for(int i=0; i<string.length(); i++)
-        {
-            char c = string.charAt(i);
-
-            if(c=='+' || c=='-' || c=='*' || c=='/' || c=='(' || c==')')
-                return true;
-
-        }
-
-        return false;
-    }
-
-
     private void validateLabel(String labelField) {
         System.out.println("VALIDATING LABEL...");
 
@@ -365,7 +350,7 @@ public class Parser {
         incrementLocationCounter(this.operationObject.getFormat());
         this.instructionLength = this.operationObject.getLengthOfInstruction();
 
-        if(containsOperator(this.operand))
+        if(Postfix.containsOperator(this.operand))
         {
             if(Postfix.infixToPostfix(this.operand.trim()))
                 return;
@@ -520,7 +505,7 @@ public class Parser {
         this.instructionLength = operation.getLengthOfInstruction();
 
 
-        if(containsOperator(this.operand))
+        if(Postfix.containsOperator(this.operand))
         {
             if(Postfix.infixToPostfix(this.operand.trim()))
                return;

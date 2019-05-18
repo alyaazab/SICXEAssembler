@@ -8,14 +8,14 @@
 001006 			bgn     		lda   		#3
 001009 			        		ldx   		tst
 00100C 			        		lda   		lbl
-00100F 			test    		EQU   		l+t*d
+00100F 			test    		EQU   		#3
 00100F 			        		ldx   		tst
 001012 			        		tixr  		s
 001014 			        		rmo   		a,x
-001016 			        		ldt   		#3
-001019 			        		ldx   		#8
-00101C 			        		ldx   		#5
-00101F 			        		org   		bgn
+000000 			        		org   		lbl+3
+001016 			        		ldx   		#8
+001019 			        		ldx   		#5
+00101C 			        		org   		bgn
 001006 			        		lda   		lbl
 001009 			        		tixr  		a
 00100B 			        		rmo   		s,x
@@ -47,14 +47,16 @@ myprog              4096                0                      true
 001006 010003			bgn     		lda   		#3
 001009 072ff7			        		ldx   		tst
 00100C 032ff1			        		lda   		lbl
-00100F 			test    		EQU   		l+t*d
+00100F 			test    		EQU   		#3
 00100F 072ff1			        		ldx   		tst
 001012 b840			        		tixr  		s
 001014 ac01			        		rmo   		a,x
-001016 750003			        		ldt   		#3
-001019 050008			        		ldx   		#8
-00101C 050005			        		ldx   		#5
-00101F 			        		org   		bgn
+000000 30			        		org   		lbl+3
+ ***ERROR: displacement out of range***
+
+001016 050008			        		ldx   		#8
+001019 050005			        		ldx   		#5
+00101C 			        		org   		bgn
 001006 032ff7			        		lda   		lbl
 001009 b800			        		tixr  		a
 00100B ac41			        		rmo   		s,x

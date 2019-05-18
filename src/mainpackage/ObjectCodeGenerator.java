@@ -13,16 +13,20 @@ public class ObjectCodeGenerator {
     private int baseRegisterOperand = -1;
     private String instructionObjectCode = "";
     private Line line;
+    private boolean addressExpression = false;
+    String binaryAddress = "";
+
 
     public ObjectCodeGenerator() {
     }
 
     public void generateObjectCode(Line line) {
         this.line = line;
-        String binaryAddress = "";
         instructionCode = "";
         instructionObjectCode = "";
-        String subOperand = "";
+        binaryAddress = "";
+
+
         //if line is a comment, skip
         if (!line.getComment().equals(""))
             return;
@@ -39,7 +43,56 @@ public class ObjectCodeGenerator {
             System.out.println("operation is null");
             return;
         }
+        int valueOfString;
 
+        if(Postfix.containsOperator(line.getOperandField().trim()))
+        {
+            if(Postfix.infixToPostfix(line.getOperandField().trim()))
+            {
+                //look for symbols in symboltable
+                for(String string : Postfix.listOfOperands)
+                {
+                    System.out.println("postfix string: " + string);
+                    try{
+                        valueOfString = Integer.parseInt(string);
+                        System.out.println("postfix: " + valueOfString);
+                    }catch (NumberFormatException e) {
+                        if(SymbolTable.getInstance().getSymbol(string) == null)
+                        {
+                            line.getErrorIndexList().add(28);
+                            System.out.println("POSTFIXERROR ON STRING " + string);
+                            return;
+                        }
+                    }
+
+                }
+                addressExpression = true;
+                int postfixResult = Postfix.evaluatePostfixExpression();
+                n = 1;
+                i = 1;
+                x = 0;
+                opcode = convertHexToBin(operation.getBinaryCode()).substring(0, 6);
+                if(operationFormat==3)
+                    e=0;
+                else if(operationFormat==4)
+                    e=1;
+
+                setBPFlags(postfixResult, line);
+
+                instructionCode = instructionCode + opcode + n + i + x + b + p + e + binaryAddress;
+                System.out.println("POSTFIX CODE: " + instructionCode);
+                instructionObjectCode = convertBinaryToHex(instructionCode);
+                line.setObjectCode(instructionObjectCode);
+//                this.instructionObjectCode = leftPad(convertBinaryToHex(instructionCode), 6);
+
+//                formInstructionCode();
+//                createObjectCode();
+                return;
+            }
+
+
+
+        }
 
         if (operation.getOperationMnemonic().equals("base") && line.isBaseRegisterSet()) {
             String operand = line.getOperandField().trim();
@@ -63,7 +116,7 @@ public class ObjectCodeGenerator {
                 r1 = "";
                 r2 = "";
                 n = i = x = b = p = e = -1;
-                System.out.println("KITTY B = " + b + "   P = " + p);
+
 
                 if (operation.getOperationMnemonic().equals("byte")) {
                     for (int i = 2; i < operandField.trim().length() - 1; i++) {
@@ -134,6 +187,16 @@ public class ObjectCodeGenerator {
                 break;
         }
 
+        formInstructionCode();
+//        instructionCode = instructionCode + opcode + r1 + r2 + n + i + x + b + p + e + binaryAddress;
+//        System.out.println("INSTRUCTION CODE: " + instructionCode);
+//        createObjectCode();
+//        line.setObjectCode(instructionObjectCode);
+//        System.out.println("line object code: " + line.getObjectCode());
+//        System.out.println("---------new line--------------");
+    }
+
+    private void formInstructionCode() {
         instructionCode = instructionCode + opcode + r1 + r2 + n + i + x + b + p + e + binaryAddress;
         System.out.println("INSTRUCTION CODE: " + instructionCode);
         createObjectCode();
@@ -186,7 +249,7 @@ public class ObjectCodeGenerator {
                 address = SymbolTable.getInstance().getSymbol(subOperand).getValue();
 
             if (format == 3)
-                binaryAddress = setBPFlags(subOperand, line);
+                binaryAddress = setBPFlags(SymbolTable.getInstance().getSymbol(subOperand).getValue(), line);
             else
                 binaryAddress = leftPad(convertDecToBin(address), 20);
         }
@@ -219,14 +282,13 @@ public class ObjectCodeGenerator {
         line.getErrorIndexList().add(27);
     }
 
-    private String setBPFlags(String str, Line line) {
+    private String setBPFlags(int targetAddress, Line line) {
         //check for PC relative or Base relative to set b and p flags
-        System.out.println("STR " + str);
-        int targetAddress = SymbolTable.getInstance().getSymbol(str).getValue();
+        System.out.println("STR " + targetAddress);
         int displacement = targetAddress - line.getAddress() - line.getOperation().getLengthOfInstruction();
         System.out.println("displacement: " + displacement);
         System.out.println("disp: " + displacement);
-        String binaryAddress = "";
+        binaryAddress = "";
         if (displacement >= -2048 && displacement <= 2047) {
             p = 1;
             b = 0;
