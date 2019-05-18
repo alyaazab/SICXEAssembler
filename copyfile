@@ -12,14 +12,12 @@
 00100F 			        		ldx   		tst
 001012 			        		tixr  		s
 001014 			        		rmo   		a,x
-000000 			        		org   		#1lbl
- ***ERROR: undefined symbol in operand***
-
-001016 			        		lda   		#tst
-001019 			        		base  		#tst
-001019 			        		ldx   		#8
-00101C 			        		ldx   		#5
-00101F 			        		org   		bgn
+001016 			        		org   		#lbl
+001000 			        		lda   		#tst
+001003 			        		base  		#tst
+001003 			        		ldx   		#8
+001006 			        		ldx   		#5
+001009 			        		org   		bgn
 001006 			        		lda   		lbl
 001009 			        		tixr  		a
 00100B 			        		rmo   		s,x
@@ -39,4 +37,29 @@ bgn                 4102                3                      true
 myprog              4096                0                      true                
 
 
-errors found, no pass 2
+----Pass 2-----
+
+			.23456789012345678901234567890123456
+			. ALT & Enter to toggle full screen
+			.Label.  Opcode  The  O p e r a n d
+			.
+001000 			myprog  		start 		1000
+001000 000005			lbl     		word  		5
+001003 616263			tst     		byte  		c'abc'
+001006 010003			bgn     		lda   		#3
+001009 072ff7			        		ldx   		tst
+00100C 032ff1			        		lda   		lbl
+00100F 			test    		EQU   		#3
+00100F 072ff1			        		ldx   		tst
+001012 b840			        		tixr  		s
+001014 ac01			        		rmo   		a,x
+001016 			        		org   		#lbl
+001000 012000			        		lda   		#tst
+001003 			        		base  		#tst
+001003 050008			        		ldx   		#8
+001006 050005			        		ldx   		#5
+001009 			        		org   		bgn
+001006 032ff7			        		lda   		lbl
+001009 b800			        		tixr  		a
+00100B ac41			        		rmo   		s,x
+00100D 			        		END   		bgn
