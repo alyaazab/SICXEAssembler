@@ -4,21 +4,22 @@
 			.
 001000 			myprog  		start 		1000
 001000 			lbl     		word  		5
-001003 			tst     		byte  		x'ab'
-001004 			bgn     		lda   		#3
-001007 			        		ldx   		#5
-00100A 			        		lda   		lbl
-00100D 			        		tixr  		s
-00100F 			        		rmo   		a,x
-001011 			        		org   		tst
-001011 			        		lda   		#tst
-001014 			        		ldt   		#3
-001017 			        		ldx   		#8
-00101A 			        		ldx   		#5
-00101D 			        		lda   		lbl
-001020 			        		tixr  		a
-001022 			        		rmo   		s,x
-001024 			        		END   		bgn
+001003 			tst     		byte  		c'abc'
+001006 			bgn     		lda   		#3
+001009 			        		ldx   		tst
+00100C 			        		lda   		lbl
+00100F 			test    		EQU   		#3
+00100F 			        		ldx   		tst
+001012 			        		tixr  		s
+001014 			        		rmo   		a,x
+000000 			        		org   		lbl+3
+001016 			        		ldx   		#8
+001019 			        		ldx   		#5
+00101C 			        		org   		bgn
+001006 			        		lda   		lbl
+001009 			        		tixr  		a
+00100B 			        		rmo   		s,x
+00100D 			        		END   		bgn
 
 
 
@@ -28,9 +29,9 @@
 
 Label Name			Address				Instruction Length		Relocatable
 
-tst                 4099                1                      true                
+tst                 4099                3                      true                
 lbl                 4096                3                      true                
-bgn                 4100                3                      true                
+bgn                 4102                3                      true                
 myprog              4096                0                      true                
 
 
@@ -42,18 +43,21 @@ myprog              4096                0                      true
 			.
 001000 			myprog  		start 		1000
 001000 000005			lbl     		word  		5
-001003 ab			tst     		byte  		x'ab'
-001004 010003			bgn     		lda   		#3
-001007 050005			        		ldx   		#5
-00100A 032ff3			        		lda   		lbl
-00100D b840			        		tixr  		s
-00100F ac01			        		rmo   		a,x
-001011 			        		org   		tst
-001011 012fef			        		lda   		#tst
-001014 750003			        		ldt   		#3
-001017 050008			        		ldx   		#8
-00101A 050005			        		ldx   		#5
-00101D 032fe0			        		lda   		lbl
-001020 b800			        		tixr  		a
-001022 ac41			        		rmo   		s,x
-001024 			        		END   		bgn
+001003 616263			tst     		byte  		c'abc'
+001006 010003			bgn     		lda   		#3
+001009 072ff7			        		ldx   		tst
+00100C 032ff1			        		lda   		lbl
+00100F 			test    		EQU   		#3
+00100F 072ff1			        		ldx   		tst
+001012 b840			        		tixr  		s
+001014 ac01			        		rmo   		a,x
+000000 30			        		org   		lbl+3
+ ***ERROR: displacement out of range***
+
+001016 050008			        		ldx   		#8
+001019 050005			        		ldx   		#5
+00101C 			        		org   		bgn
+001006 032ff7			        		lda   		lbl
+001009 b800			        		tixr  		a
+00100B ac41			        		rmo   		s,x
+00100D 			        		END   		bgn

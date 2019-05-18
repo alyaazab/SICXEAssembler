@@ -20,6 +20,7 @@ public class Parser {
 
     private int baseRegisterAvailable = -1;
     private String baseRegisterValue = "";
+    private int orgInstructionAddress = 0;
 
     public Parser() {
         this.errorIndexList = new ArrayList<>();
@@ -94,11 +95,16 @@ public class Parser {
 
 
         validateFixedFormat(labelField.toLowerCase(), operationField.toLowerCase(), operandField.toLowerCase());
-        addLabelToSymbolTable();
+
+        if(!this.operation.equals("equ"))
+            addLabelToSymbolTable();
 
         System.out.println("errors: " + errorIndexList.size());
 
-        lineObj.setAddress(LocationCounter.LC - this.instructionLength);
+        if(this.operation.equals("org"))
+            lineObj.setAddress(orgInstructionAddress);
+        else
+            lineObj.setAddress(LocationCounter.LC - this.instructionLength);
         System.out.println(errorIndexList);
         lineObj.setOperation(this.operationObject);
 
@@ -167,14 +173,17 @@ public class Parser {
     private void validateFixedFormat(String labelField, String operationField, String operandField) {
         validateLabel(labelField);
         validateOperationField(operationField);
-        //TODO: check if directive or operation, if directive: validateDirective, else, validateOperand IF NEEDS OPERAND
-        if(this.operationObject != null && this.operationObject.getFormat() == -1){
-            validateDirective();
-        } else if (this.operationObject != null && this.operationObject.getFormat() != -1){
-            if(needsOperand())
+
+        if(this.operationObject != null)
+        {
+            if(this.operationObject.getFormat() == -1)
+                validateDirective();
+            else if(needsOperand())
                 validateOperandField(operandField);
         }
+
     }
+
 
 
     private void validateLabel(String labelField) {
@@ -290,41 +299,22 @@ public class Parser {
 
     private void validateOperandField(String operandField) {
        // this.operand = operandField;
-        System.out.println("TESTOPERAND: " + this.operand+ this.operand.length());
 
         System.out.println("VALIDATING OPERAND FIELD...");
 
-//        //if our operation doesn't need an operand and we don't have an operand, return
-//        if(operation != null && (this.operationObject.isHasOperand() == 0 || this.operationObject.isHasOperand() == -1)
-//                && this.operand.trim().equals(""))
-//        {
-//            this.operand = this.operand.trim();
-//            System.out.println("ginger");
-//            return;
-//
-//        }
 
-        System.out.println("brownie");
         //our operation needs an operand, but we don't have one
         if(this.operand.trim().equals(""))
         {
-//            int operationFormat = this.operationObject.getFormat();
-//            //if operation is a directive
-//            if (operationFormat == -1) {
-//                return;
-//            }
-            System.out.println("no operand");
             errorIndexList.add(2);
-
 
             if (this.operationObject == null) {
                 return;
             }
 
-
-
-            incrementLocationCounter(this.operationObject.getFormat());
-            this.instructionLength = this.operationObject.getLengthOfInstruction();
+//            incrementLocationCounter(this.operationObject.getFormat());
+//            this.instructionLength = this.operationObject.getLengthOfInstruction();
+            this.instructionLength = 0;
             return;
         }
 
@@ -351,14 +341,25 @@ public class Parser {
         if (this.operationObject == null)
             return;
 
+
+
         int operationFormat = this.operationObject.getFormat();
 
-        //if operation is a directive
-//        if (operationFormat == -1)
-//            return;
+
 
         incrementLocationCounter(this.operationObject.getFormat());
         this.instructionLength = this.operationObject.getLengthOfInstruction();
+
+        if(Postfix.containsOperator(this.operand))
+        {
+            if(Postfix.infixToPostfix(this.operand.trim()))
+                return;
+            else
+            {
+                errorIndexList.add(30);
+                return;
+            }
+        }
 
         switch(operationFormat)
         {
@@ -504,6 +505,17 @@ public class Parser {
         this.instructionLength = operation.getLengthOfInstruction();
 
 
+        if(Postfix.containsOperator(this.operand))
+        {
+            if(Postfix.infixToPostfix(this.operand.trim()))
+               return;
+            else
+            {
+                errorIndexList.add(30);
+                return;
+            }
+        }
+
         switch (this.operation){
             case "equ":
                 if (this.label.length() == 0)
@@ -530,6 +542,11 @@ public class Parser {
                 }
                 else if (SymbolTable.getInstance().getSymbol(this.operand) == null)
                     errorIndexList.add(20); // equ should have previously defined operands
+                else
+                {
+                    int operandAddress = SymbolTable.getInstance().getSymbol(this.operand.trim()).getValue();
+                    SymbolTable.getInstance().addToSymTab(this.label, operandAddress, this.instructionLength, true);
+                }
 
                 break;
 
@@ -654,6 +671,12 @@ public class Parser {
                 break;
 
             case "word":
+                if(this.operand.trim().equals(""))
+                {
+                    errorIndexList.add(2);
+                    this.instructionLength = 0;
+                    return;
+                }
                 if (!Character.isDigit(this.operand.charAt(0))) {
                     errorIndexList.add(8); // undefined symbol in operand
                     return;
@@ -691,6 +714,18 @@ public class Parser {
                 {
                     System.out.println("undefined symbol in operand");
                     errorIndexList.add(8);
+                }
+
+                int newAddress = SymbolTable.getInstance().getSymbol(this.operand).getValue();
+
+
+                if(errorIndexList.size() == 0)
+                {
+                    System.out.println("i want to go to address " + newAddress);
+                    System.out.println("i am at address " + LocationCounter.LC);
+                    System.out.println("increment by " + -(LocationCounter.LC - newAddress));
+                    orgInstructionAddress = LocationCounter.LC;
+                    incrementLocationCounter(newAddress - LocationCounter.LC);
                 }
                 break;
             case "end":

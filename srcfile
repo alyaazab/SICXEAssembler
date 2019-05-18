@@ -4,17 +4,18 @@
 .
 myprog   start   1000
 lbl      word    5
-tst      byte    x'ab'
+tst      byte    c'abc'
 bgn      lda     #3
-         ldx     #5
+         ldx     tst
          lda     lbl
+test     EQU     #3
+         ldx     tst
          tixr    s
          rmo     a,x
-         org     tst
-         lda     #tst
-         ldt     #3
+         org     lbl+3
          ldx     #8
          ldx     #5
+         org     bgn
          lda     lbl
          tixr    a
          rmo     s,x

@@ -13,7 +13,7 @@ public class Error {
         }
     }
     public static void fillErrorArray() {
-        errors = new String[30];
+        errors = new String[40];
 
         errors[3] = "***ERROR: duplicate label definition***";//
         errors[4] = "***ERROR: this statement can't have a label***";//
@@ -51,6 +51,7 @@ public class Error {
         errors[27] = "***ERROR: displacement out of range***";
         errors[28] = "***ERROR: operand not found in symbol table***";
         errors[29] = "***ERROR: incorrect length of byte operand***";
+        errors[30] = "***ERROR: incorrect address expression***";
 
 
     }
