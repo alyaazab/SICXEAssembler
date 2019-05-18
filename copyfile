@@ -10,13 +10,15 @@
 00100A 			        		lda   		lbl
 00100D 			        		tixr  		s
 00100F 			        		rmo   		a,x
-001011 			        		ldt   		#3
-001014 			        		ldx   		#8
-001017 			        		ldx   		#5
-00101A 			        		lda   		lbl
-00101D 			        		tixr  		a
-00101F 			        		rmo   		s,x
-001021 			        		END   		bgn
+001011 			        		org   		tst
+001011 			        		lda   		#tst
+001014 			        		ldt   		#3
+001017 			        		ldx   		#8
+00101A 			        		ldx   		#5
+00101D 			        		lda   		lbl
+001020 			        		tixr  		a
+001022 			        		rmo   		s,x
+001024 			        		END   		bgn
 
 
 
@@ -46,10 +48,12 @@ myprog              4096                0                      true
 00100A 032ff3			        		lda   		lbl
 00100D b840			        		tixr  		s
 00100F ac01			        		rmo   		a,x
-001011 750003			        		ldt   		#3
-001014 050008			        		ldx   		#8
-001017 050005			        		ldx   		#5
-00101A 032fe3			        		lda   		lbl
-00101D b800			        		tixr  		a
-00101F ac41			        		rmo   		s,x
-001021 			        		END   		bgn
+001011 			        		org   		tst
+001011 012fef			        		lda   		#tst
+001014 750003			        		ldt   		#3
+001017 050008			        		ldx   		#8
+00101A 050005			        		ldx   		#5
+00101D 032fe0			        		lda   		lbl
+001020 b800			        		tixr  		a
+001022 ac41			        		rmo   		s,x
+001024 			        		END   		bgn

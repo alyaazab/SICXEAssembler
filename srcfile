@@ -10,6 +10,8 @@ bgn      lda     #3
          lda     lbl
          tixr    s
          rmo     a,x
+         org     tst
+         lda     #tst
          ldt     #3
          ldx     #8
          ldx     #5

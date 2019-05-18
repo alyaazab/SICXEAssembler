@@ -430,7 +430,7 @@ public class Parser {
             //make sure all following characters are digits
             for(int i=1; i<this.operand.length(); i++)
             {
-                if(!Character.isDigit(this.operand.charAt(i)))
+                if(!Character.isDigit(this.operand.charAt(i)) && !Character.isLetter(this.operand.charAt(i)))
                 {
                     errorIndexList.add(8);
                     return;
