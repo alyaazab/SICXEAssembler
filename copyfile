@@ -13,9 +13,10 @@
 001012 			        		tixr  		s
 001014 			        		rmo   		a,x
 000000 			        		org   		lbl+3
-001016 			        		ldx   		#8
-001019 			        		ldx   		#5
-00101C 			        		org   		bgn
+001016 			        		lda   		#tst
+001019 			        		ldx   		#8
+00101C 			        		ldx   		#5
+00101F 			        		org   		bgn
 001006 			        		lda   		lbl
 001009 			        		tixr  		a
 00100B 			        		rmo   		s,x
@@ -54,9 +55,10 @@ myprog              4096                0                      true
 000000 30			        		org   		lbl+3
  ***ERROR: displacement out of range***
 
-001016 050008			        		ldx   		#8
-001019 050005			        		ldx   		#5
-00101C 			        		org   		bgn
+001016 012fea			        		lda   		#tst
+001019 050008			        		ldx   		#8
+00101C 050005			        		ldx   		#5
+00101F 			        		org   		bgn
 001006 032ff7			        		lda   		lbl
 001009 b800			        		tixr  		a
 00100B ac41			        		rmo   		s,x
